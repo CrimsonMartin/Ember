@@ -1,2 +1,2 @@
 # SuperEmber
-393 Software Craftsmanship Project
+393 Software Engineering Project
