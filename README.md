@@ -12,6 +12,12 @@
 4. Functional testing of suggestion logic
 5. Functional testing off entire app
 
+**Roles**
+- write MovieSet data access layer, and Movie class
+- write suggestion algorithm
+- write GUI control logic
+- learn Android environment and design actual GUI
+- write SearchRestriction and decide how to turn user input into a SearchRestriction
 
 Classes
 App - main class
