@@ -2,7 +2,7 @@
 393 Software Engineering Project
 
 
-`Work Plan`
+**Work Plan**
 1. Decide what goes into the search, and use that to design SearchRestriction class
 2. Write MovieSet DAL based on SearchRestriction design
 2. Learn Android environment and design GUI
