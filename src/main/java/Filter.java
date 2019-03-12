@@ -1,3 +1,5 @@
+import Movie.Movie;
+
 public class Filter {
 
     // Is a list the best way to represent this?
