@@ -1,4 +1,3 @@
-import Movie.Movie;
 
 public class Filter {
 
