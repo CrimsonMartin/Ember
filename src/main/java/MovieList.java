@@ -25,7 +25,7 @@ public class MovieList {
         N = n;
     }
 
-    public void setUISearch(UISearch){
+    public void setUISearch(UISearch uiSearch){
         //TODO
         return;
     }
