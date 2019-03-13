@@ -4,7 +4,7 @@ import java.util.List;
 public class MovieLoader {
 
 
-    public List<Movie> loadMovies(UISearch uiSearch){
+    public List<Movie> loadMovies(UISearch uiSearch, Integer n){
         //TODO
         return null;
     }
