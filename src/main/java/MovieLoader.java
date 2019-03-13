@@ -3,7 +3,6 @@ import java.util.List;
 
 public class MovieLoader {
 
-
     public List<Movie> loadMovies(UISearch uiSearch, Integer n){
         //TODO
         return null;

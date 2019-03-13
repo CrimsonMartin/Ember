@@ -1,19 +1,23 @@
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class MovieTest {
+public class MovieListTest {
 
     private Movie m1;
     private Movie m2;
+    private MovieList ml;
 
 
     @Before
     public void initialize(){
-        m1 = new Movie();
-        m2 = new Movie();
-
+        m1 = new Movie("Movie 1");
+        m2 = new Movie("Movie 2");
+        ml = new MovieList();
+        ml.add(m1);
+        ml.add(m2);
     }
 
     @Test
@@ -26,7 +30,7 @@ public class MovieTest {
     public void checkIMDBSort(){
         m1.setImdbrating(1);
         m2.setImdbrating(2);
-        assertEquals(MovieIMDBRating.compare(m1, m2) , 1);
+        assertEquals(ml.getActiveList().get(0).getTitle(), "Movie 1");
+        assertEquals(ml.getActiveList().get(1).getTitle(), "Movie 2");
     }
-
 }
