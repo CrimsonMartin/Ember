@@ -68,9 +68,7 @@ public class UISearch {
     public List<Movie> search() {
         int moviesToLoad = 5;
         MovieLoader loader = new MovieLoader();
-        loader.open();
         List<Movie> movies = loader.loadMovies(this, moviesToLoad);
-        loader.close();
 
         return movies;
     }
@@ -82,9 +80,7 @@ public class UISearch {
      */
     public List<Movie> search(int n) {
         MovieLoader loader = new MovieLoader();
-        loader.open();
         List<Movie> movies = loader.loadMovies(this, n);
-        loader.close();
 
         return movies;
     }

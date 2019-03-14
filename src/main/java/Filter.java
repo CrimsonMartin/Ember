@@ -1,10 +1,16 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class Filter {
 
     // Is a list the best way to represent this?
     private String[] filterKeywords;
-    private FilterType filter;
+    private FilterType filterType;
+
+    public FilterType getFilterType() {
+        return filterType;
+    }
+
     private Logger log = new Logger();
 
     /**
@@ -13,7 +19,7 @@ public class Filter {
      * @param movie to base the filter off of.
      */
     private Filter(Movie movie) {
-        filter = FilterType.genres;
+        filterType = FilterType.genres;
     }
 
     /**
@@ -28,17 +34,17 @@ public class Filter {
 
     // All of these pretty much do the same thing: Change the filter to the method name and fill in the keywords
     public void setDirectors(String[] directors) {
-        filter = FilterType.directors;
+        filterType = FilterType.directors;
         filterKeywords = directors;
     }
 
     public void setActors(String[] actors) {
-        filter = FilterType.actors;
+        filterType = FilterType.actors;
         filterKeywords = actors;
     }
 
     public void setGenres(String[] genres) {
-        filter = FilterType.genres;
+        filterType = FilterType.genres;
         filterKeywords = genres;
     }
 
@@ -50,17 +56,17 @@ public class Filter {
      */
     public boolean fitsFilter(Movie movie) {
 
-       List<String> compareTo;
+       List<String> compareTo = new ArrayList<>();
 
-        switch(filter){
+        switch(filterType){
             case actors:
-                compareTo = movie.getActors();
+                compareTo.addAll(movie.getActors());
                 break;
             case genres:
-                compareTo = movie.getGenres();
+                compareTo.addAll(movie.getGenre());
                 break;
             case directors:
-                compareTo = movie.getDirectors();
+                compareTo.add(movie.getDirector());
                 break;
             default:
                 throw new NullPointerException("This Filter has no filter type set");

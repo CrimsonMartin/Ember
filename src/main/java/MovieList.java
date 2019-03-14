@@ -9,10 +9,6 @@ public class MovieList {
     private UISearch uisearch = null;
     private List<Movie> activeList = new ArrayList<>();
 
-    public boolean openMovieLoader(){
-        return loader.open();
-    }
-
     public boolean closeMovieLoader(){
         return loader.close();
     }
@@ -41,23 +37,19 @@ public class MovieList {
         return activeList;
     }
 
-    private static class MovieIMDBRating implements Comparator<Movie> {
-
-        @Override
-        public int compare(Movie m1, Movie m2) {
-            return m1.getIMDBrating() - m2.getIMDBrating();
-        }
-
-    }
-
     protected void add(Movie m){
         activeList.add(m);
     }
 
-    protected  void add(List<Movie> ml){
-        for (Movie m: ml) {
-            add(m);
+    protected  void addAll(List<Movie> ml){ activeList.addAll(ml); }
+
+    private static class MovieIMDBRating implements Comparator<Movie> {
+
+        @Override
+        public int compare(Movie m1, Movie m2) {
+            return m1.getImdbRating() - m2.getImdbRating();
         }
+
     }
 
 }
