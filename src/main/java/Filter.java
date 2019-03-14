@@ -12,7 +12,7 @@ public class Filter {
      * Defaults to genre filter type.
      * @param movie to base the filter off of.
      */
-    public Filter(Movie movie) {
+    private Filter(Movie movie) {
         filter = FilterType.genres;
     }
 
