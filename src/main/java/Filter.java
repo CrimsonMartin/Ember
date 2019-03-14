@@ -1,20 +1,19 @@
+import java.util.List;
 
 public class Filter {
 
     // Is a list the best way to represent this?
     private String[] filterKeywords;
-    private String filter;
+    private FilterType filter;
     private Logger log = new Logger();
-
-    public Filter() {}
 
     /**
      * Creates a new filter with the given Movie's genres as the filterKeywords and type.
+     * Defaults to genre filter type.
      * @param movie to base the filter off of.
      */
     public Filter(Movie movie) {
-        filter = "genre";
-
+        filter = FilterType.genres;
     }
 
     /**
@@ -29,17 +28,17 @@ public class Filter {
 
     // All of these pretty much do the same thing: Change the filter to the method name and fill in the keywords
     public void setDirectors(String[] directors) {
-        filter = "directors";
+        filter = FilterType.directors;
         filterKeywords = directors;
     }
 
     public void setActors(String[] actors) {
-        filter = "actors";
+        filter = FilterType.actors;
         filterKeywords = actors;
     }
 
     public void setGenres(String[] genres) {
-        filter = "genres";
+        filter = FilterType.genres;
         filterKeywords = genres;
     }
 
@@ -50,12 +49,22 @@ public class Filter {
      * @return true if the Movie fits, false if it doesn't.
      */
     public boolean fitsFilter(Movie movie) {
-        if (filter.equals("actors"))
-            String[] compareTo = movie.getActors();
-        else if (filter.equals("directors"))
-            String[] compareTo = movie.getDirectors();
-        else if (filter.equals("genre"))
-            String[] compareTo = movie.getGenres();
+
+       List<String> compareTo;
+
+        switch(filter){
+            case actors:
+                compareTo = movie.getActors();
+                break;
+            case genres:
+                compareTo = movie.getGenres();
+                break;
+            case directors:
+                compareTo = movie.getDirectors();
+                break;
+            default:
+                throw new NullPointerException("This Filter has no filter type set");
+        }
 
         for (String s : compareTo) {
             for (String s2 : filterKeywords) {
