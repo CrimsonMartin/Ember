@@ -11,8 +11,8 @@ public class MovieTest {
 
     @Before
     public void initialize(){
-        m1 = new Movie();
-        m2 = new Movie();
+        m1 = new Movie("Movie 1");
+        m2 = new Movie("Space Jam");
 
     }
 
@@ -20,13 +20,6 @@ public class MovieTest {
     public void testLoad(){
         //TODO write the test for Movie loaded when loader.load("Space Jam" is indeed the right movie
         assertTrue(true);
-    }
-
-    @Test
-    public void checkIMDBSort(){
-        m1.setImdbrating(1);
-        m2.setImdbrating(2);
-        assertEquals(MovieIMDBRating.compare(m1, m2) , 1);
     }
 
 }

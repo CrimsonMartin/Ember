@@ -5,53 +5,53 @@ import java.util.Objects;
 
 public class Movie {
 
-    private String title = null;
-    private String description = null;
-    private Integer year = null;
-    private Image poster = null;
-    private Integer imdbrating = null;
+    private String title;
+    private String description;
+    private Integer year;
+    private Image poster;
+    private Integer imdbrating;
     private List <String> actors = new ArrayList<>();
     private List <String> directors = new ArrayList<>();
     private List <String> genres = new ArrayList<>();
     private List <String> platforms =new ArrayList<>();
 
-    public Movie(String title){
-        title = title;
+    Movie(String title){
+        this.title = title;
     }
 
-    public String getTitle() {
+    String getTitle() {
         return title;
     }
 
-    public String getDescription() {
+    String getDescription() {
         return description;
     }
 
-    public Integer getYear() {
+    Integer getYear() {
         return year;
     }
 
-    public Image getPoster() {
+    Image getPoster() {
         return poster;
     }
 
-    public Integer getImdbrating() {
+    Integer getIMDBrating() {
         return imdbrating;
     }
 
-    public void setImdbrating(Integer imdbrating) {
+    void setIMDBrating(Integer imdbrating) {
         this.imdbrating = imdbrating;
     }
 
-    public List<String> getActors() {
+    List<String> getActors() {
         return actors;
     }
 
-    public List<String> getDirectors() {
+    List<String> getDirectors() {
         return directors;
     }
 
-    public List<String> getGenres() {
+    List<String> getGenres() {
         return genres;
     }
 
