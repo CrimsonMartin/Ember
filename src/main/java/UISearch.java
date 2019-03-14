@@ -1,3 +1,5 @@
+import java.util.List;
+
 /**
  * Protocol for accessing the Movie Database from the GUI of the Ember app.
  * @version 1.0
@@ -63,11 +65,11 @@ public class UISearch {
      * Uses the current search Filter and String to access the database
      * @return Array of movies to implement as MovieTiles later on
      */
-    public Movie[] search() {
+    public List<Movie> search() {
         int moviesToLoad = 5;
         MovieLoader loader = new MovieLoader();
         loader.open();
-        Movie[] movies = loader.loadMovies(this, moviesToLoad);
+        List<Movie> movies = loader.loadMovies(this, moviesToLoad);
         loader.close();
 
         return movies;
@@ -78,10 +80,10 @@ public class UISearch {
      * @param n is the number of movies to load
      * @return Array of movies to implement as MovieTiles later on
      */
-    public Movie[] search(int n) {
+    public List<Movie> search(int n) {
         MovieLoader loader = new MovieLoader();
         loader.open();
-        Movie[] movies = loader.loadMovies(this, n);
+        List<Movie> movies = loader.loadMovies(this, n);
         loader.close();
 
         return movies;
