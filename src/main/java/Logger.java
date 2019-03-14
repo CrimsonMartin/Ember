@@ -62,7 +62,8 @@ public class Logger {
      * @return
      */
     public int getClickCountToday(Movie movie) {
-
+        //TODO
+        return -1;
     }
 
     /**
