@@ -47,7 +47,7 @@ public class MovieList {
 
         @Override
         public int compare(Movie m1, Movie m2) {
-            return m1.getImdbRating() - m2.getImdbRating();
+            return (int)(m1.getImdbRating() - m2.getImdbRating());
         }
 
     }

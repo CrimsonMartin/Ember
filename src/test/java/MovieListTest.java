@@ -28,8 +28,8 @@ public class MovieListTest {
 
     @Test
     public void checkIMDBSort(){
-        m1.setImdbRating(1);
-        m2.setImdbRating(2);
+        m1.setImdbRating(1.0);
+        m2.setImdbRating(2.0);
         assertEquals(ml.getActiveList().get(0).getTitle(), "Movie 1");
         assertEquals(ml.getActiveList().get(1).getTitle(), "Movie 2");
     }

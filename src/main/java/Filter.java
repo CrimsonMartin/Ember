@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Filter {
@@ -60,10 +61,10 @@ public class Filter {
 
         switch(filterType){
             case actors:
-                compareTo.addAll(movie.getActors());
+                compareTo.addAll(Arrays.asList(movie.getActors().split(",")));
                 break;
             case genres:
-                compareTo.addAll(movie.getGenre());
+                compareTo.addAll(Arrays.asList(movie.getGenre().split(",")));
                 break;
             case directors:
                 compareTo.add(movie.getDirector());

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.io.*;
+import com.google.gson.Gson;
 
 
 public class Movie {
@@ -47,20 +48,19 @@ public class Movie {
 
     private String Title;
     private Integer Year;
-    private Date Released;
+    private String Released;
     private String Runtime;
-    private List<String> Genre;
+    private String Genre;
     private String Director;
-    private List<String> Writer;
-    private List<String> Actors;
+    private String Writer;
+    private String Actors;
     private String Plot;
     private String Language;
     private String Country;
     private String Awards;
     private String Poster;
-    private String Ratings;
     private Integer Metascore;
-    private Integer imdbRating;
+    private Double imdbRating;
     private String imdbID;
     private String Type;
     private String DVD;
@@ -68,21 +68,6 @@ public class Movie {
     private String Production;
     private String Website;
     private String Response;
-
-    private List <String> platforms;
-
-    public Movie(String title) {
-        setTitle(title);
-    }
-
-    public Movie(){}
-
-    public static Movie parseFromJson(BufferedReader reader){
-        Movie m = new Movie();
-        //TODO WRITE ME
-        return m;
-    }
-
 
     public String getTitle() {
         return Title;
@@ -100,11 +85,11 @@ public class Movie {
         Year = year;
     }
 
-    public Date getReleased() {
+    public String getReleased() {
         return Released;
     }
 
-    public void setReleased(Date released) {
+    public void setReleased(String released) {
         Released = released;
     }
 
@@ -116,11 +101,11 @@ public class Movie {
         Runtime = runtime;
     }
 
-    public List<String> getGenre() {
+    public String getGenre() {
         return Genre;
     }
 
-    public void setGenre(List<String> genre) {
+    public void setGenre(String genre) {
         Genre = genre;
     }
 
@@ -132,19 +117,19 @@ public class Movie {
         Director = director;
     }
 
-    public List<String> getWriter() {
+    public String getWriter() {
         return Writer;
     }
 
-    public void setWriter(List<String> writer) {
+    public void setWriter(String writer) {
         Writer = writer;
     }
 
-    public List<String> getActors() {
+    public String getActors() {
         return Actors;
     }
 
-    public void setActors(List<String> actors) {
+    public void setActors(String actors) {
         Actors = actors;
     }
 
@@ -188,14 +173,6 @@ public class Movie {
         Poster = poster;
     }
 
-    public String getRatings() {
-        return Ratings;
-    }
-
-    public void setRatings(String ratings) {
-        Ratings = ratings;
-    }
-
     public Integer getMetascore() {
         return Metascore;
     }
@@ -204,11 +181,11 @@ public class Movie {
         Metascore = metascore;
     }
 
-    public Integer getImdbRating() {
+    public Double getImdbRating() {
         return imdbRating;
     }
 
-    public void setImdbRating(Integer imdbRating) {
+    public void setImdbRating(Double imdbRating) {
         this.imdbRating = imdbRating;
     }
 
@@ -275,6 +252,72 @@ public class Movie {
     public void setPlatforms(List<String> platforms) {
         this.platforms = platforms;
     }
+
+    private List <String> platforms;
+
+    public Movie(String title) {
+        setTitle(title);
+    }
+
+    public Movie(){}
+
+    public static Movie parseFromJson(BufferedReader reader){
+        Gson gson = new Gson();
+        return gson.fromJson(reader, Movie.class);
+    }
+
+    public static Movie parseFromJson(String str){
+        Gson gson = new Gson();
+        return gson.fromJson(str, Movie.class);
+    }
+
+    @Override
+    public String toString() {
+        return "Movie{" +
+                "Title='" + Title + '\'' +
+                ", Year=" + Year +
+                ", Released=" + Released +
+                ", Runtime='" + Runtime + '\'' +
+                ", Genre=" + Genre +
+                ", Director='" + Director + '\'' +
+                ", Writer=" + Writer +
+                ", Actors=" + Actors +
+                ", Plot='" + Plot + '\'' +
+                ", Language='" + Language + '\'' +
+                ", Country='" + Country + '\'' +
+                ", Awards='" + Awards + '\'' +
+                ", Poster='" + Poster + '\'' +
+                ", Metascore=" + Metascore +
+                ", imdbRating=" + imdbRating +
+                ", imdbID='" + imdbID + '\'' +
+                ", Type='" + Type + '\'' +
+                ", DVD='" + DVD + '\'' +
+                ", BoxOffice='" + BoxOffice + '\'' +
+                ", Production='" + Production + '\'' +
+                ", Website='" + Website + '\'' +
+                ", Response='" + Response + '\'' +
+                ", platforms=" + platforms +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Movie)) return false;
+        Movie movie = (Movie) o;
+        return Objects.equals(getTitle(), movie.getTitle()) &&
+                Objects.equals(getYear(), movie.getYear()) &&
+                Objects.equals(getReleased(), movie.getReleased()) &&
+                Objects.equals(getDirector(), movie.getDirector()) &&
+                Objects.equals(getActors(), movie.getActors()) &&
+                Objects.equals(getProduction(), movie.getProduction());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getTitle(), getYear(), getReleased(), getDirector(), getActors(), getProduction());
+    }
+
 
 
 }
