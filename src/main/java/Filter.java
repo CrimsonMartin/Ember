@@ -61,11 +61,11 @@ public class Filter {
 
         switch(filterType){
             case actors:
-                compareTo.addAll(Arrays.asList(movie.getActors().split(",")));
+                compareTo.addAll(movie.getActors());
                 break;
             case genres:
-                compareTo.addAll(Arrays.asList(movie.getGenre().split(",")));
-                break;
+                compareTo.addAll(movie.getGenre());
+            break;
             case directors:
                 compareTo.add(movie.getDirector());
                 break;

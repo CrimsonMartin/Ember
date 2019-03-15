@@ -13,8 +13,6 @@ public class MovieLoader {
     private BufferedReader reader;
 
 
-
-
     public List<Movie> loadMovies(UISearch uiSearch, Integer n) throws UnsupportedOperationException{
         //TODO
         throw new UnsupportedOperationException();

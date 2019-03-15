@@ -1,15 +1,26 @@
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.assertEquals;
+
 
 public class MovieLoaderTest {
 
     private MovieLoader ml;
+    private Movie goalSpaceJam;
 
     @Before
     public void init(){
         ml = new MovieLoader();
+        goalSpaceJam = new Movie("Space Jam");
+        goalSpaceJam.setYear(1996);
+        goalSpaceJam.setReleased("15 Nov 1996");
+        goalSpaceJam.setDirector("Joe Pytka");
+        goalSpaceJam.setWriter(Arrays.asList("Leo Benvenuti, Steve Rudnick, Timothy Harris, Herschel Weingrod".split(",")));
+        goalSpaceJam.setActors(Arrays.asList("Michael Jordan, Wayne Knight, Theresa Randle, Manner Washington".split(",")));
+        goalSpaceJam.setProduction("Warner Home Video");
     }
 
 
@@ -21,7 +32,8 @@ public class MovieLoaderTest {
 
     @Test
     public void checkLoadingMovie(){
-        System.out.println(ml.loadMoviebyTitle("Space Jam").toString());
+        Movie actual = ml.loadMoviebyTitle("Space Jam");
+        assertEquals(goalSpaceJam, actual);
     }
 
 

@@ -1,10 +1,9 @@
-import java.awt.Image;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.io.*;
 import com.google.gson.Gson;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class Movie {
@@ -101,36 +100,30 @@ public class Movie {
         Runtime = runtime;
     }
 
-    public String getGenre() {
-        return Genre;
+    public List<String> getGenre() {
+        return Arrays.asList(Genre.split(","));
     }
 
-    public void setGenre(String genre) {
-        Genre = genre;
-    }
+    public void setGenre(List<String> genres) { Genre = genres.stream().collect(Collectors.joining(",")); }
 
     public String getDirector() {
         return Director;
     }
 
-    public void setDirector(String director) {
-        Director = director;
+    public void setDirector(String director) { Director = director; }
+
+    public List<String> getWriter() {
+        return Arrays.asList(Writer.split(","));
     }
 
-    public String getWriter() {
-        return Writer;
+    public void setWriter(List<String> writer) { Writer = writer.stream().collect(Collectors.joining(",")); }
+
+    public List<String> getActors() {
+        return Arrays.asList(Actors.split(","));
     }
 
-    public void setWriter(String writer) {
-        Writer = writer;
-    }
-
-    public String getActors() {
-        return Actors;
-    }
-
-    public void setActors(String actors) {
-        Actors = actors;
+    public void setActors(List<String> actors) {
+        Actors = actors.stream().collect(Collectors.joining(","));
     }
 
     public String getPlot() {
