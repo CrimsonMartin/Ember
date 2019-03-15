@@ -7,7 +7,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 
-public class Movie {
+ class Movie {
 
     //{"Title":"Space Jam",
     // "Year":"1996",
@@ -69,198 +69,198 @@ public class Movie {
     private String Website;
     private String Response;
 
-    public String getTitle() {
+    String getTitle() {
         return Title;
     }
 
-    public void setTitle(String title) {
+     void setTitle(String title) {
         Title = title;
     }
 
-    public Integer getYear() {
+     Integer getYear() {
         return Year;
     }
 
-    public void setYear(Integer year) {
+     void setYear(Integer year) {
         Year = year;
     }
 
-    public String getReleased() {
+     String getReleased() {
         return Released;
     }
 
-    public void setReleased(String released) {
+     void setReleased(String released) {
         Released = released;
     }
 
-    public String getRuntime() {
+     String getRuntime() {
         return Runtime;
     }
 
-    public void setRuntime(String runtime) {
+     void setRuntime(String runtime) {
         Runtime = runtime;
     }
 
-    public List<String> getGenre() {
+     List<String> getGenre() {
         return Arrays.asList(Genre.split(","));
     }
 
-    public void setGenre(List<String> genres) { Genre = genres.stream().collect(Collectors.joining(",")); }
+     void setGenre(List<String> genres) { Genre = String.join(",", genres);}
 
-    public String getDirector() {
+     String getDirector() {
         return Director;
     }
 
-    public void setDirector(String director) { Director = director; }
+     void setDirector(String director) { Director = director; }
 
-    public List<String> getWriter() {
+     List<String> getWriter() {
         return Arrays.asList(Writer.split(","));
     }
 
-    public void setWriter(List<String> writer) { Writer = writer.stream().collect(Collectors.joining(",")); }
+     void setWriter(List<String> writer) { Writer = String.join(",", writer); }
 
-    public List<String> getActors() {
+     List<String> getActors() {
         return Arrays.asList(Actors.split(","));
     }
 
-    public void setActors(List<String> actors) {
-        Actors = actors.stream().collect(Collectors.joining(","));
+     void setActors(List<String> actors) {
+        Actors = String.join(",", actors);
     }
 
-    public String getPlot() {
+     String getPlot() {
         return Plot;
     }
 
-    public void setPlot(String plot) {
+     void setPlot(String plot) {
         Plot = plot;
     }
 
-    public String getLanguage() {
+     String getLanguage() {
         return Language;
     }
 
-    public void setLanguage(String language) {
+     void setLanguage(String language) {
         Language = language;
     }
 
-    public String getCountry() {
+     String getCountry() {
         return Country;
     }
 
-    public void setCountry(String country) {
+     void setCountry(String country) {
         Country = country;
     }
 
-    public String getAwards() {
+     String getAwards() {
         return Awards;
     }
 
-    public void setAwards(String awards) {
+     void setAwards(String awards) {
         Awards = awards;
     }
 
-    public String getPoster() {
+     String getPoster() {
         return Poster;
     }
 
-    public void setPoster(String poster) {
+     void setPoster(String poster) {
         Poster = poster;
     }
 
-    public Integer getMetascore() {
+     Integer getMetascore() {
         return Metascore;
     }
 
-    public void setMetascore(Integer metascore) {
+     void setMetascore(Integer metascore) {
         Metascore = metascore;
     }
 
-    public Double getImdbRating() {
+     Double getImdbRating() {
         return imdbRating;
     }
 
-    public void setImdbRating(Double imdbRating) {
+     void setImdbRating(Double imdbRating) {
         this.imdbRating = imdbRating;
     }
 
-    public String getImdbID() {
+     String getImdbID() {
         return imdbID;
     }
 
-    public void setImdbID(String imdbID) {
+     void setImdbID(String imdbID) {
         this.imdbID = imdbID;
     }
 
-    public String getType() {
+     String getType() {
         return Type;
     }
 
-    public void setType(String type) {
+     void setType(String type) {
         Type = type;
     }
 
-    public String getDVD() {
+     String getDVD() {
         return DVD;
     }
 
-    public void setDVD(String DVD) {
+     void setDVD(String DVD) {
         this.DVD = DVD;
     }
 
-    public String getBoxOffice() {
+     String getBoxOffice() {
         return BoxOffice;
     }
 
-    public void setBoxOffice(String boxOffice) {
+     void setBoxOffice(String boxOffice) {
         BoxOffice = boxOffice;
     }
 
-    public String getProduction() {
+     String getProduction() {
         return Production;
     }
 
-    public void setProduction(String production) {
+     void setProduction(String production) {
         Production = production;
     }
 
-    public String getWebsite() {
+     String getWebsite() {
         return Website;
     }
 
-    public void setWebsite(String website) {
+     void setWebsite(String website) {
         Website = website;
     }
 
-    public String getResponse() {
+     String getResponse() {
         return Response;
     }
 
-    public void setResponse(String response) {
+     void setResponse(String response) {
         Response = response;
     }
 
-    public List<String> getPlatforms() {
+     List<String> getPlatforms() {
         return platforms;
     }
 
-    public void setPlatforms(List<String> platforms) {
+     void setPlatforms(List<String> platforms) {
         this.platforms = platforms;
     }
 
     private List <String> platforms;
 
-    public Movie(String title) {
+     Movie(String title) {
         setTitle(title);
     }
 
-    public Movie(){}
+     Movie(){}
 
-    public static Movie parseFromJson(BufferedReader reader){
+     static Movie parseFromJson(BufferedReader reader){
         Gson gson = new Gson();
         return gson.fromJson(reader, Movie.class);
     }
 
-    public static Movie parseFromJson(String str){
+     static Movie parseFromJson(String str){
         Gson gson = new Gson();
         return gson.fromJson(str, Movie.class);
     }

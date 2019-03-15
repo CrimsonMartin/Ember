@@ -8,13 +8,13 @@ import java.util.List;
 
 public class MovieLoader {
 
-    private String omdbApiKey = "33d1a530";
-    private String searchUrl = "http://www.omdbapi.com/?";
+    private static String omdbApiKey = "33d1a530";
+    private static String searchUrl = "http://www.omdbapi.com/?";
 
     private BufferedReader reader;
 
 
-    public List<Movie> loadMovies(UISearch uiSearch, Integer n) throws UnsupportedOperationException{
+    List<Movie> loadMovies(UISearch uiSearch, Integer n) throws UnsupportedOperationException{
         //TODO
         throw new UnsupportedOperationException();
     }
@@ -23,7 +23,7 @@ public class MovieLoader {
         return loadMoviebyTitle(uiSearch.getSearch());
     }
 
-    public Movie loadMoviebyTitle(String title){
+    Movie loadMoviebyTitle(String title){
         try{
             openTitleConnection(title);
             return Movie.parseFromJson(reader);
@@ -37,7 +37,7 @@ public class MovieLoader {
 
     }
 
-    String addApiKey(String searchUrl){
+    private String addApiKey(String searchUrl){
         return searchUrl +"apikey=" + omdbApiKey;
     }
 
@@ -46,7 +46,7 @@ public class MovieLoader {
         return addApiKey(searchUrl) + "&t=" + title + "&plot=full";
     }
 
-    void openTitleConnection (String title) throws IOException{
+    private void openTitleConnection (String title) throws IOException{
 
         try{
             URL obj = new URL(searchUrlFromTitle(title));
@@ -58,13 +58,10 @@ public class MovieLoader {
         } catch (MalformedURLException e) {
             System.out.println("INVALID URL FORMAT");
             e.printStackTrace();
-
-        } catch(IOException e){
-            throw e;
         }
     }
 
-    public boolean close(){
+    boolean close(){
         try{
             reader.close();
             return true;
