@@ -6,263 +6,258 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-
  class Movie {
 
-    //{"Title":"Space Jam",
-    // "Year":"1996",
-    // "Rated":"PG",
-    // "Released":"15 Nov 1996",
-    // "Runtime":"88 min",
-    // "Genre":"Animation, Adventure, Comedy, Family, Fantasy, Sci-Fi, Sport",
-    // "Director":"Joe Pytka",
-    // "Writer":"Leo Benvenuti, Steve Rudnick, Timothy Harris, Herschel Weingrod",
-    // "Actors":"Michael Jordan, Wayne Knight, Theresa Randle, Manner Washington",
-    // "Plot":"Swackhammer, owner of the amusement park planet Moron Mountain is
-    //      desperate get new attractions and he decides that the Looney Tune
-    //      characters would be perfect. He sends his diminutive underlings to get
-    //      them to him, whether Bugs Bunny & Co. want to go or not. Well armed
-    //      for their size, Bugs Bunny is forced to trick them into agreeing to a
-    //      competition to determine their freedom. Taking advantage of their puny
-    //      and stubby legged foes, the gang selects basketball for the surest
-    //      chance of winning. However, the Nerdlucks turn the tables and steal the
-    //      talents of leading professional basketball stars to become massive
-    //      basketball bruisers known as the Monstars. In desperation, Bugs Bunny
-    //      calls on the aid of Micheal Jordan, the Babe Ruth of Basketball, to
-    //      help them have a chance at winning their freedom.",
-    // "Language":"English",
-    // "Country":"USA",
-    // "Awards":"5 wins & 7 nominations.",
-    // "Poster":"https://m.media-amazon.com/images/M/MV5BMDgyZTI2YmYtZmI4ZC00MzE0LWIxZWYtMWRlZWYxNjliNTJjXkEyXkFqcGdeQXVyNjY5NDU4NzI@._V1_SX300.jpg",
-    // "Ratings":[{"Source":"Internet Movie Database","Value":"6.4/10"},{"Source":"Rotten Tomatoes","Value":"38%"},{"Source":"Metacritic","Value":"59/100"}],
-    // "Metascore":"59",
-    // "imdbRating":"6.4",
-    // "imdbVotes":"138,962",
-    // "imdbID":"tt0117705",
-    // "Type":"movie",
-    // "DVD":"27 Aug 1997",
-    // "BoxOffice":"N/A",
-    // "Production":"Warner Home Video",
-    // "Website":"N/A",
-    // "Response":"True"}
+     private String Title;
+     private Integer Year;
+     private String Released;
+     private String Runtime;
+     private List<String> Genre;
+     private String Director;
+     private List<String> Writer;
+     private List<String> Actors;
+     private String Plot;
+     private String Language;
+     private String Country;
+     private String Awards;
+     private String Poster;
+     private Integer Metascore;
+     private Double imdbRating;
+     private String imdbID;
+     private String Type;
+     private String DVD;
+     private String BoxOffice;
+     private String Production;
+     private String Website;
+     private String Response;
 
-    private String Title;
-    private Integer Year;
-    private String Released;
-    private String Runtime;
-    private String Genre;
-    private String Director;
-    private String Writer;
-    private String Actors;
-    private String Plot;
-    private String Language;
-    private String Country;
-    private String Awards;
-    private String Poster;
-    private Integer Metascore;
-    private Double imdbRating;
-    private String imdbID;
-    private String Type;
-    private String DVD;
-    private String BoxOffice;
-    private String Production;
-    private String Website;
-    private String Response;
+     private List<String> Platforms;
 
-    String getTitle() {
-        return Title;
-    }
+      String getTitle() {
+         return Title;
+     }
 
-     void setTitle(String title) {
-        Title = title;
-    }
+      void setTitle(String title) {
+         Title = title;
+     }
 
      Integer getYear() {
-        return Year;
-    }
+         return Year;
+     }
 
-     void setYear(Integer year) {
-        Year = year;
-    }
+      void setYear(Integer year) {
+         Year = year;
+     }
 
-     String getReleased() {
-        return Released;
-    }
+      String getReleased() {
+         return Released;
+     }
 
-     void setReleased(String released) {
-        Released = released;
-    }
+      void setReleased(String released) {
+         Released = released;
+     }
 
-     String getRuntime() {
-        return Runtime;
-    }
+      String getRuntime() {
+         return Runtime;
+     }
 
-     void setRuntime(String runtime) {
-        Runtime = runtime;
-    }
+      void setRuntime(String runtime) {
+         Runtime = runtime;
+     }
 
-     List<String> getGenre() {
-        return Arrays.asList(Genre.split(","));
-    }
+      List<String> getGenre() {
+         return Genre;
+     }
 
-     void setGenre(List<String> genres) { Genre = String.join(",", genres);}
+      void setGenre(List<String> genre) {
+         Genre = genre;
+     }
 
-     String getDirector() {
-        return Director;
-    }
+      String getDirector() {
+         return Director;
+     }
 
-     void setDirector(String director) { Director = director; }
+      void setDirector(String director) {
+         Director = director;
+     }
 
-     List<String> getWriter() {
-        return Arrays.asList(Writer.split(","));
-    }
+      List<String> getWriter() {
+         return Writer;
+     }
 
-     void setWriter(List<String> writer) { Writer = String.join(",", writer); }
+      void setWriter(List<String> writer) {
+         Writer = writer;
+     }
 
-     List<String> getActors() {
-        return Arrays.asList(Actors.split(","));
-    }
+      List<String> getActors() {
+         return Actors;
+     }
 
-     void setActors(List<String> actors) {
-        Actors = String.join(",", actors);
-    }
+      void setActors(List<String> actors) {
+         Actors = actors;
+     }
 
-     String getPlot() {
-        return Plot;
-    }
+      String getPlot() {
+         return Plot;
+     }
 
-     void setPlot(String plot) {
-        Plot = plot;
-    }
+      void setPlot(String plot) {
+         Plot = plot;
+     }
 
-     String getLanguage() {
-        return Language;
-    }
+      String getLanguage() {
+         return Language;
+     }
 
-     void setLanguage(String language) {
-        Language = language;
-    }
+      void setLanguage(String language) {
+         Language = language;
+     }
 
-     String getCountry() {
-        return Country;
-    }
+      String getCountry() {
+         return Country;
+     }
 
-     void setCountry(String country) {
-        Country = country;
-    }
+      void setCountry(String country) {
+         Country = country;
+     }
 
-     String getAwards() {
-        return Awards;
-    }
+      String getAwards() {
+         return Awards;
+     }
 
-     void setAwards(String awards) {
-        Awards = awards;
-    }
+      void setAwards(String awards) {
+         Awards = awards;
+     }
 
-     String getPoster() {
-        return Poster;
-    }
+      String getPoster() {
+         return Poster;
+     }
 
-     void setPoster(String poster) {
-        Poster = poster;
-    }
+      void setPoster(String poster) {
+         Poster = poster;
+     }
 
-     Integer getMetascore() {
-        return Metascore;
-    }
+      Integer getMetascore() {
+         return Metascore;
+     }
 
-     void setMetascore(Integer metascore) {
-        Metascore = metascore;
-    }
+      void setMetascore(Integer metascore) {
+         Metascore = metascore;
+     }
 
-     Double getImdbRating() {
-        return imdbRating;
-    }
+      Double getImdbRating() {
+         return imdbRating;
+     }
 
-     void setImdbRating(Double imdbRating) {
-        this.imdbRating = imdbRating;
-    }
+      void setImdbRating(Double imdbRating) {
+         this.imdbRating = imdbRating;
+     }
 
-     String getImdbID() {
-        return imdbID;
-    }
+      String getImdbID() {
+         return imdbID;
+     }
 
-     void setImdbID(String imdbID) {
-        this.imdbID = imdbID;
-    }
+      void setImdbID(String imdbID) {
+         this.imdbID = imdbID;
+     }
 
-     String getType() {
-        return Type;
-    }
+      String getType() {
+         return Type;
+     }
 
-     void setType(String type) {
-        Type = type;
-    }
+      void setType(String type) {
+         Type = type;
+     }
 
-     String getDVD() {
-        return DVD;
-    }
+      String getDVD() {
+         return DVD;
+     }
 
-     void setDVD(String DVD) {
-        this.DVD = DVD;
-    }
+      void setDVD(String DVD) {
+         this.DVD = DVD;
+     }
 
-     String getBoxOffice() {
-        return BoxOffice;
-    }
+      String getBoxOffice() {
+         return BoxOffice;
+     }
 
-     void setBoxOffice(String boxOffice) {
-        BoxOffice = boxOffice;
-    }
+      void setBoxOffice(String boxOffice) {
+         BoxOffice = boxOffice;
+     }
 
-     String getProduction() {
-        return Production;
-    }
+      String getProduction() {
+         return Production;
+     }
 
-     void setProduction(String production) {
-        Production = production;
-    }
+      void setProduction(String production) {
+         Production = production;
+     }
 
-     String getWebsite() {
-        return Website;
-    }
+      String getWebsite() {
+         return Website;
+     }
 
-     void setWebsite(String website) {
-        Website = website;
-    }
+      void setWebsite(String website) {
+         Website = website;
+     }
 
-     String getResponse() {
-        return Response;
-    }
+      String getResponse() {
+         return Response;
+     }
 
-     void setResponse(String response) {
-        Response = response;
-    }
+      void setResponse(String response) {
+         Response = response;
+     }
 
-     List<String> getPlatforms() {
-        return platforms;
-    }
+      List<String> getPlatforms() {
+         return Platforms;
+     }
 
-     void setPlatforms(List<String> platforms) {
-        this.platforms = platforms;
-    }
+      void setPlatforms(List<String> platforms) {
+         Platforms = platforms;
+     }
 
-    private List <String> platforms;
+     Movie(String title){
+         setTitle(title);
+     }
 
-     Movie(String title) {
-        setTitle(title);
-    }
+     Movie(jsonMovie jmv){
 
-     Movie(){}
+         setTitle(jmv.Title);
+         setYear(jmv.Year);
+         setReleased(jmv.Released);
+         setRuntime(jmv.Runtime);
+         setGenre(Arrays.asList(jmv.Genre.split(",")));
+         setDirector(jmv.Director);
+         setWriter(Arrays.asList(jmv.Writer.split(",")));
+         setActors(Arrays.asList(jmv.Actors.split(",")));
+         setPlot(jmv.Plot);
+         setLanguage(jmv.Language);
+         setCountry(jmv.Country);
+         setAwards(jmv.Awards);
+         setPoster(jmv.Poster);
+         setMetascore(jmv.Metascore);
+         setImdbRating(jmv.imdbRating);
+         setImdbID(jmv.imdbID);
+         setType(jmv.Type);
+         setDVD(jmv.DVD);
+         setBoxOffice(jmv.BoxOffice);
+         setProduction(jmv.Production);
+         setWebsite(jmv.Website);
+         setResponse(jmv.Response);
+
+     }
 
      static Movie parseFromJson(BufferedReader reader){
-        Gson gson = new Gson();
-        return gson.fromJson(reader, Movie.class);
+         Gson gson = new Gson();
+         jsonMovie jmv = gson.fromJson(reader, Movie.jsonMovie.class);
+         return new Movie(jmv);
     }
 
      static Movie parseFromJson(String str){
-        Gson gson = new Gson();
-        return gson.fromJson(str, Movie.class);
+         Gson gson = new Gson();
+         jsonMovie jmv = gson.fromJson(str, Movie.jsonMovie.class);
+        return new Movie(jmv);
     }
 
     @Override
@@ -290,7 +285,7 @@ import java.util.stream.Collectors;
                 ", Production='" + Production + '\'' +
                 ", Website='" + Website + '\'' +
                 ", Response='" + Response + '\'' +
-                ", platforms=" + platforms +
+                ", platforms=" + Platforms +
                 '}';
     }
 
@@ -311,6 +306,33 @@ import java.util.stream.Collectors;
     public int hashCode() {
         return Objects.hash(getTitle(), getYear(), getReleased(), getDirector(), getActors(), getProduction());
     }
+
+
+    private class jsonMovie {
+        String Title;
+        Integer Year;
+        String Released;
+        String Runtime;
+        String Genre;
+        String Director;
+        String Writer;
+        String Actors;
+        String Plot;
+        String Language;
+        String Country;
+        String Awards;
+        String Poster;
+        Integer Metascore;
+        Double imdbRating;
+        String imdbID;
+        String Type;
+        String DVD;
+        String BoxOffice;
+        String Production;
+        String Website;
+        String Response;
+
+     }
 
 
 
