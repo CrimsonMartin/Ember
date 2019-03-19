@@ -43,7 +43,7 @@ public class MovieList {
         activeList.add(m);
     }
 
-    protected  void addAll(List<Movie> ml){ activeList.addAll(ml); }
+    protected void addAll(List<Movie> ml){ activeList.addAll(ml); }
 
     private static class MovieIMDBRating implements Comparator<Movie> {
 
