@@ -1,5 +1,10 @@
 package com.group395.ember;
 
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,16 +12,16 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
 
 
 public class MovieLoader {
 
     private static String omdbApiKey = "33d1a530";
-    private static String searchUrl = "http://www.omdbapi.com/?";
+    private static String omdbUrl = "http://www.omdbapi.com/?";
+
+    private static String utelliAPIKey = "6bff01b396msh0f92aae4b854e96p1277f2jsna247a9a391a8";
+    private static String utelliUrl = "https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?term=";
+
 
     private BufferedReader reader;
 
@@ -44,19 +49,19 @@ public class MovieLoader {
 
     }
 
-    private String addApiKey(String searchUrl){
-        return searchUrl +"apikey=" + omdbApiKey;
+    private String addApiKey(String omdbUrl){
+        return omdbUrl +"apikey=" + omdbApiKey;
     }
 
-    String searchUrlFromTitle (String title){
+    String omdbUrlFromTitle (String title){
         title = title.replaceAll(" ", "+");
-        return addApiKey(searchUrl) + "&t=" + title + "&plot=full";
+        return addApiKey(omdbUrl) + "&t=" + title + "&plot=full";
     }
 
     private void openTitleConnection (String title) throws IOException{
 
         try{
-            URL obj = new URL(searchUrlFromTitle(title));
+            URL obj = new URL(omdbUrlFromTitle(title));
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
             con.setRequestMethod("GET");
 
@@ -65,7 +70,29 @@ public class MovieLoader {
         } catch (MalformedURLException e) {
             System.out.println("INVALID URL FORMAT");
             e.printStackTrace();
+            close();
         }
+    }
+
+    private String createUtelliSearchURL(String movieTitle){
+        return utelliUrl + movieTitle.replaceAll(" ", "+").toLowerCase();
+    }
+
+    public void loadPlatforms(Movie m){
+        try{
+            HttpResponse<JsonNode> response = Unirest.get(createUtelliSearchURL(m.getTitle()))
+                .header("X-RapidAPI-Key", utelliAPIKey)
+                .asJson();
+
+            loadPlatforms(m,response.getBody().toString());
+
+        }catch (UnirestException e){
+            System.out.println("loading platform failed, exception " + e.getMessage());
+        }
+    }
+
+    void loadPlatforms(Movie m, String json){
+        m.addPlatforms(json);
     }
 
     boolean close(){

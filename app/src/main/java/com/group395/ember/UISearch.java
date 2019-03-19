@@ -64,7 +64,6 @@ public class UISearch {
         searchTerms = newSearch;
     }
 
-
     /**
      * Uses the current search Filter and String to access the database
      * @return Array of movies to implement as MovieTiles later on

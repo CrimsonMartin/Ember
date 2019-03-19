@@ -3,6 +3,7 @@ package com.group395.ember;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -32,7 +33,7 @@ class Movie {
     private String Website;
     private String Response;
 
-    private List<String> Platforms;
+    private List<String> Platforms = new ArrayList<>();
 
     String getTitle() {
         return Title;
@@ -210,12 +211,16 @@ class Movie {
         Response = response;
     }
 
-    List<String> getPlatforms() {
+    public List<String> getPlatforms() {
         return Platforms;
     }
 
-    void setPlatforms(List<String> platforms) {
-        Platforms = platforms;
+    void addPlatforms(List<String> platforms){Platforms.addAll(platforms);}
+
+    void addPlatform(location l){ Platforms.add(l.display_name);}
+
+    void clearPlatforms(){
+        Platforms.clear();
     }
 
     Movie(String title){
@@ -259,6 +264,23 @@ class Movie {
         Gson gson = new Gson();
         jsonMovie jmv = gson.fromJson(str, jsonMovie.class);
         return new Movie(jmv);
+    }
+
+    void addPlatforms(String jsonPlatforms){
+
+        clearPlatforms();
+        Gson gson = new Gson ();
+        jsonPlatformResponse platformResponse = gson.fromJson(jsonPlatforms, jsonPlatformResponse.class);
+
+        List<location> platforms = platformResponse.results.stream()
+                .findFirst()
+                .orElse(null)
+                .locations;
+
+        for (location l: platforms) {
+           addPlatform(l);
+        }
+
     }
 
     @Override
@@ -308,7 +330,6 @@ class Movie {
         return Objects.hash(getTitle(), getYear(), getReleased(), getDirector(), getActors(), getProduction());
     }
 
-
     private class jsonMovie {
         String Title;
         Integer Year;
@@ -334,6 +355,26 @@ class Movie {
         String Response;
     }
 
+    private class jsonPlatformResponse{
+        String status_code;
+        String variant;
+        String term;
+        String updated;
+        List<result> results;
+    }
+
+    private class result{
+        String name;
+        Integer weight;
+        List<location> locations;
+    }
+
+    private class location{
+        String name;
+        String icon;
+        String display_name;
+        String url;
+    }
 
 
 }
