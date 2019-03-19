@@ -1,6 +1,7 @@
 package com.group395.ember;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -70,10 +71,8 @@ public class UISearch {
      */
     public List<Movie> search() {
         int moviesToLoad = 5;
-        MovieLoader loader = new MovieLoader();
-        List<Movie> movies = loader.loadMovies(this, moviesToLoad);
-
-        return movies;
+        return search(moviesToLoad);
+        // return movies;
     }
 
     /**
@@ -83,8 +82,11 @@ public class UISearch {
      */
     public List<Movie> search(int n) {
         MovieLoader loader = new MovieLoader();
-        List<Movie> movies = loader.loadMovies(this, n);
-
+        //TODO I'm turning this to load one movie, because I need some clarification on
+        // how the load N movies knows what sort of movies to load
+        // List<Movie> movies = loader.loadMovies(this, n);
+        List<Movie> movies = new ArrayList<>();
+        movies.add(loader.loadMovie(this));
         return movies;
     }
 

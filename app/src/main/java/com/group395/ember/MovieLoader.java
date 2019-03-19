@@ -20,9 +20,9 @@ public class MovieLoader {
 
     private BufferedReader reader;
 
-
     List<Movie> loadMovies(UISearch uiSearch, Integer n) throws UnsupportedOperationException{
         //TODO
+        //How does this know what kind of movies to search for?
         throw new UnsupportedOperationException();
     }
 
