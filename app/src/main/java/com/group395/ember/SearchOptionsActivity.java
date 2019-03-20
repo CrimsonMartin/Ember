@@ -32,19 +32,19 @@ public class SearchOptionsActivity extends AppCompatActivity {
 
     protected void genreOnClick(View v){
         EditText editText = findViewById(R.id.editText);
-        editText.setText("Enter a genre filter.");
+        editText.setText("Enter genre filter.");
         selected = GrdSelection.GENRE;
     }
 
     protected void ratingOnClick(View v){
         EditText editText = findViewById(R.id.editText);
-        editText.setText("Enter a rating filter.");
+        editText.setText("Enter rating filter.");
         selected = GrdSelection.RATING;
     }
 
     protected void dateOnClick(View v){
         EditText editText = findViewById(R.id.editText);
-        editText.setText("Enter a date filter.");
+        editText.setText("Enter date filter.");
         selected = GrdSelection.DATE;
     }
 
@@ -95,7 +95,7 @@ public class SearchOptionsActivity extends AppCompatActivity {
         types = new GrdSelection[2];
         selected = null;
         EditText editText = findViewById(R.id.editText);
-        editText.setText("Choose a filter above.");
+        editText.setText("Choose a filter.");
         RadioGroup radioGroupGRD = findViewById(R.id.radioGroupGRD);
         RadioGroup radioGroupNAD = findViewById(R.id.radioGroupNAD);
         radioGroupGRD.clearCheck();

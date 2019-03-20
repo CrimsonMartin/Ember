@@ -90,6 +90,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/submit_filter"
+        android:onClick="submitOnClick"
         app:layout_constraintEnd_toEndOf="@+id/radioGroupNAD"
         app:layout_constraintStart_toStartOf="@+id/radioGroupNAD"
         app:layout_constraintTop_toBottomOf="@+id/radioGroupNAD" />
