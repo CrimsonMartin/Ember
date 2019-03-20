@@ -27,7 +27,7 @@ public class SearchOptionsActivity extends AppCompatActivity {
     }
 
     protected void searchOnClick(View v){
-        startActivity(new Intent(SearchOptionsActivity.this, SearchActivity.class));
+
     }
 
     protected void genreOnClick(View v){

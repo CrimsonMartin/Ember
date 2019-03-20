@@ -10,7 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MoviePageActivity"></activity>
-        <activity android:name=".SearchActivity" />
         <activity android:name=".SearchOptionsActivity" />
         <activity android:name=".HistoryActivity">
             <intent-filter>
