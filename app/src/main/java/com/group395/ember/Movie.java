@@ -215,7 +215,11 @@ class Movie {
         return Platforms;
     }
 
-    void addPlatforms(List<String> platforms){Platforms.addAll(platforms);}
+    void addPlatforms(List<location> platforms){
+        for (location l: platforms) {
+            addPlatform(l);
+        }
+    }
 
     void addPlatform(location l){ Platforms.add(l.display_name);}
 
@@ -277,9 +281,7 @@ class Movie {
                 .orElse(null)
                 .locations;
 
-        for (location l: platforms) {
-           addPlatform(l);
-        }
+        addPlatforms(platforms);
 
     }
 

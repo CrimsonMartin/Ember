@@ -2,8 +2,6 @@ package com.group395.ember;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 public class ResultsPage extends AppCompatActivity {
 
@@ -11,8 +9,8 @@ public class ResultsPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen);
-       // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-       // setSupportActionBar(toolbar);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.);
+        //setSupportActionBar(toolbar);
 
     }
 }
