@@ -24,11 +24,20 @@ public class MovieSearchTest {
     }
 
     @Test
-    public void testParser(){
+    public void testParser() {
         String[] withQuotes = {"saving private ryan"};
         String[] withoutQuotes = {"saving", "private", "ryan"};
         assertArrayEquals(withQuotes, MovieSearch.keyPhraseParser("\"Saving Private Ryan\"").toArray());
         assertArrayEquals(withoutQuotes, MovieSearch.keyPhraseParser("SAVING PRIVATE RYAN").toArray());
-}
+    }
+
+    @Test
+    public void testComparison(){
+        assertEquals(MovieSearch.keyPhrasesContained(MovieSearch.keyPhraseParser("super bad"), m1.getTitle()), 2);
+        assertEquals(MovieSearch.keyPhrasesContained(MovieSearch.keyPhraseParser("\"super bad\""), m1.getTitle()), 0);
+        assertEquals(MovieSearch.keyPhrasesContained(MovieSearch.keyPhraseParser("super bad"), m2.getTitle()), 1);
+        assertEquals(MovieSearch.keyPhrasesContained(MovieSearch.keyPhraseParser("superman bad"), m1.getTitle()), 1);
+        assertEquals(MovieSearch.keyPhrasesContained(MovieSearch.keyPhraseParser("superman bad"), m2.getTitle()), 1);
+    }
 
 }
