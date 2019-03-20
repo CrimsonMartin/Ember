@@ -11,6 +11,10 @@ public class MovieList {
     private UISearch uisearch = null;
     private List<Movie> activeList = new ArrayList<>();
 
+    /**
+     *
+     * @return true if the movie loader was closed successfully, and false otherwise
+     */
     public boolean closeMovieLoader(){
         return loader.close();
     }
@@ -18,7 +22,6 @@ public class MovieList {
 
     public void sort(){
         //TODO
-        return;
     }
 
 
@@ -34,16 +37,21 @@ public class MovieList {
         uisearch = uiSearch;
     }
 
-    public List<Movie> getActiveList(){
+    /**
+     *
+     * @return List of Movies that are in the Active List,
+     *  ie movies that match the search criteria the user has input
+     */
+    List<Movie> getActiveList(){
         activeList.sort(new MovieIMDBRating());
         return activeList;
     }
 
-    protected void add(Movie m){
+    void add(Movie m){
         activeList.add(m);
     }
 
-    protected void addAll(List<Movie> ml){ activeList.addAll(ml); }
+    void addAll(List<Movie> ml){ activeList.addAll(ml); }
 
     private static class MovieIMDBRating implements Comparator<Movie> {
 
