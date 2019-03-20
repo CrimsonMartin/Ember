@@ -26,11 +26,11 @@ public class MovieLoaderTest {
     }
 
 
-    @Test
+    /*@Test
     public void testUrlConlstructionTest(){
         String title = ml.omdbUrlFromTitle("Space Jam");
         assertEquals("http://www.omdbapi.com/?apikey=33d1a530&t=Space+Jam&plot=full", title);
-    }
+    }*/
 
     @Test
     public void testLoadingMovie(){
