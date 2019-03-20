@@ -215,7 +215,11 @@ class Movie {
         return Platforms;
     }
 
-    void addPlatforms(List<String> platforms){Platforms.addAll(platforms);}
+    void addPlatforms(List<location> platforms){
+        for (location l: platforms) {
+            addPlatform(l);
+        }
+    }
 
     void addPlatform(location l){ Platforms.add(l.display_name);}
 
@@ -223,11 +227,15 @@ class Movie {
         Platforms.clear();
     }
 
+    /**
+     * Creates a new Movie object with the given title
+     * @param title the title of the movie
+     */
     Movie(String title){
         setTitle(title);
     }
 
-    Movie(jsonMovie jmv){
+    private Movie(jsonMovie jmv){
 
         setTitle(jmv.Title);
         setYear(jmv.Year);
@@ -277,9 +285,7 @@ class Movie {
                 .orElse(null)
                 .locations;
 
-        for (location l: platforms) {
-           addPlatform(l);
-        }
+        addPlatforms(platforms);
 
     }
 
@@ -356,24 +362,24 @@ class Movie {
     }
 
     private class jsonPlatformResponse{
-        String status_code;
-        String variant;
-        String term;
-        String updated;
+        private String status_code;
+        private String variant;
+        private String term;
+        private String updated;
         List<result> results;
     }
 
     private class result{
-        String name;
-        Integer weight;
+        private String name;
+        private Integer weight;
         List<location> locations;
     }
 
     private class location{
-        String name;
-        String icon;
+        private String name;
+        private String icon;
         String display_name;
-        String url;
+        private String url;
     }
 
 
