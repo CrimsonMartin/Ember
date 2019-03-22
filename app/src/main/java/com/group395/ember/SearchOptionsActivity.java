@@ -12,13 +12,8 @@ import android.widget.TextView;
 public class SearchOptionsActivity extends AppCompatActivity {
 
 
-
-    private String[] filters = new String[2];
-    public enum GrdSelection {
-        GENRE, RATING, DATE
-    }
-    private GrdSelection[] types = new GrdSelection[2];
-    private GrdSelection selected = null;
+    private Filter[] myFilters = new Filter[2];
+    private FilterType selected = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,39 +21,42 @@ public class SearchOptionsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search_options);
     }
 
-    protected void searchOnClick(View v){
-
-    }
-
     protected void genreOnClick(View v){
         EditText editText = findViewById(R.id.editText);
-        editText.setText("Enter genre filter.");
-        selected = GrdSelection.GENRE;
+        editText.setText("Enter genre.");
+        selected = FilterType.GENRE;
     }
 
-    protected void ratingOnClick(View v){
+    protected void actorOnClick(View v){
         EditText editText = findViewById(R.id.editText);
-        editText.setText("Enter rating filter.");
-        selected = GrdSelection.RATING;
+        editText.setText("Enter actor.");
+        selected = FilterType.ACTOR;
     }
 
-    protected void dateOnClick(View v){
+    protected void directorOnClick(View v){
         EditText editText = findViewById(R.id.editText);
-        editText.setText("Enter date filter.");
-        selected = GrdSelection.DATE;
+        editText.setText("Enter director.");
+        selected = FilterType.DIRECTOR;
     }
 
     protected void submitOnClick(View v){
+        //If no FilterType has been selected, do nothing.
         if(selected == null){
             return;
         }
         EditText editText = findViewById(R.id.editText);
-        int size = filters.length;
+        //If the FilterType is already in myFilters, add the filter to that Filter.
+        for(Filter tempFilter : myFilters){
+            if(tempFilter.getFilterType().equals(selected)){
+                tempFilter.add(editText.getText());
+            }
+        }
+        int size = myFilters.length;
         int firstEmpty = -1;
         //find first empty slot in arrays, if any
         for(int i = 0; i < size; i++){
             if(firstEmpty < 0){
-                if(filters[i] == null){
+                if(myFilters[i] == null){
                     firstEmpty = i;
                 }
             }
@@ -66,33 +64,25 @@ public class SearchOptionsActivity extends AppCompatActivity {
         //if arrays are full, double their size
         //probably only allow up to 8 or so, but that's something to do later
         if(firstEmpty < 0){
-            String[] tempFilters = new String[filters.length * 2];
-            GrdSelection[] tempTypes = new GrdSelection[types.length * 2];
-            for(int i = 0; i < filters.length; i++){
-                tempFilters[i] = filters[i];
-                tempTypes[i] = types[i];
+            Filter[] tempMyFilters = new Filter[myFilters.length * 2];
+            for(int i = 0; i < myFilters.length; i++){
+                tempMyFilters[i] = myFilters[i];
             }
-            firstEmpty = filters.length;
-            filters = tempFilters;
-            types = tempTypes;
+            firstEmpty = myFilters.length;
+            myFilters = tempMyFilters;
         }
-        filters[firstEmpty] = editText.getText().toString();
-        types[firstEmpty] = selected;
-
-        //TEMPORARY, FOR THE DEMO
-
-        TextView latestFilter = findViewById(R.id.latestFilter);
-        latestFilter.setText(filters[firstEmpty]);
+        myFilters[firstEmpty] = new Filter();
+        String[] inputString = new String[1];
+        inputString[0] = editText.getText().toString();
         switch(selected){
-            case GENRE: genreOnClick(v);
-            case RATING: ratingOnClick(v);
-            case DATE: dateOnClick(v);
+            case GENRE: myFilters[firstEmpty].setGenres(inputString);
+            case ACTOR: myFilters[firstEmpty].setActors(inputString);
+            case DIRECTOR: myFilters[firstEmpty].setDirectors(inputString);
         }
     }
 
     protected void resetOnClick(View v){
-        filters = new String[2];
-        types = new GrdSelection[2];
+        myFilters = new Filter[2];
         selected = null;
         EditText editText = findViewById(R.id.editText);
         editText.setText("Choose a filter.");
@@ -101,4 +91,11 @@ public class SearchOptionsActivity extends AppCompatActivity {
         radioGroupGRD.clearCheck();
         radioGroupNAD.clearCheck();
     }
+
+    protected void searchOnClick(View v){
+        UISearch mySearch = new UISearch();
+
+
+    }
+
 }

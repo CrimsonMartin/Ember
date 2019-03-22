@@ -22,7 +22,7 @@ public class Filter {
      * @param movie to base the filter off of.
      */
     private Filter(Movie movie) {
-        filterType = FilterType.genres;
+        filterType = FilterType.GENRE;
     }
 
     /**
@@ -37,17 +37,17 @@ public class Filter {
 
     // All of these pretty much do the same thing: Change the filter to the method name and fill in the keywords
     public void setDirectors(String[] directors) {
-        filterType = FilterType.directors;
+        filterType = FilterType.DIRECTOR;
         filterKeywords = directors;
     }
 
     public void setActors(String[] actors) {
-        filterType = FilterType.actors;
+        filterType = FilterType.ACTOR;
         filterKeywords = actors;
     }
 
     public void setGenres(String[] genres) {
-        filterType = FilterType.genres;
+        filterType = FilterType.GENRE;
         filterKeywords = genres;
     }
 
@@ -62,13 +62,13 @@ public class Filter {
        List<String> compareTo = new ArrayList<>();
 
         switch(filterType){
-            case actors:
+            case ACTOR:
                 compareTo.addAll(movie.getActors());
                 break;
-            case genres:
+            case GENRE:
                 compareTo.addAll(movie.getGenre());
             break;
-            case directors:
+            case DIRECTOR:
                 compareTo.add(movie.getDirector());
                 break;
             default:
