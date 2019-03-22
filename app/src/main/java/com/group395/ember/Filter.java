@@ -25,6 +25,10 @@ public class Filter {
         filterType = FilterType.GENRE;
     }
 
+    public Filter(FilterType inputFilterType){
+        filterType = inputFilterType;
+    }
+
     /**
      * Creates and retuns a Filter based on a Movie's genre, directors, and actors.
      * @param movie is the Movie object to build the Filter off of.
@@ -49,6 +53,15 @@ public class Filter {
     public void setGenres(String[] genres) {
         filterType = FilterType.GENRE;
         filterKeywords = genres;
+    }
+
+    public void add(String input){
+        String[] tempKeywords = new String[filterKeywords.length + 1];
+        for(int i = 0; i < filterKeywords.length; i++){
+            tempKeywords[i] = filterKeywords[i];
+        }
+        tempKeywords[filterKeywords.length] = input;
+        filterKeywords = tempKeywords;
     }
 
 

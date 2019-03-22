@@ -48,7 +48,7 @@ public class SearchOptionsActivity extends AppCompatActivity {
         //If the FilterType is already in myFilters, add the filter to that Filter.
         for(Filter tempFilter : myFilters){
             if(tempFilter.getFilterType().equals(selected)){
-                tempFilter.add(editText.getText());
+                tempFilter.add(editText.getText().toString());
             }
         }
         int size = myFilters.length;
@@ -71,7 +71,7 @@ public class SearchOptionsActivity extends AppCompatActivity {
             firstEmpty = myFilters.length;
             myFilters = tempMyFilters;
         }
-        myFilters[firstEmpty] = new Filter();
+        myFilters[firstEmpty] = new Filter(selected);
         String[] inputString = new String[1];
         inputString[0] = editText.getText().toString();
         switch(selected){
