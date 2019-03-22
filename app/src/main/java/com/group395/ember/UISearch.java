@@ -12,31 +12,44 @@ import java.util.List;
 
 public class UISearch {
 
-    private Filter filter;          // The filter to apply to the current search criteria
-    private String searchTerms;     // The search terms to access the database with
+    private List<Filter> filters = new List<Filter>(3);  // Filter list to hold all 3 possible filters.
+    private String searchTerms;                          // The search terms to access the database with
 
 
     /**
      * Default constructor for a UISearch
      */
     public UISearch() {
-        System.out.println("New UISearch");
+        // Creating basic filters as placeholders
+        filters.set(0, new Filter(FilterType.ACTOR));
+        filters.set(1, new Filter(FilterType.GENRE));
+        filters.set(2, new Filter(FilterType.DIRECTOR));
+        System.out.println("Init UISearch");
     }
 
+
     /**
-     * Sets a new filter for application to search criteria
-     * @param newFilter is the new Filter object to use for searching
+     * Adds a new filter to the current search. If there exists a Filter with the same FilterType,
+     * the old Filter will be overwritten.
+     * @param newFilter is a new Filter to use.
      */
-    public void setFilter(Filter newFilter) {
-        filter = newFilter;
+    public void addFilter(Filter newFilter) {
+        for (int i = 0; i < 3; i++) {
+            // If the two filters have the same enum type, replace the old one
+            if (getFilters().get(i).getFilterType().equals(newFilter.getFilterType())) {
+                getFilters().set(i, newFilter);
+                return;
+            }
+        }
     }
+
 
     /**
      * Returns the current filter being used for searching
      * @return Filter type representing current Filter
      */
-    public Filter getFilter() {
-        return filter;
+    public List<Filter> getFilters() {
+        return filters;
     }
 
     /**
@@ -46,7 +59,6 @@ public class UISearch {
     public String getSearch() {
         return searchTerms;
     }
-
 
     /**
      * Clears the current search field. Should be called from the GUI upon clearing the search bar

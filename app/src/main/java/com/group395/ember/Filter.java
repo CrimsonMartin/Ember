@@ -25,9 +25,11 @@ public class Filter {
         filterType = FilterType.GENRE;
     }
 
-    public Filter(FilterType inputFilterType){
-        filterType = inputFilterType;
-    }
+    /**
+     * Creates an empty filter given a FilterType.
+     * @param filterType to use for the new Filter
+     */
+    public Filter(FilterType filterType) { this.filterType = filterType; }
 
     /**
      * Creates and retuns a Filter based on a Movie's genre, directors, and actors.
@@ -75,13 +77,13 @@ public class Filter {
        List<String> compareTo = new ArrayList<>();
 
         switch(filterType){
-            case ACTOR:
+            case FilterType.ACTOR:
                 compareTo.addAll(movie.getActors());
                 break;
-            case GENRE:
+            case FilterType.GENRE:
                 compareTo.addAll(movie.getGenre());
             break;
-            case DIRECTOR:
+            case FilterType.DIRECTOR:
                 compareTo.add(movie.getDirector());
                 break;
             default:
