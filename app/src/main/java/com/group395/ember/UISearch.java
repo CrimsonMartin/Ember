@@ -12,7 +12,7 @@ import java.util.List;
 
 public class UISearch {
 
-    private List<Filter> filters = new List<Filter>(3);  // Filter list to hold all 3 possible filters.
+    private ArrayList<Filter> filters = new ArrayList<Filter>(3);  // Filter list to hold all 3 possible filters.
     private String searchTerms;                          // The search terms to access the database with
 
 

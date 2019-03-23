@@ -77,13 +77,13 @@ public class Filter {
        List<String> compareTo = new ArrayList<>();
 
         switch(filterType){
-            case FilterType.ACTOR:
+            case ACTOR:
                 compareTo.addAll(movie.getActors());
                 break;
-            case FilterType.GENRE:
+            case GENRE:
                 compareTo.addAll(movie.getGenre());
             break;
-            case FilterType.DIRECTOR:
+            case DIRECTOR:
                 compareTo.add(movie.getDirector());
                 break;
             default:
