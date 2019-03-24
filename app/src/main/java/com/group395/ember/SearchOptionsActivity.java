@@ -151,11 +151,11 @@ public class SearchOptionsActivity extends AppCompatActivity {
     }
 
     public void deleteOnClick(View v){
-        RadioButton displayRadioA = findViewById(R.id.filterDisplayA);;
-        RadioButton displayRadioB = findViewById(R.id.filterDisplayB);;
-        RadioButton displayRadioC = findViewById(R.id.filterDisplayC);;
-        RadioButton displayRadioD = findViewById(R.id.filterDisplayD);;
-        RadioButton displayRadioE = findViewById(R.id.filterDisplayE);;
+        RadioButton displayRadioA = findViewById(R.id.filterDisplayA);
+        RadioButton displayRadioB = findViewById(R.id.filterDisplayB);
+        RadioButton displayRadioC = findViewById(R.id.filterDisplayC);
+        RadioButton displayRadioD = findViewById(R.id.filterDisplayD);
+        RadioButton displayRadioE = findViewById(R.id.filterDisplayE);
         switch(selectedRadio){
             case RADIO_A:
                 displayRadioA.setText(displayRadioB.getText().toString());
@@ -174,6 +174,7 @@ public class SearchOptionsActivity extends AppCompatActivity {
                 displayRadioC.setText(displayRadioD.getText().toString());
                 displayRadioD.setText(displayRadioE.getText().toString());
                 displayRadioE.setText(null);
+
                 break;
             case RADIO_D:
                 displayRadioD.setText(displayRadioE.getText().toString());
