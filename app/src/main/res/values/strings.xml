@@ -6,9 +6,14 @@
     <string name="title_activity_results_page">ResultsPage</string>
     <string name="choose_filter">Choose a filter.</string>
     <string name="submit_filter">Filter</string>
+    <string name="enter_name">Enter a name to search by.</string>
+    <string name="search_without_name">Search all movies</string>
     <string name="delete_filter">Delete</string>
     <string name="genre_filter">Enter a genre filter.</string>
     <string name="actor_filter">Enter an actor filter.</string>
+    <string name="edit_text_on_genre_click">Enter genre.</string>
+    <string name="edit_text_on_actor_click">Enter actor.</string>
+    <string name="edit_text_on_director_click">Enter director.</string>
     <string name="director_filter">Enter a director filter.</string>
     <string name="latest_filter">Latest Filter</string>
     <string name="enter_filter">Enter filter.</string>

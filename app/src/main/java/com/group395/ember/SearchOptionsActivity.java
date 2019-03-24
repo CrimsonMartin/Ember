@@ -1,15 +1,11 @@
 package com.group395.ember;
 
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import static com.group395.ember.FilterType.ACTOR;
 import static com.group395.ember.FilterType.DIRECTOR;
@@ -23,7 +19,7 @@ public class SearchOptionsActivity extends AppCompatActivity {
     private Filter[] myFilters = new Filter[3];
     private FilterType selected = null;
     private enum RadioFive{
-        RADIO_A, RADIO_B, RADIO_C, RADIO_D, RADIO_E;
+        RADIO_A, RADIO_B, RADIO_C, RADIO_D, RADIO_E
     }
     private RadioFive selectedRadio = null;
 
@@ -33,59 +29,58 @@ public class SearchOptionsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search_options);
     }
 
-    protected void genreOnClick(View v){
+    public void genreOnClick(View v){
         EditText editText = findViewById(R.id.editText);
-        editText.setText("Enter genre.");
+        editText.setText(R.string.edit_text_on_genre_click);
         selected = GENRE;
     }
 
-    protected void actorOnClick(View v){
+    public void actorOnClick(View v){
         EditText editText = findViewById(R.id.editText);
-        editText.setText("Enter actor.");
+        editText.setText(R.string.edit_text_on_actor_click);
         selected = ACTOR;
     }
 
-    protected void directorOnClick(View v){
+    public void directorOnClick(View v){
         EditText editText = findViewById(R.id.editText);
-        editText.setText("Enter director.");
+        editText.setText(R.string.edit_text_on_director_click);
         selected = DIRECTOR;
     }
 
-    protected void radioAOnClick(View v){
+    public void radioAOnClick(View v){
         selectedRadio = RadioFive.RADIO_A;
     }
-    protected void radioBOnClick(View v){
+    public void radioBOnClick(View v){
         selectedRadio = RadioFive.RADIO_B;
     }
-    protected void radioCOnClick(View v){
+    public void radioCOnClick(View v){
         selectedRadio = RadioFive.RADIO_C;
     }
-    protected void radioDOnClick(View v){
+    public void radioDOnClick(View v){
         selectedRadio = RadioFive.RADIO_D;
     }
-    protected void radioEOnClick(View v){
+    public void radioEOnClick(View v){
         selectedRadio = RadioFive.RADIO_E;
     }
 
-    protected void submitOnClick(View v){
+    public void submitOnClick(View v){
         //If no FilterType has been selected, do nothing.
         if(selected == null){
             return;
         }
-        checkNumFilters();
         EditText editText = findViewById(R.id.editText);
         boolean inserted = false;
         //If the FilterType is already in myFilters, add the filter to that Filter.
         for(int i = 0; i < 3; i++){
             if(myFilters[i] != null){
-                if((inserted == false) && (myFilters[i].getFilterType().equals(selected))){
+                if((!inserted) && (myFilters[i].getFilterType().equals(selected))){
                     myFilters[i].add(editText.getText().toString());
                     inserted = true;
                 }
             }
         }
         //If there is no Filter of the proper FilterType, make a new one.
-        if(inserted == false) {
+        if(!inserted) {
             //find first empty slot in arrays, if any. otherwise firstEmpty = -1
             int firstEmpty = findFirstEmpty(myFilters);
             myFilters[firstEmpty] = new Filter(selected);
@@ -125,11 +120,11 @@ public class SearchOptionsActivity extends AppCompatActivity {
 
     }
 
-    protected void resetOnClick(View v){
+    public void resetOnClick(View v){
         myFilters = new Filter[3];
         selected = null;
         EditText editText = findViewById(R.id.editText);
-        editText.setText("Choose a filter.");
+        editText.setText(R.string.choose_filter);
         RadioGroup radioGroupGRD = findViewById(R.id.radioGroupGAD);
         radioGroupGRD.clearCheck();
         RadioButton displayRadio = findViewById(R.id.filterDisplayA);
@@ -145,70 +140,52 @@ public class SearchOptionsActivity extends AppCompatActivity {
         currentNumFilters = 0;
     }
 
-    protected void searchOnClick(View v){
+    public void searchOnClick(View v){
         UISearch mySearch = new UISearch();
+        for(int i = 0; i < 3; i++){
+            if(myFilters[i] != null){
+                mySearch.addFilter(myFilters[i]);
+            }
+        }
 
     }
 
-    protected void deleteOnClick(View v){
-        RadioButton displayRadio;
-        RadioButton displayRadioTemp;
+    public void deleteOnClick(View v){
+        RadioButton displayRadioA = findViewById(R.id.filterDisplayA);;
+        RadioButton displayRadioB = findViewById(R.id.filterDisplayB);;
+        RadioButton displayRadioC = findViewById(R.id.filterDisplayC);;
+        RadioButton displayRadioD = findViewById(R.id.filterDisplayD);;
+        RadioButton displayRadioE = findViewById(R.id.filterDisplayE);;
         switch(selectedRadio){
             case RADIO_A:
-                displayRadio = findViewById(R.id.filterDisplayA);
-                displayRadioTemp = findViewById(R.id.filterDisplayB);
-                displayRadio.setText(displayRadioTemp.getText().toString());
-                displayRadio = findViewById(R.id.filterDisplayB);
-                displayRadioTemp = findViewById(R.id.filterDisplayC);
-                displayRadio.setText(displayRadioTemp.getText().toString());
-                displayRadio = findViewById(R.id.filterDisplayC);
-                displayRadioTemp = findViewById(R.id.filterDisplayD);
-                displayRadio.setText(displayRadioTemp.getText().toString());
-                displayRadio = findViewById(R.id.filterDisplayD);
-                displayRadioTemp = findViewById(R.id.filterDisplayE);
-                displayRadio.setText(displayRadioTemp.getText().toString());
-                displayRadioTemp.setText(null);
+                displayRadioA.setText(displayRadioB.getText().toString());
+                displayRadioB.setText(displayRadioC.getText().toString());
+                displayRadioC.setText(displayRadioD.getText().toString());
+                displayRadioD.setText(displayRadioE.getText().toString());
+                displayRadioE.setText(null);
                 break;
             case RADIO_B:
-                displayRadio = findViewById(R.id.filterDisplayB);
-                displayRadioTemp = findViewById(R.id.filterDisplayC);
-                displayRadio.setText(displayRadioTemp.getText().toString());
-                displayRadio = findViewById(R.id.filterDisplayC);
-                displayRadioTemp = findViewById(R.id.filterDisplayD);
-                displayRadio.setText(displayRadioTemp.getText().toString());
-                displayRadio = findViewById(R.id.filterDisplayD);
-                displayRadioTemp = findViewById(R.id.filterDisplayE);
-                displayRadio.setText(displayRadioTemp.getText().toString());
-                displayRadioTemp.setText(null);
+                displayRadioB.setText(displayRadioC.getText().toString());
+                displayRadioC.setText(displayRadioD.getText().toString());
+                displayRadioD.setText(displayRadioE.getText().toString());
+                displayRadioE.setText(null);
                 break;
             case RADIO_C:
-                displayRadio = findViewById(R.id.filterDisplayC);
-                displayRadioTemp = findViewById(R.id.filterDisplayD);
-                displayRadio.setText(displayRadioTemp.getText().toString());
-                displayRadio = findViewById(R.id.filterDisplayD);
-                displayRadioTemp = findViewById(R.id.filterDisplayE);
-                displayRadio.setText(displayRadioTemp.getText().toString());
-                displayRadioTemp.setText(null);
+                displayRadioC.setText(displayRadioD.getText().toString());
+                displayRadioD.setText(displayRadioE.getText().toString());
+                displayRadioE.setText(null);
                 break;
             case RADIO_D:
-                displayRadio = findViewById(R.id.filterDisplayD);
-                displayRadioTemp = findViewById(R.id.filterDisplayE);
-                displayRadio.setText(displayRadioTemp.getText().toString());
-                displayRadioTemp.setText(null);
+                displayRadioD.setText(displayRadioE.getText().toString());
+                displayRadioE.setText(null);
                 break;
             case RADIO_E:
-                displayRadio = findViewById(R.id.filterDisplayE);
-                displayRadio.setText(null);
+                displayRadioE.setText(null);
                 break;
         }
         if(currentNumFilters > 0){
             currentNumFilters--;
         }
-    }
-
-
-    private void checkNumFilters(){
-
     }
 
     private int findFirstEmpty(Object[] input){
