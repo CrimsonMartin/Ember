@@ -32,200 +32,84 @@ class Movie {
     private String Production;
     private String Website;
     private String Response;
-
     private List<String> Platforms = new ArrayList<>();
 
-    String getTitle() {
-        return Title;
-    }
+    public String getTitle() { return Title; }
+    public void setTitle(String title) { Title = title; }
 
-    void setTitle(String title) {
-        Title = title;
-    }
+    public Integer getYear() { return Year; }
+    public void setYear(Integer year) { Year = year; }
 
-    Integer getYear() {
-        return Year;
-    }
+    public String getReleased() { return Released; }
+    public void setReleased(String released) { Released = released; }
 
-    void setYear(Integer year) {
-        Year = year;
-    }
+    public String getRuntime() { return Runtime; }
+    public void setRuntime(String runtime) { Runtime = runtime; }
 
-    String getReleased() {
-        return Released;
-    }
+    public List<String> getGenre() { return Genre; }
+    public void setGenre(List<String> genre) { Genre = genre; }
 
-    void setReleased(String released) {
-        Released = released;
-    }
+    public String getDirector() { return Director; }
+    public void setDirector(String director) { Director = director; }
 
-    String getRuntime() {
-        return Runtime;
-    }
+    public List<String> getWriter() { return Writer; }
+    public void setWriter(List<String> writer) { Writer = writer; }
 
-    void setRuntime(String runtime) {
-        Runtime = runtime;
-    }
+    public List<String> getActors() { return Actors; }
+    public void setActors(List<String> actors) { Actors = actors; }
 
-    List<String> getGenre() {
-        return Genre;
-    }
+    public String getPlot() { return Plot; }
+    public void setPlot(String plot) { Plot = plot; }
 
-    void setGenre(List<String> genre) {
-        Genre = genre;
-    }
+    public String getLanguage() { return Language; }
+    public void setLanguage(String language) { Language = language; }
 
-    String getDirector() {
-        return Director;
-    }
+    public String getCountry() { return Country; }
+    public void setCountry(String country) { Country = country; }
 
-    void setDirector(String director) {
-        Director = director;
-    }
+    public String getAwards() { return Awards; }
+    public void setAwards(String awards) { Awards = awards; }
 
-    List<String> getWriter() {
-        return Writer;
-    }
+    public String getPoster() { return Poster; }
+    public void setPoster(String poster) { Poster = poster; }
 
-    void setWriter(List<String> writer) {
-        Writer = writer;
-    }
+    public Integer getMetascore() { return Metascore; }
+    public void setMetascore(Integer metascore) { Metascore = metascore; }
 
-    List<String> getActors() {
-        return Actors;
-    }
+    public Double getImdbRating() { return imdbRating; }
+    public void setImdbRating(Double imdbRating) { this.imdbRating = imdbRating; }
 
-    void setActors(List<String> actors) {
-        Actors = actors;
-    }
+    public String getImdbID() { return imdbID; }
+    public void setImdbID(String imdbID) { this.imdbID = imdbID; }
 
-    String getPlot() {
-        return Plot;
-    }
+    public String getType() { return Type; }
+    public void setType(String type) { Type = type; }
 
-    void setPlot(String plot) {
-        Plot = plot;
-    }
+    public String getDVD() { return DVD; }
+    public void setDVD(String DVD) { this.DVD = DVD; }
 
-    String getLanguage() {
-        return Language;
-    }
+    public String getBoxOffice() { return BoxOffice; }
+    public void setBoxOffice(String boxOffice) { BoxOffice = boxOffice; }
 
-    void setLanguage(String language) {
-        Language = language;
-    }
+    public String getProduction() { return Production; }
+    public void setProduction(String production) { Production = production; }
 
-    String getCountry() {
-        return Country;
-    }
+    public String getWebsite() { return Website; }
+    public void setWebsite(String website) { Website = website; }
 
-    void setCountry(String country) {
-        Country = country;
-    }
+    public String getResponse() { return Response; }
+    public void setResponse(String response) { Response = response; }
 
-    String getAwards() {
-        return Awards;
-    }
-
-    void setAwards(String awards) {
-        Awards = awards;
-    }
-
-    String getPoster() {
-        return Poster;
-    }
-
-    void setPoster(String poster) {
-        Poster = poster;
-    }
-
-    Integer getMetascore() {
-        return Metascore;
-    }
-
-    void setMetascore(Integer metascore) {
-        Metascore = metascore;
-    }
-
-    Double getImdbRating() {
-        return imdbRating;
-    }
-
-    void setImdbRating(Double imdbRating) {
-        this.imdbRating = imdbRating;
-    }
-
-    String getImdbID() {
-        return imdbID;
-    }
-
-    void setImdbID(String imdbID) {
-        this.imdbID = imdbID;
-    }
-
-    String getType() {
-        return Type;
-    }
-
-    void setType(String type) {
-        Type = type;
-    }
-
-    String getDVD() {
-        return DVD;
-    }
-
-    void setDVD(String DVD) {
-        this.DVD = DVD;
-    }
-
-    String getBoxOffice() {
-        return BoxOffice;
-    }
-
-    void setBoxOffice(String boxOffice) {
-        BoxOffice = boxOffice;
-    }
-
-    String getProduction() {
-        return Production;
-    }
-
-    void setProduction(String production) {
-        Production = production;
-    }
-
-    String getWebsite() {
-        return Website;
-    }
-
-    void setWebsite(String website) {
-        Website = website;
-    }
-
-    String getResponse() {
-        return Response;
-    }
-
-    void setResponse(String response) {
-        Response = response;
-    }
-
-    public List<String> getPlatforms() {
-        return Platforms;
-    }
-
-    void addPlatforms(List<location> platforms){
+    public List<String> getPlatforms() { return Platforms; }
+    public void addPlatforms(List<location> platforms){
         for (location l: platforms) {
             addPlatform(l);
         }
     }
 
-    void addPlatform(location l){ Platforms.add(l.display_name);}
+    public void addPlatform(location l){ Platforms.add(l.display_name);}
 
-    void clearPlatforms(){
-        Platforms.clear();
-    }
+    public void clearPlatforms(){ Platforms.clear(); }
 
     /**
      * Creates a new Movie object with the given title
@@ -235,7 +119,7 @@ class Movie {
         setTitle(title);
     }
 
-    private Movie(jsonMovie jmv){
+    protected Movie(jsonMovie jmv){
 
         setTitle(jmv.Title);
         setYear(jmv.Year);

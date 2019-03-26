@@ -1,5 +1,6 @@
 package com.group395.ember;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -141,13 +142,15 @@ public class SearchOptionsActivity extends AppCompatActivity {
     }
 
     public void searchOnClick(View v){
-        UISearch mySearch = new UISearch();
-        for(int i = 0; i < 3; i++){
-            if(myFilters[i] != null){
-                mySearch.addFilter(myFilters[i]);
-            }
-        }
+        //UISearch crashes upon initialization
+        //UISearch mySearch = new UISearch();
+        //for(int i = 0; i < 3; i++){
+        //    if(myFilters[i] != null){
+        //        mySearch.addFilter(myFilters[i]);
+        //    }
+        //}
 
+        startActivity(new Intent(SearchOptionsActivity.this, SearchResultsActivity.class));
     }
 
     public void deleteOnClick(View v){
