@@ -142,14 +142,8 @@ public class SearchOptionsActivity extends AppCompatActivity {
     }
 
     public void searchOnClick(View v){
-        //UISearch crashes upon initialization
-        //UISearch mySearch = new UISearch();
-        //for(int i = 0; i < 3; i++){
-        //    if(myFilters[i] != null){
-        //        mySearch.addFilter(myFilters[i]);
-        //    }
-        //}
-
+        EditText editText = findViewById(R.id.editText);
+        SearchResultsActivity.search(editText.getText().toString(), myFilters);
         startActivity(new Intent(SearchOptionsActivity.this, SearchResultsActivity.class));
     }
 
