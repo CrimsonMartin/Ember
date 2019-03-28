@@ -15,9 +15,6 @@ import static com.group395.ember.FilterType.GENRE;
 
 public class SearchOptionsActivity extends AppCompatActivity {
 
-    //TODO: Add button to return to HistoryActivity
-
-
     private int currentNumFilters = 0;
     private Filter[] myFilters = new Filter[3];
     private FilterType selected = null;
@@ -181,6 +178,8 @@ public class SearchOptionsActivity extends AppCompatActivity {
             currentNumFilters--;
         }
     }
+
+    public void historyOnClick(View v){ startActivity(new Intent(SearchOptionsActivity.this, HistoryActivity.class)); }
 
     protected static int findFirstEmpty(Object[] input){
         for(int i = 0; i < input.length; i++){

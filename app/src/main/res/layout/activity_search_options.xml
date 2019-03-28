@@ -178,5 +178,16 @@
         app:layout_constraintStart_toStartOf="@+id/radioGroupDisplay"
         app:layout_constraintTop_toBottomOf="@+id/radioGroupDisplay" />
 
+    <Button
+        android:id="@+id/button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:onClick="historyOnClick"
+        android:text="@string/to_history_button"
+        app:layout_constraintEnd_toEndOf="@+id/searchButton"
+        app:layout_constraintStart_toStartOf="@+id/searchButton"
+        app:layout_constraintTop_toBottomOf="@+id/resetButton" />
+
 
 </android.support.constraint.ConstraintLayout>

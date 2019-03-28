@@ -6,12 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.Stack;
 
 public class HistoryActivity extends AppCompatActivity {
 
@@ -25,6 +21,8 @@ public class HistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
         displayAll();
+        TextView pageNumber = findViewById(R.id.pageNumber);
+        pageNumber.setText(getApplicationContext().getString(R.string.page_number, pagesSkipped + 1));
     }
 
     public void searchButtonOnClick(View v){ startActivity(new Intent(HistoryActivity.this, SearchOptionsActivity.class)); }
@@ -43,13 +41,17 @@ public class HistoryActivity extends AppCompatActivity {
             pagesSkipped --;
             displayAll();
         }
+        TextView pageNumber = findViewById(R.id.pageNumber);
+        pageNumber.setText(getApplicationContext().getString(R.string.page_number, pagesSkipped + 1));
     }
     public void nextOnClick(View v){
         if(pagesSkipped + 1 >= recentClicks.length){
             return;
         }
-        pagesSkipped ++;
+        pagesSkipped++;
         displayAll();
+        TextView pageNumber = findViewById(R.id.pageNumber);
+        pageNumber.setText(getApplicationContext().getString(R.string.page_number, pagesSkipped + 1));
     }
 
     private void tileOnClick(int whichButton){
@@ -101,7 +103,10 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     private void display(Button button, Movie movie){
-        if(movie == null) return;
+        if(movie == null){
+            button.setText(null);
+            return;
+        }
         button.setText(movie.getTitle());
     }
     private void displayAll(){
