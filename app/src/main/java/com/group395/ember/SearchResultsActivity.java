@@ -19,23 +19,13 @@ public class SearchResultsActivity extends AppCompatActivity {
             "Home Video\",\"Website\":\"N/A\",\"Response\":\"True\"}"
     );
 
-
-
-
-    private View.OnClickListener resultDisplayOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) { resultDisplayOnClick(v); }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_results);
         //TODO: Test boundary cases (large + small movie data sets) once UISearch is up and running
-        display(loadedMovies[0], (Button) findViewById(R.id.resultButtonA), (TextView) findViewById(R.id.resultTitleA), (TextView) findViewById(R.id.resultActorsA),
-                (TextView) findViewById(R.id.resultDirectorA), (TextView) findViewById(R.id.resultPlotA));
-        display(loadedMovies[1], (Button) findViewById(R.id.resultButtonB), (TextView) findViewById(R.id.resultTitleB), (TextView) findViewById(R.id.resultActorsB),
-                (TextView) findViewById(R.id.resultDirectorB), (TextView) findViewById(R.id.resultPlotB));
+        display(loadedMovies[0], (TextView) findViewById(R.id.resultTitleA), (TextView) findViewById(R.id.resultActorsA), (TextView) findViewById(R.id.resultDirectorA), (TextView) findViewById(R.id.resultPlotA));
+        display(loadedMovies[1], (TextView) findViewById(R.id.resultTitleB), (TextView) findViewById(R.id.resultActorsB), (TextView) findViewById(R.id.resultDirectorB), (TextView) findViewById(R.id.resultPlotB));
     }
 
     /**
@@ -57,17 +47,19 @@ public class SearchResultsActivity extends AppCompatActivity {
 
     public void searchAgainOnClick(View v){ startActivity(new Intent(SearchResultsActivity.this, SearchOptionsActivity.class)); }
 
-    private void resultDisplayOnClick(View v){
+    public void resultButtonAOnClick(View v){
         //TODO: Design and implement movie display page
+        HistoryActivity.addClick(loadedMovies[0]);
+    }
+    public void resultButtonBOnClick(View v){
+        HistoryActivity.addClick(loadedMovies[1]);
     }
 
     /**
      * A helper method that affixes a single movie's JSON data to pre-made display elements, which are passed as parameters.
-     * @param button A Button surrounding all the TextViews- clicking this button should pull up the movie's page.
      * @param title Set at the top of the button, will contain the title and date in a set format.
      */
-    private void display(Movie inputMovie, Button button, TextView title, TextView actors, TextView director, TextView plot){
-        button.setOnClickListener(resultDisplayOnClickListener);
+    private void display(Movie inputMovie, TextView title, TextView actors, TextView director, TextView plot){
         title.setText(getApplicationContext().getString(R.string.title_with_year, inputMovie.getTitle(), inputMovie.getYear().toString()));
         actors.setText(getApplicationContext().getString(R.string.starring, stripBrackets(inputMovie.getActors().toString())));
         director.setText(getApplicationContext().getString(R.string.directed_by, inputMovie.getDirector()));

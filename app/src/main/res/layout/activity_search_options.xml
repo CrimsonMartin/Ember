@@ -47,6 +47,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:onClick="searchOnClick"
         android:text="@string/search_without_name"
@@ -66,7 +67,7 @@
         app:layout_constraintEnd_toEndOf="@+id/radioGroupGAD"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/radioGroupGAD"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+        app:layout_constraintTop_toBottomOf="@+id/radioGroupDisplay" />
 
     <EditText
         android:id="@+id/editText"
@@ -97,7 +98,7 @@
         android:inputType="text"
         android:text="@string/choose_filter"
         app:layout_constraintBottom_toTopOf="@+id/radioGroupGAD"
-        app:layout_constraintEnd_toEndOf="@+id/radioGroup"
+        app:layout_constraintEnd_toEndOf="@+id/radioGroupDisplay"
         app:layout_constraintStart_toStartOf="@+id/radioGroupGAD"
         app:layout_constraintTop_toBottomOf="@+id/searchButton" />
 
@@ -115,7 +116,7 @@
         app:layout_constraintTop_toBottomOf="@+id/sendButton" />
 
     <RadioGroup
-        android:id="@+id/radioGroup"
+        android:id="@+id/radioGroupDisplay"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -173,9 +174,9 @@
         android:layout_marginTop="16dp"
         android:text="@string/delete_filter"
         android:onClick="deleteOnClick"
-        app:layout_constraintEnd_toEndOf="@+id/radioGroup"
-        app:layout_constraintStart_toStartOf="@+id/radioGroup"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+        app:layout_constraintEnd_toEndOf="@+id/radioGroupDisplay"
+        app:layout_constraintStart_toStartOf="@+id/radioGroupDisplay"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroupDisplay" />
 
 
 </android.support.constraint.ConstraintLayout>

@@ -57,6 +57,7 @@ public class Logger {
      */
     public void logClick(Movie movie) {
 
+
     }
 
     /**

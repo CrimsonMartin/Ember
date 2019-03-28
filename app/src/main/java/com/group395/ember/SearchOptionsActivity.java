@@ -15,6 +15,8 @@ import static com.group395.ember.FilterType.GENRE;
 
 public class SearchOptionsActivity extends AppCompatActivity {
 
+    //TODO: Add button to return to HistoryActivity
+
 
     private int currentNumFilters = 0;
     private Filter[] myFilters = new Filter[3];
@@ -48,21 +50,11 @@ public class SearchOptionsActivity extends AppCompatActivity {
         selected = DIRECTOR;
     }
 
-    public void radioAOnClick(View v){
-        selectedRadio = RadioFive.RADIO_A;
-    }
-    public void radioBOnClick(View v){
-        selectedRadio = RadioFive.RADIO_B;
-    }
-    public void radioCOnClick(View v){
-        selectedRadio = RadioFive.RADIO_C;
-    }
-    public void radioDOnClick(View v){
-        selectedRadio = RadioFive.RADIO_D;
-    }
-    public void radioEOnClick(View v){
-        selectedRadio = RadioFive.RADIO_E;
-    }
+    public void radioAOnClick(View v){ selectedRadio = RadioFive.RADIO_A; }
+    public void radioBOnClick(View v){ selectedRadio = RadioFive.RADIO_B; }
+    public void radioCOnClick(View v){ selectedRadio = RadioFive.RADIO_C; }
+    public void radioDOnClick(View v){ selectedRadio = RadioFive.RADIO_D; }
+    public void radioEOnClick(View v){ selectedRadio = RadioFive.RADIO_E; }
 
     public void submitOnClick(View v){
         //If no FilterType has been selected, do nothing.
@@ -71,6 +63,10 @@ public class SearchOptionsActivity extends AppCompatActivity {
         }
         EditText editText = findViewById(R.id.editText);
         boolean inserted = false;
+        //If there's no more room for filters, do nothing.
+        if (findFirstEmpty(myFilters) == -1) {
+            return;
+        }
         //If the FilterType is already in myFilters, add the filter to that Filter.
         for(int i = 0; i < 3; i++){
             if(myFilters[i] != null){
@@ -186,7 +182,7 @@ public class SearchOptionsActivity extends AppCompatActivity {
         }
     }
 
-    private int findFirstEmpty(Object[] input){
+    protected static int findFirstEmpty(Object[] input){
         for(int i = 0; i < input.length; i++){
             if(input[i] == null){
                 return i;

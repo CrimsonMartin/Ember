@@ -11,10 +11,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:onClick="searchAgainOnClick"
-        android:text="@string/search_without_name"
+        android:text="@string/search_again_button"
         app:layout_constraintBottom_toTopOf="@+id/resultButtonA"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,6 +30,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="2dp"
+        android:onClick="resultButtonAOnClick"
         app:layout_constraintBottom_toTopOf="@+id/resultButtonB"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -169,7 +171,8 @@
         android:layout_marginTop="2dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/button2"
+        android:onClick="resultButtonBOnClick"
+        app:layout_constraintBottom_toTopOf="@+id/previousButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -177,7 +180,7 @@
         app:layout_constraintVertical_weight="6" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/previousButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -189,7 +192,7 @@
         app:layout_constraintTop_toBottomOf="@+id/resultButtonB" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/nextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -201,14 +204,14 @@
         app:layout_constraintTop_toBottomOf="@+id/resultButtonB" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/pageNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:text="@string/placeholder1"
-        app:layout_constraintBaseline_toBaselineOf="@+id/button2"
-        app:layout_constraintEnd_toStartOf="@+id/button2"
-        app:layout_constraintStart_toEndOf="@+id/button3" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/previousButton"
+        app:layout_constraintEnd_toStartOf="@+id/previousButton"
+        app:layout_constraintStart_toEndOf="@+id/nextButton" />
 
 </android.support.constraint.ConstraintLayout>
