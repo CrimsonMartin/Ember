@@ -56,8 +56,6 @@ class MovieLoader {
             close();
             return null;
         }
-
-
     }
 
     private String omdbUrlFromTitle (String title){

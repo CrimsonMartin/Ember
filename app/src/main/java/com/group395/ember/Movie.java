@@ -11,7 +11,7 @@ import java.util.Objects;
 class Movie {
 
     private String Title;
-    private Integer Year;
+    private String Year;
     private String Released;
     private String Runtime;
     private List<String> Genre;
@@ -23,7 +23,7 @@ class Movie {
     private String Country;
     private String Awards;
     private String Poster;
-    private Integer Metascore;
+    private String Metascore;
     private Double imdbRating;
     private String imdbID;
     private String Type;
@@ -37,8 +37,8 @@ class Movie {
     public String getTitle() { return Title; }
     public void setTitle(String title) { Title = title; }
 
-    public Integer getYear() { return Year; }
-    public void setYear(Integer year) { Year = year; }
+    public String getYear() { return Year; }
+    public void setYear(String year) { Year = year; }
 
     public String getReleased() { return Released; }
     public void setReleased(String released) { Released = released; }
@@ -73,8 +73,8 @@ class Movie {
     public String getPoster() { return Poster; }
     public void setPoster(String poster) { Poster = poster; }
 
-    public Integer getMetascore() { return Metascore; }
-    public void setMetascore(Integer metascore) { Metascore = metascore; }
+    public String getMetascore() { return Metascore; }
+    public void setMetascore(String metascore) { Metascore = metascore; }
 
     public Double getImdbRating() { return imdbRating; }
     public void setImdbRating(Double imdbRating) { this.imdbRating = imdbRating; }
@@ -119,6 +119,7 @@ class Movie {
         setTitle(title);
     }
 
+    //this version of the constructor is for loading full movies
     protected Movie(jsonMovie jmv){
 
         setTitle(jmv.Title);
@@ -145,6 +146,17 @@ class Movie {
         setResponse(jmv.Response);
 
     }
+
+    //this version of the constructor is for loading simple movies from search results
+    protected Movie(simpleJsonMovie jmv) {
+        setTitle(jmv.Title);
+        setYear(jmv.Year);
+        setReleased(jmv.Released);
+        setImdbID(jmv.imdbID);
+        setType(jmv.Type);
+        setPoster(jmv.Poster);
+    }
+
 
     static Movie parseFromJson(BufferedReader reader){
         Gson gson = new Gson();
@@ -220,9 +232,10 @@ class Movie {
         return Objects.hash(getTitle(), getYear(), getReleased(), getDirector(), getActors(), getProduction());
     }
 
+    //full jsonMovie class where it reads in all info on movie
     private class jsonMovie {
         String Title;
-        Integer Year;
+        String Year;
         String Released;
         String Runtime;
         String Genre;
@@ -234,7 +247,7 @@ class Movie {
         String Country;
         String Awards;
         String Poster;
-        Integer Metascore;
+        String Metascore;
         Double imdbRating;
         String imdbID;
         String Type;
@@ -243,6 +256,16 @@ class Movie {
         String Production;
         String Website;
         String Response;
+    }
+
+    //simpleJsonMovie contains only the information included in the search results
+    class simpleJsonMovie {
+        String Title;
+        String Year;
+        String Released;
+        String Type;
+        String imdbID;
+        String Poster;
     }
 
     private class jsonPlatformResponse{

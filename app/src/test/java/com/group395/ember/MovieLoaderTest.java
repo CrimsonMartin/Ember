@@ -17,7 +17,7 @@ public class MovieLoaderTest {
     public void initialize(){
         ml = new MovieLoader();
         goalSpaceJam = new Movie("Space Jam");
-        goalSpaceJam.setYear(1996);
+        goalSpaceJam.setYear("1996");
         goalSpaceJam.setReleased("15 Nov 1996");
         goalSpaceJam.setDirector("Joe Pytka");
         goalSpaceJam.setWriter(Arrays.asList("Leo Benvenuti, Steve Rudnick, Timothy Harris, Herschel Weingrod".split(",")));
@@ -36,6 +36,8 @@ public class MovieLoaderTest {
     public void testLoadingMovie(){
         Movie actual = ml.loadMoviebyTitle("Space Jam");
         assertEquals(goalSpaceJam, actual);
+        Movie actual2 = ml.loadMoviebyTitle("Attack On Titan");
+        System.out.println(actual2.getTitle());
     }
 
     @Test

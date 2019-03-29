@@ -23,7 +23,7 @@ public class MovieTest {
         spaceJamMovie = Movie.parseFromJson(SpaceJamJson);
 
         goalSpaceJam = new Movie("Space Jam");
-        goalSpaceJam.setYear(1996);
+        goalSpaceJam.setYear("1996");
         goalSpaceJam.setReleased("15 Nov 1996");
         goalSpaceJam.setDirector("Joe Pytka");
         goalSpaceJam.setWriter(Arrays.asList("Leo Benvenuti, Steve Rudnick, Timothy Harris, Herschel Weingrod".split(",")));

@@ -1,47 +1,86 @@
 package com.group395.ember;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import com.google.gson.Gson;
 
 public class MovieSearch {
-    public static ArrayList<String> keyPhraseParser(String searchInput){
-        ArrayList<String> keyPhrases = new ArrayList<String>();
-        String current = "";
-        for(int i=0; i<searchInput.length(); i++){
-            if(searchInput.charAt(i) == '"' && current.length()==0){
-                i++;
-                while(searchInput.charAt(i) != '"'){
-                    current += searchInput.charAt(i);
-                    i++;
-                }
-                keyPhrases.add(current.toLowerCase());
-                current = "";
-            }
-            else{
-                if(searchInput.charAt(i) == ' '){
-                    if(current.length()>0){
-                        keyPhrases.add(current.toLowerCase());
-                        current = "";
-                    }
-                }
-                else{
-                    if(searchInput.charAt(i) != '"')
-                        current += searchInput.charAt(i);
-                }
-            }
+
+    private static String omdbApiKey = "33d1a530";
+    private static String omdbUrl = "http://www.omdbapi.com/?";
+    private static BufferedReader reader = null;
+
+    public static searchResults search(String title){
+        try{
+            Gson gson = new Gson();
+            openSearchConnection(title);
+            searchResults results = gson.fromJson(reader, searchResults.class);
+            return results;
+
         }
-        if(current.length()>0){
-            keyPhrases.add(current.toLowerCase());
-            current = "";
+        catch (IOException e){
+            System.out.println("Title search failed: " + e.getMessage());
+            e.printStackTrace();
+            close();
+            return null;
         }
-        return keyPhrases;
+
     }
 
-    public static int keyPhrasesContained(ArrayList<String> keyPhrases, String name){
-        int phrasesContained = 0;
-        name = name.toLowerCase();
-        for(int i=0; i<keyPhrases.size(); i++){
-            if(name.contains(keyPhrases.get(i)))
-                phrasesContained++;
+    private static void openSearchConnection (String title) throws IOException{
+
+        try{
+            URL obj = new URL(omdbSearch(title));
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            con.setRequestMethod("GET");
+
+            reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        } catch (MalformedURLException e) {
+            System.out.println("INVALID URL FORMAT");
+            e.printStackTrace();
+            close();
         }
-        return phrasesContained;
+    }
+
+    //This is the class Gson parses to return the search results
+    public class searchResults{
+        ArrayList<Movie> Search;
+        Integer totalResults;
+        Boolean Response;
+
+        public String toString(){
+            return "Results: " + totalResults + ", Response: " + Response + ", Top Movie: " + Search.get(0).toString();
+        }
+
+        public Boolean getResponse() {
+            return Response;
+        }
+
+        public Integer getNumberofResults(){
+            return totalResults;
+        }
+
+        public ArrayList<Movie> getResults(){
+            return Search;
+        }
+    }
+
+    public static String omdbSearch(String title){
+        title = title.replaceAll(" ", "+");
+        return omdbUrl +"apikey=" + omdbApiKey + "&s=" + title + "&plot=full";
+    }
+
+    static boolean close(){
+        try{
+            reader.close();
+            return true;
+        }
+        catch (IOException e){
+            return false;
+        }
     }
 }
