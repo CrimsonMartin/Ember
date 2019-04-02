@@ -30,19 +30,19 @@ public class SearchOptionsActivity extends AppCompatActivity {
     }
 
     public void genreOnClick(View v){
-        EditText editText = findViewById(R.id.editText);
+        EditText editText = findViewById(R.id.filterText);
         editText.setText(R.string.edit_text_on_genre_click);
         selected = GENRE;
     }
 
     public void actorOnClick(View v){
-        EditText editText = findViewById(R.id.editText);
+        EditText editText = findViewById(R.id.filterText);
         editText.setText(R.string.edit_text_on_actor_click);
         selected = ACTOR;
     }
 
     public void directorOnClick(View v){
-        EditText editText = findViewById(R.id.editText);
+        EditText editText = findViewById(R.id.filterText);
         editText.setText(R.string.edit_text_on_director_click);
         selected = DIRECTOR;
     }
@@ -53,12 +53,13 @@ public class SearchOptionsActivity extends AppCompatActivity {
     public void radioDOnClick(View v){ selectedRadio = RadioFive.RADIO_D; }
     public void radioEOnClick(View v){ selectedRadio = RadioFive.RADIO_E; }
 
+    //TODO: Filters are not added once a filter is deleted.
     public void submitOnClick(View v){
         //If no FilterType has been selected, do nothing.
         if(selected == null){
             return;
         }
-        EditText editText = findViewById(R.id.editText);
+        EditText editText = findViewById(R.id.filterText);
         boolean inserted = false;
         //If there's no more room for filters, do nothing.
         if (findFirstEmpty(myFilters) == -1) {
@@ -114,10 +115,16 @@ public class SearchOptionsActivity extends AppCompatActivity {
 
     }
 
+    //TODO: doesn't work lol
+    public void textOnClick(View v){
+        EditText editText = findViewById(R.id.filterText);
+        editText.setText("null");
+    }
+
     public void resetOnClick(View v){
         myFilters = new Filter[3];
         selected = null;
-        EditText editText = findViewById(R.id.editText);
+        EditText editText = findViewById(R.id.filterText);
         editText.setText(R.string.choose_filter);
         RadioGroup radioGroupGRD = findViewById(R.id.radioGroupGAD);
         radioGroupGRD.clearCheck();
@@ -135,7 +142,7 @@ public class SearchOptionsActivity extends AppCompatActivity {
     }
 
     public void searchOnClick(View v){
-        EditText editText = findViewById(R.id.editText);
+        EditText editText = findViewById(R.id.filterText);
         SearchResultsActivity.search(editText.getText().toString(), myFilters);
         startActivity(new Intent(SearchOptionsActivity.this, SearchResultsActivity.class));
     }
