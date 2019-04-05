@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * Protocol for accessing the Movie Database from the GUI of the Ember app.
- * @version 1.0
+ * @version 1.2
  * @since 8-Mar-2019
  */
 
@@ -83,7 +83,6 @@ public class UISearch {
     public List<Movie> search() {
         int moviesToLoad = 5;
         return search(moviesToLoad);
-        // return movies;
     }
 
     /**
@@ -99,6 +98,37 @@ public class UISearch {
         List<Movie> movies = new ArrayList<>();
         movies.add(loader.loadMovie(this));
         return movies;
+    }
+
+    /**
+     * Sorts the Movies by checking if they are applicable to each filter.
+     * @param rawList is the unfiltered List of Movies to sort
+     * @return a filtered List of Movies.
+     */
+    public List<Movie> applyFilters(List<Movie> rawList) {
+        List<Movie> filteredList = new List<Movie>();
+
+        // Loops each filter for each movie to determine if they fit the filters.
+        for (Filter filter : getFilters()) {
+
+            if (filteredList.size() == 0) {
+                for (Movie movie : rawList) {
+                    if (filter.fitsFilter(movie))
+                        filteredList.add(movie);
+                }
+            }
+
+            // Narrowing in on remaining movies with the rest of the filters.
+            else {
+                for (Movie movie : filteredList) {
+                    // If it does not fit the next filter, remove it.
+                    if (!filter.fitsFilter(movie))
+                        filteredList.remove(movie);
+                }
+            }
+
+            return filteredList;
+        }
     }
 
 }
