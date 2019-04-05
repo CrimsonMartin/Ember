@@ -1,8 +1,6 @@
 package com.group395.ember;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class Filter {
 
@@ -56,7 +54,7 @@ public class Filter {
      */
     public boolean fitsFilter(Movie movie) {
 
-       List<String> compareTo = new ArrayList<>();
+        ArrayList<String> compareTo = new ArrayList<>();
 
         switch(filterType){
             case ACTOR:
