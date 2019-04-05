@@ -35,7 +35,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     protected static void search(String searchText, Filter[] myFilters){
         //TODO: Retrieve a pair of movies from the search property
         //UISearch crashes upon initialization
-        //UISearch mySearch = new UISearch();
+        UISearch mySearch = new UISearch();
         //for(int i = 0; i < 3; i++){
         //    if(myFilters[i] != null){
         //        mySearch.addFilter(myFilters[i]);

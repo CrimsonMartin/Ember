@@ -12,7 +12,7 @@ import java.util.List;
 
 public class UISearch {
 
-    private ArrayList<Filter> filters = new ArrayList<Filter>(3);  // Filter list to hold all 3 possible filters.
+    private ArrayList<Filter> filters = new ArrayList<Filter>(0);  // Filter list to hold all 3 possible filters.
     private String searchTerms;                          // The search terms to access the database with
 
 
@@ -21,9 +21,9 @@ public class UISearch {
      */
     public UISearch() {
         // Creating basic filters as placeholders
-        filters.set(0, new Filter(FilterType.ACTOR));
-        filters.set(1, new Filter(FilterType.GENRE));
-        filters.set(2, new Filter(FilterType.DIRECTOR));
+        filters.add(new Filter(FilterType.ACTOR));
+        filters.add(new Filter(FilterType.GENRE));
+        filters.add(new Filter(FilterType.DIRECTOR));
         System.out.println("Init UISearch");
     }
 

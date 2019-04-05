@@ -17,28 +17,10 @@ public class Filter {
     private Logger log = new Logger();
 
     /**
-     * Creates a new filter with the given Movie's genres as the filterKeywords and type.
-     * Defaults to genre filter type.
-     * @param movie to base the filter off of.
-     */
-    private Filter(Movie movie) {
-        filterType = FilterType.GENRE;
-    }
-
-    /**
      * Creates an empty filter given a FilterType.
      * @param filterType to use for the new Filter
      */
     public Filter(FilterType filterType) { this.filterType = filterType; }
-
-    /**
-     * Creates and retuns a Filter based on a Movie's genre, directors, and actors.
-     * @param movie is the Movie object to build the Filter off of.
-     * @return a new Filter object to apply to searches.
-     */
-    public Filter setFilter(Movie movie) {
-        return new Filter(movie);
-    }
 
 
     // All of these pretty much do the same thing: Change the filter to the method name and fill in the keywords
