@@ -140,7 +140,7 @@ public class UISearch {
         }
         catch(IndexOutOfBoundsException e) {
             System.out.println("OUT OF RANGE - RETURNING FIRST MOVIE ONLY");
-            return new Movie[]{results.get(0)};
+            return null;
         }
 
         return arr;
