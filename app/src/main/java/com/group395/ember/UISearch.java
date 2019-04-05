@@ -115,13 +115,13 @@ public class UISearch {
      * @param end is the index of the last movie to load (inclusive, 0-based)
      * @return Array of movies to be feed data into SearchResultsActivity and MoviePageActivity
      */
-    public List<Movie> search(int start, int end) {
+    public Movie[] search(int start, int end) {
         MovieLoader loader = new MovieLoader();
         //TODO I need a set amount of movies per page (currently 2) for SearchResultsActivity.
         // how the load N movies knows what sort of movies to load
+        Movie[] movies = new Movie[end - start + 1];
         // List<Movie> movies = loader.loadMovies(this, n);
-        List<Movie> movies = new ArrayList<>();
-        movies.add(loader.loadMovie(this));
+        // movies.add(loader.loadMovie(this));
         return movies;
     }
 }

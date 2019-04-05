@@ -10,6 +10,10 @@ import android.widget.TextView;
 public class SearchResultsActivity extends AppCompatActivity {
 
     private static Movie[] loadedMovies = new Movie[2];
+    //This field specifies how many sets of 2 Movies have been moved past by the "next" button.
+    private int pagesSkipped = 0;
+    private static UISearch mySearch = new UISearch();
+
     public static Movie exampleMovie = Movie.parseFromJson("{\"Title\":\"Space Jam\",\"Year\":\"1996\",\"Rated\":\"PG\",\"Released\":\"15 Nov 1996\",\"Runtime\":\"88 min\",\"Genre\":\"Animation, Adventure, " +
             "Comedy, Family, Fantasy, Sci-Fi, Sport\",\"Director\":\"Joe Pytka\",\"Writer\":\"Leo Benvenuti, Steve Rudnick, Timothy Harris, Herschel Weingrod\",\"Actors\":\"Michael Jordan, Wayne Knight, " +
             "Theresa Randle, Manner Washington\",\"Plot\":\"In a desperate attempt to win a basketball match and earn their freedom, the Looney Tunes seek the aid of retired basketball champion, Michael Jordan. " +
@@ -24,19 +28,18 @@ public class SearchResultsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_results);
         //TODO: Test boundary cases (large + small movie data sets) once UISearch is up and running
-        display(loadedMovies[0], (TextView) findViewById(R.id.resultTitleA), (TextView) findViewById(R.id.resultActorsA), (TextView) findViewById(R.id.resultDirectorA), (TextView) findViewById(R.id.resultPlotA));
-        display(loadedMovies[1], (TextView) findViewById(R.id.resultTitleB), (TextView) findViewById(R.id.resultActorsB), (TextView) findViewById(R.id.resultDirectorB), (TextView) findViewById(R.id.resultPlotB));
+        displayAll();
     }
 
     /**
      * @param searchText The name of the movie being searched.
-     * @param myFilters The filters applied to the search.
      */
     protected static void search(String searchText){
         //TODO: Retrieve a pair of movies from the search property
-        UISearch mySearch = new UISearch();
-        loadedMovies[0] = exampleMovie;
-        loadedMovies[1] = exampleMovie;
+        mySearch.setSearch(searchText);
+        Movie[] moviesToLoad = mySearch.search(0,1);
+        loadedMovies[0] = moviesToLoad[0];
+        loadedMovies[1] = moviesToLoad[1];
     }
 
     public void searchAgainOnClick(View v){ startActivity(new Intent(SearchResultsActivity.this, SearchOptionsActivity.class)); }
@@ -45,9 +48,7 @@ public class SearchResultsActivity extends AppCompatActivity {
         //TODO: Design and implement movie display page
         HistoryActivity.addClick(loadedMovies[0]);
     }
-    public void resultButtonBOnClick(View v){
-        HistoryActivity.addClick(loadedMovies[1]);
-    }
+    public void resultButtonBOnClick(View v){ HistoryActivity.addClick(loadedMovies[1]); }
 
     /**
      * A helper method that affixes a single movie's JSON data to pre-made display elements, which are passed as parameters.
@@ -64,11 +65,19 @@ public class SearchResultsActivity extends AppCompatActivity {
         plot.bringToFront();
     }
 
-    private String stripBrackets(String input){ return input.substring(1, input.length() - 1); }
-    private String crop(String input, int numLetters) {
-        if (input.length() > numLetters) {
-            return input.substring(0, numLetters - 4) + "...";
-        }
-        return input;
+    private void displayAll(){
+        display(loadedMovies[0], (TextView) findViewById(R.id.resultTitleA), (TextView) findViewById(R.id.resultActorsA), (TextView) findViewById(R.id.resultDirectorA), (TextView) findViewById(R.id.resultPlotA));
+        display(loadedMovies[1], (TextView) findViewById(R.id.resultTitleB), (TextView) findViewById(R.id.resultActorsB), (TextView) findViewById(R.id.resultDirectorB), (TextView) findViewById(R.id.resultPlotB));
+
     }
+
+    private void nextOnClick(){
+        pagesSkipped ++;
+        Movie[] moviesToLoad = mySearch.search(2 * pagesSkipped, 2 * pagesSkipped + 1);
+        if(moviesToLoad[0] == null){
+
+        }
+    }
+
+    private String stripBrackets(String input){ return input.substring(1, input.length() - 1); }
 }
