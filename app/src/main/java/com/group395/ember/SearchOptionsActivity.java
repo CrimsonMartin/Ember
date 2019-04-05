@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -27,6 +28,21 @@ public class SearchOptionsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_options);
+        final EditText nameText = findViewById(R.id.nameText);
+        final Button searchButton = findViewById(R.id.searchButton);
+        nameText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    nameText.setHint("");
+                    searchButton.setText(R.string.search_button);
+                } else {
+                    if(nameText.getText().toString().equals("")) {
+                        nameText.setHint(R.string.enter_name);
+                        searchButton.setText(R.string.search_without_name);
+                    }
+                }
+            }
+        });
     }
 
     public void genreOnClick(View v){
@@ -143,7 +159,7 @@ public class SearchOptionsActivity extends AppCompatActivity {
 
     public void searchOnClick(View v){
         EditText editText = findViewById(R.id.filterText);
-        SearchResultsActivity.search(editText.getText().toString(), myFilters);
+        SearchResultsActivity.search(editText.getText().toString());
         startActivity(new Intent(SearchOptionsActivity.this, SearchResultsActivity.class));
     }
 

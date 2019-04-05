@@ -25,5 +25,19 @@
     <string name="page_number">Page %1$d</string>
     <string name="next">Next</string>
     <string name="previous">Prev</string>
-    <string name="to_history_button">Back to recently viewed</string>
+    <string name="back">Back</string>
+
+
+<!--<string name="to_history_activity_during">Hint: when you click a movie, it\'ll show up here for later viewing!</string>
+    <string name="to_history_activity_after">Back to recently viewed</string>
+    <string name="to_search_start_activity_before">Search by title</string>
+    <string name="to_search_start_activity_during">Hint: you can search a title without filters!</string>
+    <string name="to_search_start_activity_after">Search again by title</string>
+    <string name="to_search_filters_activity_before_start">Search by filters alone</string>
+    <string name="to_search_filters_activity_during_start">Add filters</string>
+    <string name="to_search_filters_activity_during">Hint: you can search by just filters if you like!</string>
+    <string name="to_search_filters_activity_after">Search again by filters alone</string>
+    <string name="to_search_results_activity_before">Hint: all results are sorted by rating.</string>
+    <string name="to_search_results_activity_during">Search results</string>
+    <string name="to_search_results_activity_after">Back to search results</string>-->
 </resources>

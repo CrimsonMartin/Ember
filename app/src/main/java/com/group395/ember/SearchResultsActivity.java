@@ -32,15 +32,9 @@ public class SearchResultsActivity extends AppCompatActivity {
      * @param searchText The name of the movie being searched.
      * @param myFilters The filters applied to the search.
      */
-    protected static void search(String searchText, Filter[] myFilters){
+    protected static void search(String searchText){
         //TODO: Retrieve a pair of movies from the search property
-        //UISearch crashes upon initialization
         UISearch mySearch = new UISearch();
-        //for(int i = 0; i < 3; i++){
-        //    if(myFilters[i] != null){
-        //        mySearch.addFilter(myFilters[i]);
-        //    }
-        //}
         loadedMovies[0] = exampleMovie;
         loadedMovies[1] = exampleMovie;
     }

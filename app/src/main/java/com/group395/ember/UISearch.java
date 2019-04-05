@@ -15,7 +15,6 @@ public class UISearch {
     private ArrayList<Filter> filters = new ArrayList<Filter>(0);  // Filter list to hold all 3 possible filters.
     private String searchTerms;                          // The search terms to access the database with
 
-
     /**
      * Default constructor for a UISearch
      */
@@ -25,6 +24,14 @@ public class UISearch {
         filters.add(new Filter(FilterType.GENRE));
         filters.add(new Filter(FilterType.DIRECTOR));
         System.out.println("Init UISearch");
+    }
+
+    /**
+     * Creates a UISearch object that can return movies matching the input title. If the input is null, all movies will match.
+     * @param input is the title or title fragment to be searched. If null, all movies match.
+     */
+    public UISearch(String input){
+        //TODO
     }
 
 
@@ -86,6 +93,7 @@ public class UISearch {
         // return movies;
     }
 
+
     /**
      * Overloads the default search method to load n number of movies rather than just 5.
      * @param n is the number of movies to load
@@ -101,4 +109,19 @@ public class UISearch {
         return movies;
     }
 
+    /**
+     * Overloads the default search method to load a page of movies between two indices.
+     * @param start is the index of the first movie to load (inclusive, 0-based)
+     * @param end is the index of the last movie to load (inclusive, 0-based)
+     * @return Array of movies to be feed data into SearchResultsActivity and MoviePageActivity
+     */
+    public List<Movie> search(int start, int end) {
+        MovieLoader loader = new MovieLoader();
+        //TODO I need a set amount of movies per page (currently 2) for SearchResultsActivity.
+        // how the load N movies knows what sort of movies to load
+        // List<Movie> movies = loader.loadMovies(this, n);
+        List<Movie> movies = new ArrayList<>();
+        movies.add(loader.loadMovie(this));
+        return movies;
+    }
 }
