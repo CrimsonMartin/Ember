@@ -3,6 +3,8 @@ package com.group395.ember;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Timer;
+
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -21,8 +23,12 @@ public class MovieSearchTest {
 
     @Test
     public void search(){
-        assertTrue(MovieSearch.search("Return of the").getResponse());
-        assertTrue(MovieSearch.search("Titan").getResponse());
-        assertFalse(MovieSearch.search("the").getResponse());
+        long start = System.nanoTime();
+        System.out.println(MovieSearch.searchFirstPage("Remember the").size());
+        long end = System.nanoTime();
+        System.out.println((end-start)/(1000000*1000.0));
+       // assertTrue(MovieSearch.search("Return of the").getResponse());
+       // assertTrue(MovieSearch.search("Titan").getResponse());
+      //  assertFalse(MovieSearch.search("the").getResponse());
     }
 }

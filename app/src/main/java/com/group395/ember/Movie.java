@@ -11,7 +11,7 @@ import java.util.Objects;
 class Movie {
 
     private String Title;
-    private String Year;
+    private Integer Year;
     private String Released;
     private String Runtime;
     private List<String> Genre;
@@ -34,11 +34,24 @@ class Movie {
     private String Response;
     private List<String> Platforms = new ArrayList<>();
 
+    //Doubles and Ints we end up using need parsed first, because many times the API passes "N/A"
+    private Double rating;
+
+    public Double getReleaseYear() {
+        return releaseYear;
+    }
+
+    public void setReleaseYear(Double releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
+    private Double releaseYear;
+
     public String getTitle() { return Title; }
     public void setTitle(String title) { Title = title; }
 
-    public String getYear() { return Year; }
-    public void setYear(String year) { Year = year; }
+    public Integer getYear() { return Year; }
+    public void setYear(Integer year) { Year = year; }
 
     public String getReleased() { return Released; }
     public void setReleased(String released) { Released = released; }
@@ -100,6 +113,9 @@ class Movie {
     public String getResponse() { return Response; }
     public void setResponse(String response) { Response = response; }
 
+    public Double getRating() {return rating; }
+    public void setRating(Double newRating) { rating = newRating; }
+
     public List<String> getPlatforms() { return Platforms; }
     public void addPlatforms(List<location> platforms){
         for (location l: platforms) {
@@ -123,20 +139,24 @@ class Movie {
     protected Movie(jsonMovie jmv){
 
         setTitle(jmv.Title);
-        setYear(jmv.Year);
         setReleased(jmv.Released);
         setRuntime(jmv.Runtime);
-        setGenre(Arrays.asList(jmv.Genre.split(",")));
-        setDirector(jmv.Director);
-        setWriter(Arrays.asList(jmv.Writer.split(",")));
-        setActors(Arrays.asList(jmv.Actors.split(",")));
-        setPlot(jmv.Plot);
-        setLanguage(jmv.Language);
+        if(jmv.Genre != null)
+            setGenre(Arrays.asList(jmv.Genre.split(",")));
+        if(jmv.Director != null)
+            setDirector(jmv.Director);
+        if(jmv.Writer != null)
+            setWriter(Arrays.asList(jmv.Writer.split(",")));
+        if(jmv.Actors != null)
+            setActors(Arrays.asList(jmv.Actors.split(",")));
+        if(jmv.Plot != null)
+            setPlot(jmv.Plot);
+        if(jmv.Language != null)
+            setLanguage(jmv.Language);
         setCountry(jmv.Country);
         setAwards(jmv.Awards);
         setPoster(jmv.Poster);
         setMetascore(jmv.Metascore);
-        setImdbRating(jmv.imdbRating);
         setImdbID(jmv.imdbID);
         setType(jmv.Type);
         setDVD(jmv.DVD);
@@ -145,16 +165,18 @@ class Movie {
         setWebsite(jmv.Website);
         setResponse(jmv.Response);
 
-    }
+        try {
+            if(jmv.imdbRating != null)
+                setImdbRating(Double.parseDouble(jmv.imdbRating));
+        }catch (NumberFormatException e){
 
-    //this version of the constructor is for loading simple movies from search results
-    protected Movie(simpleJsonMovie jmv) {
-        setTitle(jmv.Title);
-        setYear(jmv.Year);
-        setReleased(jmv.Released);
-        setImdbID(jmv.imdbID);
-        setType(jmv.Type);
-        setPoster(jmv.Poster);
+        }
+
+        try {
+            setYear(Integer.parseInt(jmv.Year));
+        }catch (NumberFormatException e){
+
+        }
     }
 
 
@@ -248,7 +270,7 @@ class Movie {
         String Awards;
         String Poster;
         String Metascore;
-        Double imdbRating;
+        String imdbRating;
         String imdbID;
         String Type;
         String DVD;
