@@ -37,7 +37,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     protected static void search(String searchText){
         //TODO: Retrieve a pair of movies from the search property
         mySearch.setSearch(searchText);
-        Movie[] moviesToLoad = mySearch.search(0,1);
+        Movie[] moviesToLoad = mySearch.getMovies(0,1);
         loadedMovies[0] = moviesToLoad[0];
         loadedMovies[1] = moviesToLoad[1];
     }
@@ -71,11 +71,19 @@ public class SearchResultsActivity extends AppCompatActivity {
 
     }
 
-    private void nextOnClick(){
-        pagesSkipped ++;
-        Movie[] moviesToLoad = mySearch.search(2 * pagesSkipped, 2 * pagesSkipped + 1);
-        if(moviesToLoad[0] == null){
-
+    public void nextOnClick(View v){
+        Movie[] moviesToLoad = mySearch.getMovies(2 * pagesSkipped + 2, 2 * pagesSkipped + 3);
+        if(moviesToLoad[0] != null){
+            pagesSkipped++;
+            loadedMovies = moviesToLoad;
+            displayAll();
+        }
+    }
+    public void prevOnClick(View v){
+        if(pagesSkipped > 0){
+            pagesSkipped--;
+            loadedMovies = mySearch.getMovies(2 * pagesSkipped + 2, 2 * pagesSkipped + 3);
+            displayAll();
         }
     }
 

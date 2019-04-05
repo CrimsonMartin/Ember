@@ -154,7 +154,7 @@
         android:layout_height="17dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:text="@string/placeholder1"
+        android:text="@string/page_placeholder"
         app:layout_constraintBaseline_toBaselineOf="@+id/nextButton"
         app:layout_constraintEnd_toStartOf="@+id/nextButton"
         app:layout_constraintStart_toEndOf="@+id/previousButton" />

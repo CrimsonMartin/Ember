@@ -157,7 +157,7 @@ public class UISearch {
         }
         catch(IndexOutOfBoundsException e) {
             System.out.println("OUT OF RANGE - RETURNING @ 0");
-            return results.get(0);
+            return null;
         }
     }
 }
