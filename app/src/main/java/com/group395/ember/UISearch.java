@@ -2,7 +2,6 @@ package com.group395.ember;
 
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Protocol for accessing the Movie Database from the GUI of the Ember app.
@@ -48,7 +47,7 @@ public class UISearch {
      * Returns the current filter being used for searching
      * @return Filter type representing current Filter
      */
-    public List<Filter> getFilters() {
+    public ArrayList<Filter> getFilters() {
         return filters;
     }
 
@@ -80,7 +79,7 @@ public class UISearch {
      * Uses the current search Filter and String to access the database
      * @return Array of movies to implement as MovieTiles later on
      */
-    public List<Movie> search() {
+    public ArrayList<Movie> search() {
         int moviesToLoad = 5;
         return search(moviesToLoad);
     }
@@ -90,12 +89,12 @@ public class UISearch {
      * @param n is the number of movies to load
      * @return Array of movies to implement as MovieTiles later on
      */
-    public List<Movie> search(int n) {
+    public ArrayList<Movie> search(int n) {
         MovieLoader loader = new MovieLoader();
         //TODO I'm turning this to load one movie, because I need some clarification on
         // how the load N movies knows what sort of movies to load
         // List<Movie> movies = loader.loadMovies(this, n);
-        List<Movie> movies = new ArrayList<>();
+        ArrayList<Movie> movies = new ArrayList<>();
         movies.add(loader.loadMovie(this));
         return movies;
     }
@@ -105,8 +104,8 @@ public class UISearch {
      * @param rawList is the unfiltered List of Movies to sort
      * @return a filtered List of Movies.
      */
-    public List<Movie> applyFilters(List<Movie> rawList) {
-        List<Movie> filteredList = new List<Movie>();
+    public ArrayList<Movie> applyFilters(ArrayList<Movie> rawList) {
+        ArrayList<Movie> filteredList = new ArrayList<Movie>();
 
         // Loops each filter for each movie to determine if they fit the filters.
         for (Filter filter : getFilters()) {
