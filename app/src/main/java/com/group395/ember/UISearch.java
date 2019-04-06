@@ -72,6 +72,7 @@ public class UISearch {
      */
     public void setSearch(String newSearch) {
         searchTerms = newSearch;
+        results = search();
     }
 
     /**
@@ -100,9 +101,8 @@ public class UISearch {
                         filteredList.remove(movie);
                 }
             }
-
-            return filteredList;
         }
+            return filteredList;
     }
 
     /**
@@ -139,7 +139,6 @@ public class UISearch {
             }
         }
         catch(IndexOutOfBoundsException e) {
-            System.out.println("OUT OF RANGE - RETURNING FIRST MOVIE ONLY");
             return null;
         }
 

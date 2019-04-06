@@ -12,33 +12,18 @@ public class SearchStartActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search_options);
-        final EditText nameText = findViewById(R.id.nameText);
-        final Button searchButton = findViewById(R.id.searchButton);
-        nameText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    nameText.setHint("");
-                    searchButton.setText(R.string.search_button);
-                } else {
-                    if(nameText.getText().toString().equals("")) {
-                        nameText.setHint(R.string.enter_name);
-                        searchButton.setText(R.string.search_without_name);
-                    }
-                }
-            }
-        });
+        setContentView(R.layout.activity_search_start);
     }
 
     public void resetOnClick(View v){
         EditText nameText = findViewById(R.id.nameText);
         nameText.setHint(R.string.enter_name);
         Button searchButton = findViewById(R.id.searchButton);
-        searchButton.setText(R.string.search_without_name);
+        searchButton.setText(R.string.search_button);
     }
 
     public void searchOnClick(View v){
-        EditText nameText = findViewById(R.id.filterText);
+        EditText nameText = findViewById(R.id.nameText);
         SearchResultsActivity.search(nameText.getText().toString());
         startActivity(new Intent(SearchStartActivity.this, SearchResultsActivity.class));
 

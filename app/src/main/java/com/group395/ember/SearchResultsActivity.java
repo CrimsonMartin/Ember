@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 public class SearchResultsActivity extends AppCompatActivity {
 
     private static Movie[] loadedMovies = new Movie[2];
@@ -36,24 +38,28 @@ public class SearchResultsActivity extends AppCompatActivity {
      */
     protected static void search(String searchText){
         //TODO: Retrieve a pair of movies from the search property
-        mySearch.setSearch(searchText);
-        Movie[] moviesToLoad = mySearch.getMovies(0,1);
-        loadedMovies[0] = moviesToLoad[0];
-        loadedMovies[1] = moviesToLoad[1];
+        //mySearch.setSearch(searchText);
+        //Movie[] moviesToLoad = mySearch.getMovies(0,1);
+        //loadedMovies[0] = moviesToLoad[0];
+        //loadedMovies[1] = moviesToLoad[1];
+        loadedMovies[0] = exampleMovie;
+        loadedMovies[1] = exampleMovie;
     }
 
-    public void searchAgainOnClick(View v){ startActivity(new Intent(SearchResultsActivity.this, SearchOptionsActivity.class)); }
+    public void searchAgainOnClick(View v){ startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class)); }
 
     public void resultButtonAOnClick(View v){
-        //TODO: Design and implement movie display page
         HistoryActivity.addClick(loadedMovies[0]);
+        MoviePageActivity.setCurrentMovie(loadedMovies[0]);
+        startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
     }
-    public void resultButtonBOnClick(View v){ HistoryActivity.addClick(loadedMovies[1]); }
+    public void resultButtonBOnClick(View v){
+        HistoryActivity.addClick(loadedMovies[1]);
+        MoviePageActivity.setCurrentMovie(loadedMovies[1]);
+        startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
+    }
 
-    /**
-     * A helper method that affixes a single movie's JSON data to pre-made display elements, which are passed as parameters.
-     * @param title Set at the top of the button, will contain the title and date in a set format.
-     */
+
     private void display(Movie inputMovie, TextView title, TextView actors, TextView director, TextView plot){
         title.setText(getApplicationContext().getString(R.string.title_with_year, inputMovie.getTitle(), inputMovie.getYear().toString()));
         actors.setText(getApplicationContext().getString(R.string.starring, stripBrackets(inputMovie.getActors().toString())));
@@ -64,15 +70,16 @@ public class SearchResultsActivity extends AppCompatActivity {
         director.bringToFront();
         plot.bringToFront();
     }
-
     private void displayAll(){
         display(loadedMovies[0], (TextView) findViewById(R.id.resultTitleA), (TextView) findViewById(R.id.resultActorsA), (TextView) findViewById(R.id.resultDirectorA), (TextView) findViewById(R.id.resultPlotA));
         display(loadedMovies[1], (TextView) findViewById(R.id.resultTitleB), (TextView) findViewById(R.id.resultActorsB), (TextView) findViewById(R.id.resultDirectorB), (TextView) findViewById(R.id.resultPlotB));
-
+        TextView pageNumber = findViewById(R.id.pageNumber);
+        pageNumber.setText(getApplicationContext().getString(R.string.page_number, pagesSkipped + 1));
     }
 
     public void nextOnClick(View v){
-        Movie[] moviesToLoad = mySearch.getMovies(2 * pagesSkipped + 2, 2 * pagesSkipped + 3);
+        //Movie[] moviesToLoad = mySearch.getMovies(2 * pagesSkipped + 2, 2 * pagesSkipped + 3);
+        Movie[] moviesToLoad = new Movie[]{exampleMovie, exampleMovie};
         if(moviesToLoad[0] != null){
             pagesSkipped++;
             loadedMovies = moviesToLoad;
@@ -82,10 +89,13 @@ public class SearchResultsActivity extends AppCompatActivity {
     public void prevOnClick(View v){
         if(pagesSkipped > 0){
             pagesSkipped--;
-            loadedMovies = mySearch.getMovies(2 * pagesSkipped + 2, 2 * pagesSkipped + 3);
+            //loadedMovies = mySearch.getMovies(2 * pagesSkipped + 2, 2 * pagesSkipped + 3);
+            loadedMovies = new Movie[]{exampleMovie, exampleMovie};
             displayAll();
         }
     }
+
+    public void backOnClick(View v){ startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class)); }
 
     private String stripBrackets(String input){ return input.substring(1, input.length() - 1); }
 }

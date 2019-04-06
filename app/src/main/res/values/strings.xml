@@ -7,7 +7,6 @@
     <string name="choose_filter">Choose a filter.</string>
     <string name="submit_filter">Filter</string>
     <string name="enter_name">Enter a name to search by.</string>
-    <string name="search_without_name">Search all movies</string>
     <string name="delete_filter">Delete</string>
     <string name="genre_filter">Enter a genre filter.</string>
     <string name="actor_filter">Enter an actor filter.</string>

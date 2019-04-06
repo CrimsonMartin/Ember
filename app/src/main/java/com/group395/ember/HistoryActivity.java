@@ -24,7 +24,7 @@ public class HistoryActivity extends AppCompatActivity {
         pageNumber.setText(getApplicationContext().getString(R.string.page_number, pagesSkipped + 1));
     }
 
-    public void searchButtonOnClick(View v){ startActivity(new Intent(HistoryActivity.this, SearchOptionsActivity.class)); }
+    public void searchButtonOnClick(View v){ startActivity(new Intent(HistoryActivity.this, SearchStartActivity.class)); }
 
     public void tileALOnClick(View v) { tileOnClick(0); }
     public void tileAROnClick(View v) { tileOnClick(1); }

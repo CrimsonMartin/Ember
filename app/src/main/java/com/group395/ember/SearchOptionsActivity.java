@@ -28,21 +28,6 @@ public class SearchOptionsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_options);
-        final EditText nameText = findViewById(R.id.nameText);
-        final Button searchButton = findViewById(R.id.searchButton);
-        nameText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    nameText.setHint("");
-                    searchButton.setText(R.string.search_button);
-                } else {
-                    if(nameText.getText().toString().equals("")) {
-                        nameText.setHint(R.string.enter_name);
-                        searchButton.setText(R.string.search_without_name);
-                    }
-                }
-            }
-        });
     }
 
     public void genreOnClick(View v){
@@ -134,7 +119,7 @@ public class SearchOptionsActivity extends AppCompatActivity {
     //TODO: doesn't work lol
     public void textOnClick(View v){
         EditText editText = findViewById(R.id.filterText);
-        editText.setText("null");
+        editText.setText(null);
     }
 
     public void resetOnClick(View v){
