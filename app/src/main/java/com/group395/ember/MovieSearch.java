@@ -119,25 +119,6 @@ public class MovieSearch {
         }
     }
 
-    public class TmdbMovie{
-        Integer vote_count;
-        Integer id;
-        Boolean video;
-        String vote_average;
-        String title;
-        String popularity;
-        String poster_path;
-        String original_language;
-        String originial_title;
-        ArrayList<Integer> genre_ids;
-
-        public Movie toMovie(){
-            String baseImageURL = "https://image.tmdb.org/t/p/w500";
-            Movie movie = new Movie(title);
-            movie.setPoster(baseImageURL+poster_path);
-            return movie;
-        }
-    }
 
     public static String tmdbSearch(String title, Integer page){
         title = title.replaceAll(" ", "+");

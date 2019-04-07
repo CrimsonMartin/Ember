@@ -115,11 +115,13 @@ class MovieLoader {
         } finally {
             httpclient.close();
         }
+
+        return null;
     }
 
-    private List<String> omdbUrlFromTitle (List<String>  titles){
+   /** private List<String> omdbUrlFromTitle (List<String>  titles){
         List<String> urls = new
-    }
+    }**/
 
     private String omdbUrlFromTitle (String title){
         title = title.replaceAll(" ", "+");

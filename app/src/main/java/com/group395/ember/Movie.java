@@ -32,6 +32,10 @@ class Movie {
     private String Production;
     private String Website;
     private String Response;
+
+
+
+    private Integer tmdbID;
     private List<String> Platforms = new ArrayList<>();
 
     //Doubles and Ints we end up using need parsed first, because many times the API passes "N/A"
@@ -46,6 +50,14 @@ class Movie {
     }
 
     private Double releaseYear;
+
+    public Integer getTmdbID() {
+        return tmdbID;
+    }
+
+    public void setTmdbID(Integer tmdbID) {
+        this.tmdbID = tmdbID;
+    }
 
     public String getTitle() { return Title; }
     public void setTitle(String title) { Title = title; }
