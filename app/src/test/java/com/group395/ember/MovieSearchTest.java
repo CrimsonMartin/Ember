@@ -23,10 +23,15 @@ public class MovieSearchTest {
 
     @Test
     public void search(){
+        String query = "end of";
         long start = System.nanoTime();
-        System.out.println(MovieSearch.searchFirstPage("Remember the").size());
+        MovieSearch.searchFirstPage(query);
         long end = System.nanoTime();
-        System.out.println((end-start)/(1000000*1000.0));
+        System.out.println("First Page: "+ (end-start)/(1000000*1000.0));
+        start = System.nanoTime();
+        System.out.println("Number of Results: "+ MovieSearch.searchFull(query).size());
+        end = System.nanoTime();
+        System.out.println("Full: "+(end-start)/(1000000*1000.0));
        // assertTrue(MovieSearch.search("Return of the").getResponse());
        // assertTrue(MovieSearch.search("Titan").getResponse());
       //  assertFalse(MovieSearch.search("the").getResponse());

@@ -1,4 +1,7 @@
 package com.group395.ember;
+
+import com.google.gson.Gson;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -6,7 +9,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import com.google.gson.Gson;
 
 public class MovieSearch {
 
@@ -67,6 +69,7 @@ public class MovieSearch {
                     results = gson.fromJson(reader, SearchResults.class);
 
                     ArrayList<Movie> moviesPage = results.getResults();
+
                     for(int i = 0; i<moviesPage.size(); i++){
                         moviesPage.set(i, loader.loadMoviebyTitle(moviesPage.get(i).getTitle()));
                     }
@@ -116,29 +119,13 @@ public class MovieSearch {
         }
     }
 
-    public class TmdbMovie{
-        Integer vote_count;
-        Integer id;
-        Boolean video;
-        String vote_average;
-        String title;
-        String popularity;
-        String poster_path;
-        String original_language;
-        String originial_title;
-        ArrayList<Integer> genre_ids;
-
-        public Movie toMovie(){
-            String baseImageURL = "https://image.tmdb.org/t/p/w500";
-            Movie movie = new Movie(title);
-            movie.setPoster(baseImageURL+poster_path);
-            return movie;
-        }
-    }
 
     public static String tmdbSearch(String title, Integer page){
         title = title.replaceAll(" ", "+");
-        return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings+ "&page=" + page + "&query=" + title;
+        if(title.length()>0)
+            return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings+ "&page=" + page + "&query=" + title;
+        else
+            return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings+ "&page=" + page;
     }
 
     static boolean close(){

@@ -5,25 +5,35 @@ import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
-
 
 class MovieLoader {
 
-    private static String omdbApiKey = "33d1a530";
+    private static int MAXNUMMOVIES = 1000;
+
+    private static String omdbApiKey = "db5b96c2";
     private static String omdbUrl = "http://www.omdbapi.com/?";
 
     private static String utelliAPIKey = "6bff01b396msh0f92aae4b854e96p1277f2jsna247a9a391a8";
     private static String utelliUrl = "https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?term=";
 
-
     private BufferedReader reader;
+
 
     @Deprecated
     List<Movie> loadMovies(UISearch uiSearch, Integer n) throws UnsupportedOperationException{
@@ -56,6 +66,19 @@ class MovieLoader {
             close();
             return null;
         }
+    }
+
+    /**
+     *
+     * @param titles a list of movie titles
+     * @return the list of movies that correspond to the
+     */
+    public List<Movie> loadMoviebyTitle(List<String> titles) throws IllegalArgumentException, IOException, InterruptedException{
+        return null;
+    }
+
+    private List<String> omdbUrlFromTitle (List<String>  titles){
+       return new ArrayList<String>();
     }
 
     private String omdbUrlFromTitle (String title){
@@ -121,6 +144,47 @@ class MovieLoader {
         catch (IOException e){
             return false;
         }
+    }
+
+
+    private static class GetThread extends Thread {
+
+        private final CloseableHttpClient httpClient;
+        private final HttpContext context;
+        private final HttpGet httpget;
+        private final int id;
+
+        public GetThread(CloseableHttpClient httpClient, HttpGet httpget, int id) {
+            this.httpClient = httpClient;
+            this.context = new BasicHttpContext();
+            this.httpget = httpget;
+            this.id = id;
+        }
+
+        /**
+         * Executes the GetMethod and prints some status information.
+         */
+        @Override
+        public void run() {
+            try {
+                System.out.println(id + " - about to get something from " + httpget.getURI());
+                CloseableHttpResponse response = httpClient.execute(httpget, context);
+                try {
+                    System.out.println(id + " - get executed");
+                    // get the response body as an array of bytes
+                    HttpEntity entity = response.getEntity();
+                    if (entity != null) {
+                        byte[] bytes = EntityUtils.toByteArray(entity);
+                        System.out.println(id + " - " + bytes.length + " bytes read");
+                    }
+                } finally {
+                    response.close();
+                }
+            } catch (Exception e) {
+                System.out.println(id + " - error: " + e);
+            }
+        }
+
     }
 
 }
