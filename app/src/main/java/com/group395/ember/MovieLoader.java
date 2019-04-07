@@ -9,8 +9,6 @@ import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
@@ -21,6 +19,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 class MovieLoader {
@@ -75,50 +74,11 @@ class MovieLoader {
      * @return the list of movies that correspond to the
      */
     public List<Movie> loadMoviebyTitle(List<String> titles) throws IllegalArgumentException, IOException, InterruptedException{
-
-        if (titles.size() > MAXNUMMOVIES){
-                throw new IllegalArgumentException("Can't search for more than " + titles.size()
-                        + " movies at once");
-        }
-
-        PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
-        cm.setMaxTotal(titles.size());
-
-        CloseableHttpClient httpclient = HttpClients.custom()
-                .setConnectionManager(cm)
-                .build();
-        try {
-            // create an array of URIs to perform GETs on
-            String[] urisToGet = {
-                    "http://hc.apache.org/",
-                    "http://hc.apache.org/httpcomponents-core-ga/",
-                    "http://hc.apache.org/httpcomponents-client-ga/",
-            };
-
-            // create a thread for each URI
-            GetThread[] threads = new GetThread[urisToGet.length];
-            for (int i = 0; i < threads.length; i++) {
-                HttpGet httpget = new HttpGet(urisToGet[i]);
-                threads[i] = new GetThread(httpclient, httpget, i + 1);
-            }
-
-            // start the threads
-            for (int j = 0; j < threads.length; j++) {
-                threads[j].start();
-            }
-
-            // join the threads
-            for (int j = 0; j < threads.length; j++) {
-                threads[j].join();
-            }
-
-        } finally {
-            httpclient.close();
-        }
+        return null;
     }
 
     private List<String> omdbUrlFromTitle (List<String>  titles){
-        List<String> urls = new
+       return new ArrayList<String>();
     }
 
     private String omdbUrlFromTitle (String title){
