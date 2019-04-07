@@ -22,6 +22,11 @@ public class MovieSearchTest {
     }
 
     @Test
+    public void searchByActor(){
+        System.out.println(MovieSearch.searchByActorFull("Matt Damon"));
+    }
+
+    @Test
     public void search(){
         String query = "end of";
         long start = System.nanoTime();
