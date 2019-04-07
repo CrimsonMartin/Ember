@@ -10,7 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class MovieSearch {
+public class MovieSuggestions {
 
     private static String tmdbApiKey = "2798eab352dd4b7d99e4a0f825802ff5";
     private static String tmdbUrl = "https://api.themoviedb.org/3/";
@@ -20,7 +20,7 @@ public class MovieSearch {
     private static BufferedReader reader = null;
 
     // Returns a list of movies
-    public static ArrayList<Movie> searchFirstPage(String title){
+    public static ArrayList<Movie> getSuggestions(String title){
         try{
             Gson gson = new Gson();
             URL obj = new URL(tmdbSearch(title, 1));
@@ -57,7 +57,7 @@ public class MovieSearch {
             SearchResults results = gson.fromJson(reader, SearchResults.class);
 
             int pages = results.getTotal_pages();
-            if(pages>20){
+            if(pages<0){
                 return null;
             }
             else{
@@ -69,7 +69,6 @@ public class MovieSearch {
                     results = gson.fromJson(reader, SearchResults.class);
 
                     ArrayList<Movie> moviesPage = results.getResults();
-
                     for(int i = 0; i<moviesPage.size(); i++){
                         moviesPage.set(i, loader.loadMoviebyTitle(moviesPage.get(i).getTitle()));
                     }

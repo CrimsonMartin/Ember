@@ -27,7 +27,7 @@ class MovieLoader {
 
     private static int MAXNUMMOVIES = 1000;
 
-    private static String omdbApiKey = "33d1a530";
+    private static String omdbApiKey = "db5b96c2";
     private static String omdbUrl = "http://www.omdbapi.com/?";
 
     private static String utelliAPIKey = "6bff01b396msh0f92aae4b854e96p1277f2jsna247a9a391a8";
