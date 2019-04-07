@@ -26,7 +26,6 @@ public class SearchStartActivity extends AppCompatActivity {
         EditText nameText = findViewById(R.id.nameText);
         SearchResultsActivity.search(nameText.getText().toString());
         startActivity(new Intent(SearchStartActivity.this, SearchResultsActivity.class));
-
     }
 
 }

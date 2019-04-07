@@ -59,6 +59,7 @@ public class SearchResultsActivity extends AppCompatActivity {
         startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
     }
 
+    public void filtersOnClick(View v){ startActivity(new Intent(SearchResultsActivity.this, SearchOptionsActivity.class)); }
 
     private void display(Movie inputMovie, TextView title, TextView actors, TextView director, TextView plot){
         title.setText(getApplicationContext().getString(R.string.title_with_year, inputMovie.getTitle(), inputMovie.getYear().toString()));

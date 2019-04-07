@@ -11,9 +11,10 @@
         android:id="@+id/radioGroupGAD"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
         android:orientation="vertical"
+        app:layout_constraintEnd_toStartOf="@+id/radioGroupDisplay"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchButton">
 
@@ -50,20 +51,20 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:onClick="searchOnClick"
-        android:text="@string/search_button"
+        android:text="@string/accept_filters"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/backButton" />
 
     <Button
         android:id="@+id/sendButton"
         android:layout_width="0dp"
         android:layout_height="46dp"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="10dp"
         android:onClick="submitOnClick"
         android:text="@string/submit_filter"
-        app:layout_constraintBottom_toBottomOf="@+id/deleteButton"
+        app:layout_constraintBottom_toTopOf="@+id/resetButton"
         app:layout_constraintEnd_toEndOf="@+id/radioGroupGAD"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/radioGroupGAD"
@@ -75,54 +76,34 @@
         android:layout_height="25dp"
         android:layout_marginTop="36dp"
         android:background="@color/editText"
-        android:hint="@string/enter_filter"
+        android:hint="@string/choose_filter"
         android:importantForAutofill="no"
         android:inputType="text"
-        android:onClick="textOnClick"
-        android:text="@string/choose_filter"
         app:layout_constraintEnd_toEndOf="@+id/radioGroupGAD"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/radioGroupGAD"
         app:layout_constraintTop_toBottomOf="@+id/radioGroupGAD" />
 
-    <EditText
-        android:id="@+id/nameText"
-        android:layout_width="0dp"
-        android:layout_height="23dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="16dp"
-        android:background="@color/editText"
-        android:hint="@string/enter_name"
-        android:importantForAutofill="no"
-        android:inputType="text"
-        android:onClick="textOnClick"
-        android:text="@string/choose_filter"
-        app:layout_constraintBottom_toTopOf="@+id/radioGroupGAD"
-        app:layout_constraintEnd_toEndOf="@+id/radioGroupDisplay"
-        app:layout_constraintStart_toStartOf="@+id/radioGroupGAD"
-        app:layout_constraintTop_toBottomOf="@+id/searchButton" />
-
     <Button
         android:id="@+id/resetButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:onClick="resetOnClick"
         android:text="@string/reset_button"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/filterText"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sendButton" />
 
     <RadioGroup
         android:id="@+id/radioGroupDisplay"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/radioGroupGAD"
@@ -131,51 +112,53 @@
         <RadioButton
             android:id="@+id/filterDisplayA"
             style="@style/CompactRadioButton"
-            android:onClick="radioAOnClick"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:onClick="radioAOnClick" />
 
         <RadioButton
             android:id="@+id/filterDisplayB"
             style="@style/CompactRadioButton"
-            android:onClick="radioBOnClick"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:onClick="radioBOnClick" />
 
         <RadioButton
             android:id="@+id/filterDisplayC"
             style="@style/CompactRadioButton"
-            android:onClick="radioCOnClick"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:onClick="radioCOnClick" />
 
         <RadioButton
             android:id="@+id/filterDisplayD"
             style="@style/CompactRadioButton"
-            android:onClick="radioDOnClick"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:onClick="radioDOnClick" />
 
         <RadioButton
             android:id="@+id/filterDisplayE"
             style="@style/CompactRadioButton"
-            android:onClick="radioEOnClick"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:onClick="radioEOnClick" />
     </RadioGroup>
 
     <Button
         android:id="@+id/deleteButton"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginTop="16dp"
-        android:text="@string/delete_filter"
+        android:layout_marginBottom="16dp"
         android:onClick="deleteOnClick"
+        android:text="@string/delete_filter"
+        app:layout_constraintBottom_toTopOf="@+id/resetButton"
         app:layout_constraintEnd_toEndOf="@+id/radioGroupDisplay"
         app:layout_constraintStart_toStartOf="@+id/radioGroupDisplay"
         app:layout_constraintTop_toBottomOf="@+id/radioGroupDisplay" />
@@ -184,12 +167,14 @@
         android:id="@+id/backButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:onClick="historyOnClick"
         android:text="@string/back"
-        app:layout_constraintEnd_toEndOf="@+id/searchButton"
-        app:layout_constraintStart_toStartOf="@+id/searchButton"
-        app:layout_constraintTop_toBottomOf="@+id/resetButton" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>
