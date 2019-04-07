@@ -281,7 +281,7 @@ class Movie {
     }
 
     //simpleJsonMovie contains only the information included in the search results
-    class simpleJsonMovie {
+    private class simpleJsonMovie {
         String Title;
         String Year;
         String Released;

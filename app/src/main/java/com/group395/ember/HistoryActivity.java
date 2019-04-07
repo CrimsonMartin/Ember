@@ -43,6 +43,7 @@ public class HistoryActivity extends AppCompatActivity {
         TextView pageNumber = findViewById(R.id.pageNumber);
         pageNumber.setText(getApplicationContext().getString(R.string.page_number, pagesSkipped + 1));
     }
+
     public void nextOnClick(View v){
         if(pagesSkipped + 1 >= recentClicks.length){
             return;
@@ -108,6 +109,7 @@ public class HistoryActivity extends AppCompatActivity {
         }
         button.setText(movie.getTitle());
     }
+
     private void displayAll(){
         display((Button) findViewById(R.id.tileAL), recentClicks[pagesSkipped][0]);
         display((Button) findViewById(R.id.tileAR), recentClicks[pagesSkipped][1]);

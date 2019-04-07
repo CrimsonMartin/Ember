@@ -1,4 +1,7 @@
 package com.group395.ember;
+
+import com.google.gson.Gson;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -6,7 +9,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import com.google.gson.Gson;
 
 public class MovieSearch {
 
@@ -67,6 +69,7 @@ public class MovieSearch {
                     results = gson.fromJson(reader, SearchResults.class);
 
                     ArrayList<Movie> moviesPage = results.getResults();
+
                     for(int i = 0; i<moviesPage.size(); i++){
                         moviesPage.set(i, loader.loadMoviebyTitle(moviesPage.get(i).getTitle()));
                     }
