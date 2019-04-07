@@ -10,6 +10,7 @@ public class AppLogger {
 
     private Logger uiLogger;
     private Logger searchLogger;
+    private File f;
 
     public AppLogger() {
         uiLogger = new Logger("UI Log", null);
@@ -31,5 +32,7 @@ public class AppLogger {
     public void log_error(String method, Exception e) {
         searchLogger.throwing("APP", method, e);
     }
+
+    public void
 
 }
