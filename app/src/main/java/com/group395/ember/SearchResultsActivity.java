@@ -97,5 +97,5 @@ public class SearchResultsActivity extends AppCompatActivity {
 
     public void backOnClick(View v){ startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class)); }
 
-    private String stripBrackets(String input){ return input.substring(1, input.length() - 1); }
+    protected static String stripBrackets(String input){ return input.substring(1, input.length() - 1); }
 }

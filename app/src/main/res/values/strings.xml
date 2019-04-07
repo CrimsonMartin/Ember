@@ -30,4 +30,12 @@
         filters after you press search. If you just want to search by actor, genre, or director,
         you can press "SEARCH" without typing anything in the search box and add whatever filters
         you like.</string>
+    <string name="actor_list">Actors: %1$s</string>
+    <string name="genre_list">Genres: %1$s</string>
+    <string name="writer_list">Writers: %1$s</string>
+    <string name="director_list">Directors: %1$s</string>
+    <string name="runtime">%1$s minutes</string>
+    <string name="metascore">Metacritic score: %1$s</string>
+    <string name="imdb_rating">IMDb rating: %1$s</string>
+    <string name="plot">Plot: </string>
 </resources>

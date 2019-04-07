@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class MoviePageActivity extends AppCompatActivity {
@@ -22,27 +23,46 @@ public class MoviePageActivity extends AppCompatActivity {
     }
 
     private void displayAll(){
-        TextView titleText, yearText, genreText, runtimeText, actorText, writerText, directorText, metascoreText, imdbRatingText, plotText;
-        titleText = findViewById(R.id.titleText);
-        yearText = findViewById(R.id.yearText);
-        genreText = findViewById(R.id.genreText);
-        runtimeText = findViewById(R.id.runtimeText);
-        actorText = findViewById(R.id.actorText);
-        writerText = findViewById(R.id.writerText);
-        directorText = findViewById(R.id.directorText);
-        metascoreText = findViewById(R.id.metascoreText);
-        imdbRatingText = findViewById(R.id.imdbRatingText);
-        plotText = findViewById(R.id.plotText);
-        titleText.setText(currentMovie.getTitle());
-        yearText.setText(currentMovie.getYear().toString());
-        genreText.setText(currentMovie.getGenre().toString());
-        runtimeText.setText(currentMovie.getRuntime());
-        actorText.setText(currentMovie.getActors().toString());
-        writerText.setText(currentMovie.getWriter().toString());
-        directorText.setText(currentMovie.getDirector());
-        metascoreText.setText(currentMovie.getMetascore());
-        imdbRatingText.setText(currentMovie.getImdbRating().toString());
-        plotText.setText(currentMovie.getPlot());
+//        TextView tempView = findViewById(R.id.titleText);
+//        tempView.setText(currentMovie.getTitle());
+//        tempView = findViewById(R.id.yearText);
+//        tempView.setText(currentMovie.getYear().toString());
+//        tempView = findViewById(R.id.genreText);
+//        tempView.setText(getApplicationContext().getString(R.string.genre_list, SearchResultsActivity.stripBrackets(currentMovie.getGenre().toString())));
+//        tempView = findViewById(R.id.runtimeText);
+//        tempView.setText(getApplicationContext().getString(R.string.runtime, SearchResultsActivity.stripBrackets(currentMovie.getRuntime())));
+//        tempView = findViewById(R.id.actorText);
+//        tempView.setText(getApplicationContext().getString(R.string.actor_list, SearchResultsActivity.stripBrackets(currentMovie.getActors().toString())));
+//        tempView = findViewById(R.id.writerText);
+//        tempView.setText(getApplicationContext().getString(R.string.writer_list, SearchResultsActivity.stripBrackets(currentMovie.getWriter().toString())));
+//        tempView = findViewById(R.id.directorText);
+//        tempView.setText(getApplicationContext().getString(R.string.director_list, SearchResultsActivity.stripBrackets(currentMovie.getDirector())));
+//        tempView = findViewById(R.id.metascoreText);
+//        tempView.setText(getApplicationContext().getString(R.string.metascore, currentMovie.getMetascore()));
+//        tempView = findViewById(R.id.imdbRatingText);
+//        tempView.setText(getApplicationContext().getString(R.string.imdb_rating, currentMovie.getImdbRating().toString()));
+//        tempView = findViewById(R.id.plotText);
+//        tempView.setText(currentMovie.getPlot());
+        Button tempDisp = findViewById(R.id.titleDisp);
+        tempDisp.setText(currentMovie.getTitle());
+        tempDisp = findViewById(R.id.yearDisp);
+        tempDisp.setText(currentMovie.getYear().toString());
+        tempDisp = findViewById(R.id.genreDisp);
+        tempDisp.setText(getApplicationContext().getString(R.string.genre_list, SearchResultsActivity.stripBrackets(currentMovie.getGenre().toString())));
+        tempDisp = findViewById(R.id.runtimeDisp);
+        tempDisp.setText(getApplicationContext().getString(R.string.runtime, SearchResultsActivity.stripBrackets(currentMovie.getRuntime())));
+        tempDisp = findViewById(R.id.actorDisp);
+        tempDisp.setText(getApplicationContext().getString(R.string.actor_list, SearchResultsActivity.stripBrackets(currentMovie.getActors().toString())));
+        tempDisp = findViewById(R.id.writerDisp);
+        tempDisp.setText(getApplicationContext().getString(R.string.writer_list, SearchResultsActivity.stripBrackets(currentMovie.getWriter().toString())));
+        tempDisp = findViewById(R.id.directorDisp);
+        tempDisp.setText(getApplicationContext().getString(R.string.director_list, SearchResultsActivity.stripBrackets(currentMovie.getDirector())));
+        tempDisp = findViewById(R.id.metascoreDisp);
+        tempDisp.setText(getApplicationContext().getString(R.string.metascore, currentMovie.getMetascore()));
+        tempDisp = findViewById(R.id.imdbRatingDisp);
+        tempDisp.setText(getApplicationContext().getString(R.string.imdb_rating, currentMovie.getImdbRating().toString()));
+        tempDisp = findViewById(R.id.plotDisp);
+        tempDisp.setText(currentMovie.getPlot());
     }
 
     protected void setMovie(Movie input){ currentMovie = input; }
