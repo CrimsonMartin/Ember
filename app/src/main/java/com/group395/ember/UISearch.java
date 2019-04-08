@@ -157,7 +157,7 @@ public class UISearch {
             }
 
         }
-        
+
         return filteredList;
     }
 }
