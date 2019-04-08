@@ -1,6 +1,8 @@
 package com.group395.ember;
 
 import com.google.gson.Gson;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -49,58 +51,59 @@ public class MovieSearch {
     }
 
     public static ArrayList<Movie> searchByActor(String actor){
-        MoviesByPersonResults movieResults = null;
         try{
             Gson gson = new Gson();
-            URL obj = new URL(tmdbSearchPeople(actor));
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-            con.setRequestMethod("GET");
-            reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            PersonResults results = gson.fromJson(reader, PersonResults.class);
 
-            Integer id = results.getId();
-            URL obj2 = new URL(tmdbMoviesByPerson(id));
-            HttpURLConnection con2 = (HttpURLConnection) obj2.openConnection();
-            con2.setRequestMethod("GET");
-            reader = new BufferedReader(new InputStreamReader(con2.getInputStream()));
-            movieResults = gson.fromJson(reader, MoviesByPersonResults.class);
-        }
-        catch (MalformedURLException e){
-            System.out.println("Title search failed: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println("Starting Search");
+            PersonResults searchedActor =  gson.fromJson(
+                    Unirest.get(tmdbSearchPeople(actor))
+                            .asJson()
+                            .getBody()
+                            .toString(),
+                    PersonResults.class);
+
+            Integer id = searchedActor.getId();
+
+            System.out.println("Actor ID is " + id);
+
+            MoviesByPersonResults movieResults = gson.fromJson(
+                    Unirest.get(tmdbMoviesByPerson(id))
+                            .asJson()
+                            .getBody()
+                            .toString(),
+                    MoviesByPersonResults.class);
+
+            return movieResults.getResults();
+
+        }catch(UnirestException e){
+            System.out.println("Unirest Exception thrown");
             return null;
-        } catch (IOException e) {
-            System.out.println("INVALID URL FORMAT");
-            e.printStackTrace();
-            return null;
-        } finally {
-            close();
         }
-        return movieResults.getResults();
     }
 
-    public static ArrayList<Movie> searchByActorFull(String actor){
+    public static ArrayList<Movie> searchByActorFull(String actor) throws InterruptedException{
         MovieLoader loader = new MovieLoader();
         ArrayList<Movie> movies = searchByActor(actor);
 
         ArrayList<String> titles = new ArrayList<>();
-        //TODO this is ineffecient - loading the list twice
         for (Movie movie : movies){
+            //System.out.println("Title getting added: " + movie.getTitle());
             titles.add(movie.getTitle());
         }
-        loader.loadMoviebyTitle(new ArrayList<String>());
+        loader.loadMoviebyTitle(titles);
 
-        try{
-            // This blocks until all the movies have been loaded
-            // if it's being executed from the main thread, then it needs to create another thread
-            // that calls this function instead of directly calling it.
-            for(int i = 0; i<movies.size(); i++){
-                movies.set(i, loader.loadedmovies.take());
-            }
-        }catch(InterruptedException e){
-            //pass
+        System.out.println("Loading " + movies.size() + " movies");
+
+        ArrayList<Movie> returned = new ArrayList<>();
+
+        // This blocks until all the movies have been loaded
+        // if it's being executed from the main thread, then it needs to create another thread
+        // that calls this function instead of directly calling it.
+        while (returned.size() < movies.size()){
+            returned.add(loader.loadedmovies.take());
         }
-        return movies;
+
+        return returned;
     }
 
     public static ArrayList<Movie> searchFull(String title){
