@@ -23,7 +23,7 @@ public class MovieLoader {
 
 
     private static int MAXNUMMOVIES = 1000;
-    private static int MAXNUMTHREADS = 5;
+    private static int MAXNUMTHREADS = 8;
     private BlockingQueue<String> movietitles = new ArrayBlockingQueue<>(MAXNUMMOVIES);
     private ExecutorService executor = Executors.newFixedThreadPool(MAXNUMTHREADS);
     private ThreadPoolExecutor pool = (ThreadPoolExecutor) executor;
