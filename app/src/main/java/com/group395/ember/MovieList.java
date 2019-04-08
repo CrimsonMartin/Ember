@@ -19,11 +19,9 @@ public class MovieList {
         return loader.close();
     }
 
-
     public void sort(){
         //TODO
     }
-
 
     public Integer getN() {
         return N;

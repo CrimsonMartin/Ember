@@ -1,11 +1,17 @@
 package com.group395.ember;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
 public class MovieLoaderTest {
@@ -25,22 +31,41 @@ public class MovieLoaderTest {
         goalSpaceJam.setProduction("Warner Home Video");
     }
 
-
-    /*@Test
-    public void testUrlConlstructionTest(){
-        String title = ml.omdbUrlFromTitle("Space Jam");
-        assertEquals("http://www.omdbapi.com/?apikey=33d1a530&t=Space+Jam&plot=full", title);
-    }*/
-
     @Test
     public void testLoadingMovie(){
-        Movie actual = ml.loadMoviebyTitle("Space Jam");
-        assertEquals(goalSpaceJam, actual);
-        Movie actual2 = ml.loadMoviebyTitle("Attack On Titan");
-        System.out.println(actual2.getTitle());
+        ml.loadMoviebyTitle("Space Jam");
+        try{
+            assertEquals(goalSpaceJam, ml.loadedmovies.take());
+        } catch (InterruptedException e){
+            fail();
+        }
     }
 
     @Test
+    public void testLoadingManyMovies(){
+        ml.loadMoviebyTitle(new ArrayList<String>(){{
+            add("Space Jam");
+            add("Remember the titans");
+            add("Saving private Ryan");
+            add("Silver linings Playbook");
+        }});
+        try {
+            Set<String> returned = new LinkedHashSet<String>();
+            returned.add(ml.loadedmovies.take().getTitle());
+            returned.add(ml.loadedmovies.take().getTitle());
+            returned.add(ml.loadedmovies.take().getTitle());
+            returned.add(ml.loadedmovies.take().getTitle());
+            assertTrue(returned.contains("Space Jam"));
+            assertTrue(returned.contains("Remember the Titans"));
+            assertTrue(returned.contains("Saving Private Ryan"));
+            assertTrue(returned.contains("Silver Linings Playbook"));
+        }catch(InterruptedException e){
+            fail();
+        }
+
+    }
+
+    @Ignore
     public void loadPlatformsfromWeb(){
         ml.loadPlatforms(goalSpaceJam);
         assertEquals("[Rakuten TV, TalkTalk TV Store, Sky Family HD (United Kingdom), Sky Cinema Family, iTunes, Amazon Prime, Now TV]", goalSpaceJam.getPlatforms().toString());

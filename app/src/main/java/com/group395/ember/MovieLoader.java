@@ -1,120 +1,172 @@
-package com.group395.ember.MovieLoader;
+package com.group395.ember;
 
 import android.os.AsyncTask;
+import android.support.annotation.VisibleForTesting;
 
-import com.group395.ember.UISearch;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
-import java.io.BufferedReader;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
-
-import com.group395.ember.Movie;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class MovieLoader {
 
     private static int MAXNUMMOVIES = 1000;
+    private static int MAXNUMTHREADS = 5;
+    private BlockingQueue<String> movietitles = new ArrayBlockingQueue<>(MAXNUMMOVIES);
+    public BlockingQueue<Movie> loadedmovies = new ArrayBlockingQueue<>(MAXNUMMOVIES);
+    private ExecutorService executor = Executors.newFixedThreadPool(MAXNUMTHREADS);
+    private ThreadPoolExecutor pool = (ThreadPoolExecutor) executor;
+    private static boolean run = true;
 
-    private static String omdbApiKey = "db5b96c2";
-    private static String omdbUrl = "http://www.omdbapi.com/?";
+    private class MovieLoaderThread implements Runnable {
 
-    private static String utelliAPIKey = "6bff01b396msh0f92aae4b854e96p1277f2jsna247a9a391a8";
-    private static String utelliUrl = "https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?term=";
+        private static final String omdbApiKey = "db5b96c2";
+        private static final String omdbUrl = "http://www.omdbapi.com/?";
 
-    private BufferedReader reader;
+        private String omdbUrlFromTitle (String title)throws MalformedURLException {
+            title = title.replaceAll(" ", "+");
+            return omdbUrl +"apikey=" + omdbApiKey + "&t=" + title + "&plot=full";
+        }
 
+        @Override
+        public void run() {
 
-    @Deprecated
-    List<Movie> loadMovies(UISearch uiSearch, Integer n) throws UnsupportedOperationException{
-        //How does this know what kind of movies to search for?
-        throw new UnsupportedOperationException();
+            while (MovieLoader.run && movietitles.peek() != null) {
+
+                //System.out.println("Loader thread starting");
+                String movietitle ;
+                String response = null;
+
+                try {
+                    movietitle = movietitles.take();
+                    //System.out.println("Loading title: " + movietitle);
+                    String url = omdbUrlFromTitle(movietitle);
+
+                    response = Unirest.get(url).asJson().getBody().toString();
+
+                } catch (UnirestException | MalformedURLException | InterruptedException e) {
+                    //System.out.println("loading failed " + e.getMessage());
+                }
+                try {
+                    if (response != null) {
+                        loadedmovies.put(Movie.parseFromJson(response));
+                    }
+                } catch (InterruptedException e) {
+                    return;
+                }
+                movietitle = null;
+            }
+            //System.out.println("Queue is empty, thread terminating");
+        }
+
     }
 
-    /**
-     * @param uiSearch the search input from the user, attempting to find a particular movie
-     * @return the movie object if the loading was successful, and null otherwise
-     */
-    public Movie loadMovie( UISearch uiSearch ){
-        return loadMoviebyTitle(uiSearch.getSearch());
-    }
+    private class LoadPlatformsTask extends AsyncTask<Movie, Void, Void> {
 
-    /**
-     *
-     * @param title the string representation of the title of the movie we want to know more about
-     * @return the movie object if the loading was successful, and null otherwise
-     */
-    public Movie loadMoviebyTitle(String title) {
-        List<String> titlelist = new ArrayList<>();
-        titlelist.add(title);
-        List<Movie> movies = loadMoviebyTitle(titlelist);
-        return movies.get(0);
-    }
+        private String utelliAPIKey = "6bff01b396msh0f92aae4b854e96p1277f2jsna247a9a391a8";
+        private String utelliUrl = "https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?term=";
 
-    /**
-     *
-     * @param titles a list of movie titles
-     * @return the list of movies that correspond to the
-     */
-    public List<Movie> loadMoviebyTitle(List<String> titles) /*throws IllegalArgumentException, IOException, InterruptedException*/{
-        List<URL> urls = omdbUrlFromTitle(titles);
+        private String createUtelliSearchURL(String movieTitle) {
+            return utelliUrl + movieTitle.replaceAll(" ", "+").toLowerCase();
+        }
 
+        @Override
+        protected Void doInBackground(Movie... movies) {
+            try {
+                HttpResponse<JsonNode> response = Unirest.get(createUtelliSearchURL(movies[0].getTitle()))
+                        .header("X-RapidAPI-Key", utelliAPIKey)
+                        .asJson();
 
+                if (!isCancelled()){
+                    movies[0].addPlatforms(response.getBody().toString());
+                }
 
-        return null;
-    }
-
-    private List<URL> omdbUrlFromTitle (List<String>  titles){
-       List<URL> urls = new ArrayList<>();
-       try {
-           for (String t : titles) {
-               urls.add(omdbUrlFromTitle(t));
-           }
-       }catch (MalformedURLException e){
-           System.out.println("Malformed URL: " + e.getMessage());
-           return null;
-       }
-       return urls;
-    }
-
-    private URL omdbUrlFromTitle (String title) throws MalformedURLException {
-        title = title.replaceAll(" ", "+");
-        return new URL(omdbUrl +"apikey=" + omdbApiKey + "&t=" + title + "&plot=full");
-    }
-
-
-    private String createUtelliSearchURL(String movieTitle){
-        return utelliUrl + movieTitle.replaceAll(" ", "+").toLowerCase();
-    }
-
-    /**
-     *
-     * @param m Movie object to load the available platforms for
-     */
-    void loadPlatforms(Movie m){
-        try{
-            HttpResponse<JsonNode> response = Unirest.get(createUtelliSearchURL(m.getTitle()))
-                .header("X-RapidAPI-Key", utelliAPIKey)
-                .asJson();
-
-            loadPlatforms(m,response.getBody().toString());
-
-        }catch (UnirestException e){
-            System.out.println("loading platform failed, exception " + e.getMessage());
+            } catch (UnirestException e) {
+                //System.out.println("loading platform failed, exception " + e.getMessage());
+            }
+            return null;
         }
     }
 
     /**
-     *
-     * @param m the movie to load the available platforms for
+     * @param title the string representation of the title of the movie we want to know more about
+     * @return the movie object if the loading was successful, and null otherwise
+     */
+    public void loadMoviebyTitle(String title) {
+        movietitles.add(title);
+        //System.out.println("Starting new thread");
+        //System.out.println("Titlelist has" + movietitles.peek());
+        executor.submit(new MovieLoaderThread());
+    }
+
+    /**
+     * @param titles a list of movie titles to be loaded
+     * @return the list of movies that correspond to the titles
+     */
+    public void loadMoviebyTitle(List<String> titles) {
+        //System.out.println("attempting to put all titles");
+        if (!attemptPutAll(titles)) return;
+        //System.out.println("Put "  + movietitles.size() + " elements");
+
+        //System.out.println("Active Count is "+ pool.getActiveCount());
+        //System.out.println("Max Size  is " + pool.getMaximumPoolSize());
+        while (pool.getActiveCount() < pool.getMaximumPoolSize()) {
+            //System.out.println("Pool Submitting Thread");
+            executor.submit(new MovieLoaderThread());
+            //System.out.println("Pool size is now "+ pool.getActiveCount());
+        }
+    }
+
+    private boolean attemptPutAll(List<String> titles){
+        try{
+            for (String str : titles){
+                movietitles.put(str);
+            }
+        }catch(InterruptedException e){
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @param m Movie object to load the available platforms for
+     */
+    public void loadPlatforms(Movie m) {
+        LoadPlatformsTask t = new LoadPlatformsTask();
+        t.execute(m);
+    }
+
+    /**
+     * This only exists for unit testing, because Utelly costs money if we go over our number of api calls per month.
+     * Don't actually use this.
+     * @param m    the movie to load the available platforms for
      * @param json String representation of the json response from requesting the available platforms from UTelli
      */
-    void loadPlatforms(Movie m, String json){
+    @VisibleForTesting
+    void loadPlatforms(Movie m, String json) {
         m.addPlatforms(json);
     }
 
+    /**
+     *
+     * @return if the close process was completed successfully or not
+     */
+    boolean close() {
+        MovieLoader.run = false;
+        try {
+            executor.awaitTermination(2, TimeUnit.SECONDS);
+        } catch(InterruptedException e){
+            executor.shutdownNow();
+        }
+        return executor.isShutdown();
+    }
 }

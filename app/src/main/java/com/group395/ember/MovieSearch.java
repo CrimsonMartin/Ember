@@ -9,6 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MovieSearch {
 
@@ -70,10 +71,14 @@ public class MovieSearch {
 
                     ArrayList<Movie> moviesPage = results.getResults();
 
-                    for(int i = 0; i<moviesPage.size(); i++){
-                        moviesPage.set(i, loader.loadMoviebyTitle(moviesPage.get(i).getTitle()));
+                    try{
+                        loader.loadMoviebyTitle(collectTitles(results.getResults()));
+                        for (Movie m : moviesPage){
+                            movieResults.add(loader.loadedmovies.take());
+                        }
+                    }catch(InterruptedException e){
+                        //pass
                     }
-                    movieResults.addAll(moviesPage);
                 }
             }
             return movieResults;
@@ -89,6 +94,14 @@ public class MovieSearch {
             close();
             return null;
         }
+    }
+
+    private static List<String> collectTitles(List<Movie> results){
+        List<String> titles = new ArrayList<>();
+        for (Movie m : results){
+            titles.add(m.getTitle());
+        }
+        return titles;
     }
 
     //This is the class Gson parses to return the search results

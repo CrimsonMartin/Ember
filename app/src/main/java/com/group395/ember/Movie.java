@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-class Movie {
+public class Movie {
 
     private String Title;
     private Integer Year;

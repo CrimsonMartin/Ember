@@ -1,14 +1,7 @@
 package com.group395.ember;
 
 import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Timer;
-
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.Ignore;
 
 public class MovieSearchTest {
 
@@ -21,7 +14,7 @@ public class MovieSearchTest {
     public void initialize(){
     }
 
-    @Test
+    @Ignore
     public void search(){
         String query = "end of";
         long start = System.nanoTime();
