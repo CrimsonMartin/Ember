@@ -37,6 +37,10 @@ public class Filter {
         filterKeywords = genres;
     }
 
+    public String[] getKeywords(){
+        return filterKeywords;
+    }
+    
     public void add(String input){
         String[] tempKeywords = new String[filterKeywords.length + 1];
         for(int i = 0; i < filterKeywords.length; i++){
