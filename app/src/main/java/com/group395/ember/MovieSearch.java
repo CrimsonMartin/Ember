@@ -49,6 +49,7 @@ public class MovieSearch {
     }
 
     public static ArrayList<Movie> searchByActor(String actor){
+        MoviesByPersonResults movieResults = null;
         try{
             Gson gson = new Gson();
             URL obj = new URL(tmdbSearchPeople(actor));
@@ -62,27 +63,42 @@ public class MovieSearch {
             HttpURLConnection con2 = (HttpURLConnection) obj2.openConnection();
             con2.setRequestMethod("GET");
             reader = new BufferedReader(new InputStreamReader(con2.getInputStream()));
-            MoviesByPersonResults movieResults = gson.fromJson(reader, MoviesByPersonResults.class);
-            return movieResults.getResults();
+            movieResults = gson.fromJson(reader, MoviesByPersonResults.class);
         }
         catch (MalformedURLException e){
             System.out.println("Title search failed: " + e.getMessage());
             e.printStackTrace();
-            close();
             return null;
         } catch (IOException e) {
             System.out.println("INVALID URL FORMAT");
             e.printStackTrace();
-            close();
             return null;
+        } finally {
+            close();
         }
+        return movieResults.getResults();
     }
 
     public static ArrayList<Movie> searchByActorFull(String actor){
         MovieLoader loader = new MovieLoader();
         ArrayList<Movie> movies = searchByActor(actor);
-        for(int i = 0; i<movies.size(); i++){
-            movies.set(i, loader.loadMoviebyTitle(movies.get(i).getTitle()));
+
+        ArrayList<String> titles = new ArrayList<>();
+        //TODO this is ineffecient - loading the list twice
+        for (Movie movie : movies){
+            titles.add(movie.getTitle());
+        }
+        loader.loadMoviebyTitle(new ArrayList<String>());
+
+        try{
+            // This blocks until all the movies have been loaded
+            // if it's being executed from the main thread, then it needs to create another thread
+            // that calls this function instead of directly calling it.
+            for(int i = 0; i<movies.size(); i++){
+                movies.set(i, loader.loadedmovies.take());
+            }
+        }catch(InterruptedException e){
+            //pass
         }
         return movies;
     }
