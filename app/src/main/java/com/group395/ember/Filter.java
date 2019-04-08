@@ -1,8 +1,6 @@
 package com.group395.ember;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class Filter {
 
@@ -17,38 +15,35 @@ public class Filter {
     private Logger log = new Logger();
 
     /**
-     * Creates a new filter with the given Movie's genres as the filterKeywords and type.
-     * Defaults to genre filter type.
-     * @param movie to base the filter off of.
+     * Creates an empty filter given a FilterType.
+     * @param filterType to use for the new Filter
      */
-    private Filter(Movie movie) {
-        filterType = FilterType.genres;
-    }
-
-    /**
-     * Creates and retuns a Filter based on a Movie's genre, directors, and actors.
-     * @param movie is the Movie object to build the Filter off of.
-     * @return a new Filter object to apply to searches.
-     */
-    public Filter setFilter(Movie movie) {
-        return new Filter(movie);
-    }
+    public Filter(FilterType filterType) { this.filterType = filterType; }
 
 
     // All of these pretty much do the same thing: Change the filter to the method name and fill in the keywords
     public void setDirectors(String[] directors) {
-        filterType = FilterType.directors;
+        filterType = FilterType.DIRECTOR;
         filterKeywords = directors;
     }
 
     public void setActors(String[] actors) {
-        filterType = FilterType.actors;
+        filterType = FilterType.ACTOR;
         filterKeywords = actors;
     }
 
     public void setGenres(String[] genres) {
-        filterType = FilterType.genres;
+        filterType = FilterType.GENRE;
         filterKeywords = genres;
+    }
+
+    public void add(String input){
+        String[] tempKeywords = new String[filterKeywords.length + 1];
+        for(int i = 0; i < filterKeywords.length; i++){
+            tempKeywords[i] = filterKeywords[i];
+        }
+        tempKeywords[filterKeywords.length] = input;
+        filterKeywords = tempKeywords;
     }
 
 
@@ -59,16 +54,16 @@ public class Filter {
      */
     public boolean fitsFilter(Movie movie) {
 
-       List<String> compareTo = new ArrayList<>();
+        ArrayList<String> compareTo = new ArrayList<>();
 
         switch(filterType){
-            case actors:
+            case ACTOR:
                 compareTo.addAll(movie.getActors());
                 break;
-            case genres:
+            case GENRE:
                 compareTo.addAll(movie.getGenre());
             break;
-            case directors:
+            case DIRECTOR:
                 compareTo.add(movie.getDirector());
                 break;
             default:

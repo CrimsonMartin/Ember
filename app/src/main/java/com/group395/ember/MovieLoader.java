@@ -1,29 +1,33 @@
-package com.group395.ember;
+package com.group395.ember.MovieLoader;
 
+import android.os.AsyncTask;
+
+import com.group395.ember.UISearch;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
 import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
+import com.group395.ember.Movie;
 
-class MovieLoader {
+public class MovieLoader {
 
-    private static String omdbApiKey = "33d1a530";
+    private static int MAXNUMMOVIES = 1000;
+
+    private static String omdbApiKey = "db5b96c2";
     private static String omdbUrl = "http://www.omdbapi.com/?";
 
     private static String utelliAPIKey = "6bff01b396msh0f92aae4b854e96p1277f2jsna247a9a391a8";
     private static String utelliUrl = "https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?term=";
 
-
     private BufferedReader reader;
+
 
     @Deprecated
     List<Movie> loadMovies(UISearch uiSearch, Integer n) throws UnsupportedOperationException{
@@ -44,42 +48,44 @@ class MovieLoader {
      * @param title the string representation of the title of the movie we want to know more about
      * @return the movie object if the loading was successful, and null otherwise
      */
-    Movie loadMoviebyTitle(String title){
-
-        try{
-            openTitleConnection(title);
-            return Movie.parseFromJson(reader);
-        }
-        catch (IOException e){
-            System.out.println("Title search failed: " + e.getMessage());
-            e.printStackTrace();
-            close();
-            return null;
-        }
-
-
+    public Movie loadMoviebyTitle(String title) {
+        List<String> titlelist = new ArrayList<>();
+        titlelist.add(title);
+        List<Movie> movies = loadMoviebyTitle(titlelist);
+        return movies.get(0);
     }
 
-    private String omdbUrlFromTitle (String title){
+    /**
+     *
+     * @param titles a list of movie titles
+     * @return the list of movies that correspond to the
+     */
+    public List<Movie> loadMoviebyTitle(List<String> titles) /*throws IllegalArgumentException, IOException, InterruptedException*/{
+        List<URL> urls = omdbUrlFromTitle(titles);
+
+
+
+        return null;
+    }
+
+    private List<URL> omdbUrlFromTitle (List<String>  titles){
+       List<URL> urls = new ArrayList<>();
+       try {
+           for (String t : titles) {
+               urls.add(omdbUrlFromTitle(t));
+           }
+       }catch (MalformedURLException e){
+           System.out.println("Malformed URL: " + e.getMessage());
+           return null;
+       }
+       return urls;
+    }
+
+    private URL omdbUrlFromTitle (String title) throws MalformedURLException {
         title = title.replaceAll(" ", "+");
-        return omdbUrl +"apikey=" + omdbApiKey + "&t=" + title + "&plot=full";
+        return new URL(omdbUrl +"apikey=" + omdbApiKey + "&t=" + title + "&plot=full");
     }
 
-    private void openTitleConnection (String title) throws IOException{
-
-        try{
-            URL obj = new URL(omdbUrlFromTitle(title));
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-            con.setRequestMethod("GET");
-
-            reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-
-        } catch (MalformedURLException e) {
-            System.out.println("INVALID URL FORMAT");
-            e.printStackTrace();
-            close();
-        }
-    }
 
     private String createUtelliSearchURL(String movieTitle){
         return utelliUrl + movieTitle.replaceAll(" ", "+").toLowerCase();
@@ -109,20 +115,6 @@ class MovieLoader {
      */
     void loadPlatforms(Movie m, String json){
         m.addPlatforms(json);
-    }
-
-    /**
-     *
-     * @return boolean whether or not the connection was closed successfuly
-     */
-    boolean close(){
-        try{
-            reader.close();
-            return true;
-        }
-        catch (IOException e){
-            return false;
-        }
     }
 
 }

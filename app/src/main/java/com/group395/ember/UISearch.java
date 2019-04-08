@@ -2,7 +2,6 @@ package com.group395.ember;
 
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Protocol for accessing the Movie Database from the GUI of the Ember app.
@@ -12,31 +11,43 @@ import java.util.List;
 
 public class UISearch {
 
-    private Filter filter;          // The filter to apply to the current search criteria
-    private String searchTerms;     // The search terms to access the database with
-
+    private ArrayList<Filter> filters = new ArrayList<Filter>(0);  // Filter list to hold all 3 possible filters.
+    private String searchTerms;                                                 // The search terms to access the database with
+    private ArrayList<Movie> results;                                                // Results from an API call
 
     /**
      * Default constructor for a UISearch
      */
     public UISearch() {
-        System.out.println("New UISearch");
+        // Creating basic filters as placeholders
+        filters.add(new Filter(FilterType.ACTOR));
+        filters.add(new Filter(FilterType.GENRE));
+        filters.add(new Filter(FilterType.DIRECTOR));
+        System.out.println("Init UISearch");
     }
 
     /**
-     * Sets a new filter for application to search criteria
-     * @param newFilter is the new Filter object to use for searching
+     * Adds a new filter to the current search. If there exists a Filter with the same FilterType,
+     * the old Filter will be overwritten.
+     * @param newFilter is a new Filter to use.
      */
-    public void setFilter(Filter newFilter) {
-        filter = newFilter;
+    public void addFilter(Filter newFilter) {
+        for (int i = 0; i < 3; i++) {
+            // If the two filters have the same enum type, replace the old one
+            if (getFilters().get(i).getFilterType().equals(newFilter.getFilterType())) {
+                getFilters().set(i, newFilter);
+                return;
+            }
+        }
     }
+
 
     /**
      * Returns the current filter being used for searching
      * @return Filter type representing current Filter
      */
-    public Filter getFilter() {
-        return filter;
+    public ArrayList<Filter> getFilters() {
+        return filters;
     }
 
     /**
@@ -46,7 +57,6 @@ public class UISearch {
     public String getSearch() {
         return searchTerms;
     }
-
 
     /**
      * Clears the current search field. Should be called from the GUI upon clearing the search bar
@@ -62,31 +72,91 @@ public class UISearch {
      */
     public void setSearch(String newSearch) {
         searchTerms = newSearch;
+        results = search();
     }
 
     /**
-     * Uses the current search Filter and String to access the database
-     * @return Array of movies to implement as MovieTiles later on
+     * Sorts the Movies by checking if they are applicable to each filter.
+     * @param rawList is the unfiltered List of Movies to sort
+     * @return a filtered List of Movies.
      */
-    public List<Movie> search() {
-        int moviesToLoad = 5;
-        return search(moviesToLoad);
-        // return movies;
+    public ArrayList<Movie> applyFilters(ArrayList<Movie> rawList) {
+        ArrayList<Movie> filteredList = new ArrayList<Movie>();
+
+        // Loops each filter for each movie to determine if they fit the filters.
+        for (Filter filter : getFilters()) {
+
+            if (filteredList.size() == 0) {
+                for (Movie movie : rawList) {
+                    if (filter.fitsFilter(movie))
+                        filteredList.add(movie);
+                }
+            }
+
+            // Narrowing in on remaining movies with the rest of the filters.
+            else {
+                for (Movie movie : filteredList) {
+                    // If it does not fit the next filter, remove it.
+                    if (!filter.fitsFilter(movie))
+                        filteredList.remove(movie);
+                }
+            }
+        }
+            return filteredList;
     }
 
     /**
-     * Overloads the default search method to load n number of movies rather than just 5.
-     * @param n is the number of movies to load
-     * @return Array of movies to implement as MovieTiles later on
+     * Default search method to make a Movie api call to get some amount of Movies (stores in results and returns).
+     * @return List of Movies
      */
-    public List<Movie> search(int n) {
-        MovieLoader loader = new MovieLoader();
-        //TODO I'm turning this to load one movie, because I need some clarification on
-        // how the load N movies knows what sort of movies to load
-        // List<Movie> movies = loader.loadMovies(this, n);
-        List<Movie> movies = new ArrayList<>();
-        movies.add(loader.loadMovie(this));
-        return movies;
+    public ArrayList<Movie> search() {
+        results = applyFilters(MovieSearch.searchFirstPage(String.join(" ", getSearch())));
+        return results;
     }
 
+    /**
+     * Extended search method to make an API call. Gets "all" of the related results based on title then filters results.
+     * @return List of Movies
+     */
+    public ArrayList<Movie> searchFull() {
+        // Calls a full search and converts the keywords (String[]) to a single String separated by spaces/
+        results = applyFilters(MovieSearch.searchFull(String.join(" ", getSearch())));
+        return results;
+    }
+
+    /**
+     * Returns an array of Movies from index start to index end
+     * @param start left bound of the array.
+     * @param end right right of the array.
+     * @return array of Movies
+     */
+    public Movie[] getMovies(int start, int end) {
+        Movie[] arr = new Movie[start - end + 1];
+
+        try {
+            for (int i = start; i <= end; i++) {
+                arr[i] = results.get(i);
+            }
+        }
+        catch(IndexOutOfBoundsException e) {
+            return null;
+        }
+
+        return arr;
+    }
+
+    /**
+     * Returns the Movie at the given index.
+     * @param i the index of Movie to return.
+     * @return Movie
+     */
+    public Movie getMovie(int i) {
+        try {
+            return results.get(i);
+        }
+        catch(IndexOutOfBoundsException e) {
+            System.out.println("OUT OF RANGE - RETURNING @ 0");
+            return null;
+        }
+    }
 }

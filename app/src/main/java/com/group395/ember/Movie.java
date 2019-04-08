@@ -23,7 +23,7 @@ class Movie {
     private String Country;
     private String Awards;
     private String Poster;
-    private Integer Metascore;
+    private String Metascore;
     private Double imdbRating;
     private String imdbID;
     private String Type;
@@ -33,199 +33,111 @@ class Movie {
     private String Website;
     private String Response;
 
+
+
+    private Integer tmdbID;
     private List<String> Platforms = new ArrayList<>();
 
-    String getTitle() {
-        return Title;
+    //Doubles and Ints we end up using need parsed first, because many times the API passes "N/A"
+    private Double rating;
+
+    public Double getReleaseYear() {
+        return releaseYear;
     }
 
-    void setTitle(String title) {
-        Title = title;
+    public void setReleaseYear(Double releaseYear) {
+        this.releaseYear = releaseYear;
     }
 
-    Integer getYear() {
-        return Year;
+    private Double releaseYear;
+
+    public Integer getTmdbID() {
+        return tmdbID;
     }
 
-    void setYear(Integer year) {
-        Year = year;
+    public void setTmdbID(Integer tmdbID) {
+        this.tmdbID = tmdbID;
     }
 
-    String getReleased() {
-        return Released;
-    }
+    public String getTitle() { return Title; }
+    public void setTitle(String title) { Title = title; }
 
-    void setReleased(String released) {
-        Released = released;
-    }
+    public Integer getYear() { return Year; }
+    public void setYear(Integer year) { Year = year; }
 
-    String getRuntime() {
-        return Runtime;
-    }
+    public String getReleased() { return Released; }
+    public void setReleased(String released) { Released = released; }
 
-    void setRuntime(String runtime) {
-        Runtime = runtime;
-    }
+    public String getRuntime() { return Runtime; }
+    public void setRuntime(String runtime) { Runtime = runtime; }
 
-    List<String> getGenre() {
-        return Genre;
-    }
+    public List<String> getGenre() { return Genre; }
+    public void setGenre(List<String> genre) { Genre = genre; }
 
-    void setGenre(List<String> genre) {
-        Genre = genre;
-    }
+    public String getDirector() { return Director; }
+    public void setDirector(String director) { Director = director; }
 
-    String getDirector() {
-        return Director;
-    }
+    public List<String> getWriter() { return Writer; }
+    public void setWriter(List<String> writer) { Writer = writer; }
 
-    void setDirector(String director) {
-        Director = director;
-    }
+    public List<String> getActors() { return Actors; }
+    public void setActors(List<String> actors) { Actors = actors; }
 
-    List<String> getWriter() {
-        return Writer;
-    }
+    public String getPlot() { return Plot; }
+    public void setPlot(String plot) { Plot = plot; }
 
-    void setWriter(List<String> writer) {
-        Writer = writer;
-    }
+    public String getLanguage() { return Language; }
+    public void setLanguage(String language) { Language = language; }
 
-    List<String> getActors() {
-        return Actors;
-    }
+    public String getCountry() { return Country; }
+    public void setCountry(String country) { Country = country; }
 
-    void setActors(List<String> actors) {
-        Actors = actors;
-    }
+    public String getAwards() { return Awards; }
+    public void setAwards(String awards) { Awards = awards; }
 
-    String getPlot() {
-        return Plot;
-    }
+    public String getPoster() { return Poster; }
+    public void setPoster(String poster) { Poster = poster; }
 
-    void setPlot(String plot) {
-        Plot = plot;
-    }
+    public String getMetascore() { return Metascore; }
+    public void setMetascore(String metascore) { Metascore = metascore; }
 
-    String getLanguage() {
-        return Language;
-    }
+    public Double getImdbRating() { return imdbRating; }
+    public void setImdbRating(Double imdbRating) { this.imdbRating = imdbRating; }
 
-    void setLanguage(String language) {
-        Language = language;
-    }
+    public String getImdbID() { return imdbID; }
+    public void setImdbID(String imdbID) { this.imdbID = imdbID; }
 
-    String getCountry() {
-        return Country;
-    }
+    public String getType() { return Type; }
+    public void setType(String type) { Type = type; }
 
-    void setCountry(String country) {
-        Country = country;
-    }
+    public String getDVD() { return DVD; }
+    public void setDVD(String DVD) { this.DVD = DVD; }
 
-    String getAwards() {
-        return Awards;
-    }
+    public String getBoxOffice() { return BoxOffice; }
+    public void setBoxOffice(String boxOffice) { BoxOffice = boxOffice; }
 
-    void setAwards(String awards) {
-        Awards = awards;
-    }
+    public String getProduction() { return Production; }
+    public void setProduction(String production) { Production = production; }
 
-    String getPoster() {
-        return Poster;
-    }
+    public String getWebsite() { return Website; }
+    public void setWebsite(String website) { Website = website; }
 
-    void setPoster(String poster) {
-        Poster = poster;
-    }
+    public String getResponse() { return Response; }
+    public void setResponse(String response) { Response = response; }
 
-    Integer getMetascore() {
-        return Metascore;
-    }
+    public Double getRating() {return rating; }
+    public void setRating(Double newRating) { rating = newRating; }
 
-    void setMetascore(Integer metascore) {
-        Metascore = metascore;
-    }
-
-    Double getImdbRating() {
-        return imdbRating;
-    }
-
-    void setImdbRating(Double imdbRating) {
-        this.imdbRating = imdbRating;
-    }
-
-    String getImdbID() {
-        return imdbID;
-    }
-
-    void setImdbID(String imdbID) {
-        this.imdbID = imdbID;
-    }
-
-    String getType() {
-        return Type;
-    }
-
-    void setType(String type) {
-        Type = type;
-    }
-
-    String getDVD() {
-        return DVD;
-    }
-
-    void setDVD(String DVD) {
-        this.DVD = DVD;
-    }
-
-    String getBoxOffice() {
-        return BoxOffice;
-    }
-
-    void setBoxOffice(String boxOffice) {
-        BoxOffice = boxOffice;
-    }
-
-    String getProduction() {
-        return Production;
-    }
-
-    void setProduction(String production) {
-        Production = production;
-    }
-
-    String getWebsite() {
-        return Website;
-    }
-
-    void setWebsite(String website) {
-        Website = website;
-    }
-
-    String getResponse() {
-        return Response;
-    }
-
-    void setResponse(String response) {
-        Response = response;
-    }
-
-    public List<String> getPlatforms() {
-        return Platforms;
-    }
-
-    void addPlatforms(List<location> platforms){
+    public List<String> getPlatforms() { return Platforms; }
+    public void addPlatforms(List<location> platforms){
         for (location l: platforms) {
             addPlatform(l);
         }
     }
 
-    void addPlatform(location l){ Platforms.add(l.display_name);}
+    public void addPlatform(location l){ Platforms.add(l.display_name);}
 
-    void clearPlatforms(){
-        Platforms.clear();
-    }
+    public void clearPlatforms(){ Platforms.clear(); }
 
     /**
      * Creates a new Movie object with the given title
@@ -235,23 +147,28 @@ class Movie {
         setTitle(title);
     }
 
-    private Movie(jsonMovie jmv){
+    //this version of the constructor is for loading full movies
+    protected Movie(jsonMovie jmv){
 
         setTitle(jmv.Title);
-        setYear(jmv.Year);
         setReleased(jmv.Released);
         setRuntime(jmv.Runtime);
-        setGenre(Arrays.asList(jmv.Genre.split(",")));
-        setDirector(jmv.Director);
-        setWriter(Arrays.asList(jmv.Writer.split(",")));
-        setActors(Arrays.asList(jmv.Actors.split(",")));
-        setPlot(jmv.Plot);
-        setLanguage(jmv.Language);
+        if(jmv.Genre != null)
+            setGenre(Arrays.asList(jmv.Genre.split(",")));
+        if(jmv.Director != null)
+            setDirector(jmv.Director);
+        if(jmv.Writer != null)
+            setWriter(Arrays.asList(jmv.Writer.split(",")));
+        if(jmv.Actors != null)
+            setActors(Arrays.asList(jmv.Actors.split(",")));
+        if(jmv.Plot != null)
+            setPlot(jmv.Plot);
+        if(jmv.Language != null)
+            setLanguage(jmv.Language);
         setCountry(jmv.Country);
         setAwards(jmv.Awards);
         setPoster(jmv.Poster);
         setMetascore(jmv.Metascore);
-        setImdbRating(jmv.imdbRating);
         setImdbID(jmv.imdbID);
         setType(jmv.Type);
         setDVD(jmv.DVD);
@@ -260,7 +177,20 @@ class Movie {
         setWebsite(jmv.Website);
         setResponse(jmv.Response);
 
+        try {
+            if(jmv.imdbRating != null)
+                setImdbRating(Double.parseDouble(jmv.imdbRating));
+        }catch (NumberFormatException e){
+
+        }
+
+        try {
+            setYear(Integer.parseInt(jmv.Year));
+        }catch (NumberFormatException e){
+
+        }
     }
+
 
     static Movie parseFromJson(BufferedReader reader){
         Gson gson = new Gson();
@@ -336,9 +266,10 @@ class Movie {
         return Objects.hash(getTitle(), getYear(), getReleased(), getDirector(), getActors(), getProduction());
     }
 
+    //full jsonMovie class where it reads in all info on movie
     private class jsonMovie {
         String Title;
-        Integer Year;
+        String Year;
         String Released;
         String Runtime;
         String Genre;
@@ -350,8 +281,8 @@ class Movie {
         String Country;
         String Awards;
         String Poster;
-        Integer Metascore;
-        Double imdbRating;
+        String Metascore;
+        String imdbRating;
         String imdbID;
         String Type;
         String DVD;
@@ -359,6 +290,16 @@ class Movie {
         String Production;
         String Website;
         String Response;
+    }
+
+    //simpleJsonMovie contains only the information included in the search results
+    private class simpleJsonMovie {
+        String Title;
+        String Year;
+        String Released;
+        String Type;
+        String imdbID;
+        String Poster;
     }
 
     private class jsonPlatformResponse{

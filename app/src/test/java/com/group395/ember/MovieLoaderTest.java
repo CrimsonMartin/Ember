@@ -36,6 +36,8 @@ public class MovieLoaderTest {
     public void testLoadingMovie(){
         Movie actual = ml.loadMoviebyTitle("Space Jam");
         assertEquals(goalSpaceJam, actual);
+        Movie actual2 = ml.loadMoviebyTitle("Attack On Titan");
+        System.out.println(actual2.getTitle());
     }
 
     @Test
