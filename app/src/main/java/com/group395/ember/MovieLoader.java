@@ -19,10 +19,12 @@ import java.util.concurrent.TimeUnit;
 
 public class MovieLoader {
 
+    public BlockingQueue<Movie> loadedmovies = new ArrayBlockingQueue<>(MAXNUMMOVIES);
+
+
     private static int MAXNUMMOVIES = 1000;
     private static int MAXNUMTHREADS = 5;
     private BlockingQueue<String> movietitles = new ArrayBlockingQueue<>(MAXNUMMOVIES);
-    public BlockingQueue<Movie> loadedmovies = new ArrayBlockingQueue<>(MAXNUMMOVIES);
     private ExecutorService executor = Executors.newFixedThreadPool(MAXNUMTHREADS);
     private ThreadPoolExecutor pool = (ThreadPoolExecutor) executor;
     private static boolean run = true;
@@ -39,17 +41,15 @@ public class MovieLoader {
 
         @Override
         public void run() {
-
             while (MovieLoader.run && movietitles.peek() != null) {
-
                 //System.out.println("Loader thread starting");
-                String movietitle ;
+                String movieTitle;
                 String response = null;
 
                 try {
-                    movietitle = movietitles.take();
+                    movieTitle = movietitles.take();
                     //System.out.println("Loading title: " + movietitle);
-                    String url = omdbUrlFromTitle(movietitle);
+                    String url = omdbUrlFromTitle(movieTitle);
 
                     response = Unirest.get(url).asJson().getBody().toString();
 
@@ -63,7 +63,6 @@ public class MovieLoader {
                 } catch (InterruptedException e) {
                     return;
                 }
-                movietitle = null;
             }
             //System.out.println("Queue is empty, thread terminating");
         }
@@ -112,10 +111,11 @@ public class MovieLoader {
      * @param titles a list of movie titles to be loaded
      * @return the list of movies that correspond to the titles
      */
-    public void loadMoviebyTitle(List<String> titles) {
+    public void loadMoviebyTitle(List<String> titles) throws InterruptedException{
         //System.out.println("attempting to put all titles");
-        if (!attemptPutAll(titles)) return;
-        //System.out.println("Put "  + movietitles.size() + " elements");
+        attemptPutAll(titles);
+
+        System.out.println("Put "  + movietitles.size() + " elements");
 
         //System.out.println("Active Count is "+ pool.getActiveCount());
         //System.out.println("Max Size  is " + pool.getMaximumPoolSize());
@@ -126,15 +126,10 @@ public class MovieLoader {
         }
     }
 
-    private boolean attemptPutAll(List<String> titles){
-        try{
-            for (String str : titles){
-                movietitles.put(str);
-            }
-        }catch(InterruptedException e){
-            return false;
+    private void attemptPutAll(List<String> titles) throws InterruptedException{
+        for (String str : titles){
+            movietitles.put(str);
         }
-        return true;
     }
 
     /**
@@ -168,5 +163,13 @@ public class MovieLoader {
             executor.shutdownNow();
         }
         return executor.isShutdown();
+    }
+
+    public boolean isActive(){
+        return pool.getActiveCount() > 0;
+    }
+
+    public int activeCount(){
+        return pool.getActiveCount();
     }
 }

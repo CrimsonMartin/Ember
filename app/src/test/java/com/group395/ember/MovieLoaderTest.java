@@ -32,17 +32,14 @@ public class MovieLoaderTest {
     }
 
     @Test
-    public void testLoadingMovie(){
+    public void testLoadingMovie() throws InterruptedException{
         ml.loadMoviebyTitle("Space Jam");
-        try{
-            assertEquals(goalSpaceJam, ml.loadedmovies.take());
-        } catch (InterruptedException e){
-            fail();
-        }
+        assertEquals(goalSpaceJam, ml.loadedmovies.take());
+
     }
 
     @Test
-    public void testLoadingManyMovies(){
+    public void testLoadingManyMovies() throws InterruptedException{
         ml.loadMoviebyTitle(new ArrayList<String>(){{
             add("Space Jam");
             add("Remember the titans");

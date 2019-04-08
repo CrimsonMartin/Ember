@@ -3,12 +3,7 @@ package com.group395.ember;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Timer;
-
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import java.util.List;
 
 public class MovieSearchTest {
 
@@ -22,7 +17,7 @@ public class MovieSearchTest {
     }
 
     @Test
-    public void searchByActor(){
+    public void searchByActor() throws InterruptedException{
         String query = "Tom Cruise";
         System.out.println("**By Actor**");
         long start = System.nanoTime();
@@ -30,13 +25,14 @@ public class MovieSearchTest {
         long end = System.nanoTime();
         System.out.println("Partial: "+ (end-start)/(1000000*1000.0));
         start = System.nanoTime();
-        System.out.println("Number of Results: "+ MovieSearch.searchByActorFull(query));
+        List<Movie> res = MovieSearch.searchByActorFull(query);
+        System.out.println("Number of Results: "+ res.size());
         end = System.nanoTime();
         System.out.println("Full: "+(end-start)/(1000000*1000.0));
     }
 
     @Test
-    public void search(){
+    public void search()throws InterruptedException{
         String query = "Blues Brothers";
         System.out.println("** By Movie **");
         long start = System.nanoTime();
@@ -44,7 +40,8 @@ public class MovieSearchTest {
         long end = System.nanoTime();
         System.out.println("First Page: "+ (end-start)/(1000000*1000.0));
         start = System.nanoTime();
-        System.out.println("Number of Results: "+ MovieSearch.searchFull(query).size());
+        List<Movie> res = MovieSearch.searchByActorFull(query);
+        System.out.println("Number of Results: " + res.size());
         end = System.nanoTime();
         System.out.println("Full: "+(end-start)/(1000000*1000.0));
        // assertTrue(MovieSearch.search("Return of the").getResponse());
