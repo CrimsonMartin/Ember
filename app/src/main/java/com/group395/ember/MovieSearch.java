@@ -16,7 +16,11 @@ public class MovieSearch {
     private static String tmdbApiKey = "2798eab352dd4b7d99e4a0f825802ff5";
     private static String tmdbUrl = "https://api.themoviedb.org/3/";
     private static String tmdbSearchUrl = "search/movie?api_key=";
+    private static String tmdbSearchPeopleUrl = "search/person?api_key=";
+    private static String tmdbMoviesByPersonUrl = "https://api.themoviedb.org/3/person/";
+    private static String tmdbMovieCredits = "/movie_credits?api_key=";
     private static String tmdbSettings = "&language=en-US&include_adult=false";
+
 
     private static BufferedReader reader = null;
 
@@ -42,6 +46,45 @@ public class MovieSearch {
             close();
             return null;
         }
+    }
+
+    public static ArrayList<Movie> searchByActor(String actor){
+        try{
+            Gson gson = new Gson();
+            URL obj = new URL(tmdbSearchPeople(actor));
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            con.setRequestMethod("GET");
+            reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            PersonResults results = gson.fromJson(reader, PersonResults.class);
+
+            Integer id = results.getId();
+            URL obj2 = new URL(tmdbMoviesByPerson(id));
+            HttpURLConnection con2 = (HttpURLConnection) obj2.openConnection();
+            con2.setRequestMethod("GET");
+            reader = new BufferedReader(new InputStreamReader(con2.getInputStream()));
+            MoviesByPersonResults movieResults = gson.fromJson(reader, MoviesByPersonResults.class);
+            return movieResults.getResults();
+        }
+        catch (MalformedURLException e){
+            System.out.println("Title search failed: " + e.getMessage());
+            e.printStackTrace();
+            close();
+            return null;
+        } catch (IOException e) {
+            System.out.println("INVALID URL FORMAT");
+            e.printStackTrace();
+            close();
+            return null;
+        }
+    }
+
+    public static ArrayList<Movie> searchByActorFull(String actor){
+        MovieLoader loader = new MovieLoader();
+        ArrayList<Movie> movies = searchByActor(actor);
+        for(int i = 0; i<movies.size(); i++){
+            movies.set(i, loader.loadMoviebyTitle(movies.get(i).getTitle()));
+        }
+        return movies;
     }
 
     public static ArrayList<Movie> searchFull(String title){
@@ -132,6 +175,40 @@ public class MovieSearch {
         }
     }
 
+    public class PersonResults{
+        public class Actor{
+            String name;
+            Integer id;
+
+            public String getName(){
+                return name;
+            }
+
+            public Integer getId(){
+                return id;
+            }
+        }
+
+        ArrayList<Actor> results;
+
+        public Integer getId(){
+            return results.get(0).getId();
+        }
+    }
+
+    public class MoviesByPersonResults{
+        ArrayList<TmdbMovie> cast;
+
+        public ArrayList<Movie> getResults(){
+            ArrayList<Movie> searchResults = new ArrayList<Movie>();
+            for(TmdbMovie movie : cast){
+                searchResults.add(movie.toMovie());
+            }
+            return searchResults;
+        }
+    }
+
+
 
     public static String tmdbSearch(String title, Integer page){
         title = title.replaceAll(" ", "+");
@@ -140,6 +217,16 @@ public class MovieSearch {
         else
             return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings+ "&page=" + page;
     }
+
+    public static String tmdbSearchPeople(String name){
+        name = name.replaceAll(" ", "+");
+        return tmdbUrl + tmdbSearchPeopleUrl + tmdbApiKey + tmdbSettings+ "&query=" + name;
+    }
+
+    public static String tmdbMoviesByPerson(Integer id){
+        return tmdbMoviesByPersonUrl + id + tmdbMovieCredits + tmdbApiKey + tmdbSettings;
+    }
+
 
     static boolean close(){
         try{
