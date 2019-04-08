@@ -20,6 +20,7 @@ public class MovieSearch {
     private static String tmdbMovieCredits = "/movie_credits?api_key=";
     private static String tmdbSettings = "&language=en-US&include_adult=false";
 
+
     private static BufferedReader reader = null;
 
     // Returns a list of movies
