@@ -68,12 +68,16 @@ public class SearchOptionsActivity extends AppCompatActivity {
         if(selected == null){
             return;
         }
-        EditText editText = findViewById(R.id.filterText);
         //If there's no more room for filters, do nothing.
         if (findFirstEmpty(myFiltersLinear) == -1) {
             return;
         }
+        EditText editText = findViewById(R.id.filterText);
         String inputString = editText.getText().toString();
+        //If the input box is empty, do nothing.
+        if((inputString == null) || (inputString.equals(""))){
+            return;
+        }
         int firstEmptyLinear = findFirstEmpty(myFiltersLinear);
         myFiltersLinear[firstEmptyLinear] = new FilterHolder(inputString, selected);
         //add filter to display of filters

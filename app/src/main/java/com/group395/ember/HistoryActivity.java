@@ -56,6 +56,7 @@ public class HistoryActivity extends AppCompatActivity {
 
     private void tileOnClick(int whichButton){
         MoviePageActivity.setCurrentMovie(recentClicks[pagesSkipped][whichButton]);
+        MoviePageActivity.setFromHistoryActivity(true);
         startActivity(new Intent(HistoryActivity.this, MoviePageActivity.class));
     }
 
