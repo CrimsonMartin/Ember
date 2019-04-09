@@ -80,7 +80,8 @@ public class UISearch {
      * @return List of Movies
      */
     public ArrayList<Movie> search() {
-        results = applyFilters(MovieSearch.searchFirstPage(String.join(" ", getSearch())));
+        MovieSearch m = new MovieSearch();
+        results = applyFilters(m.searchFirstPage(String.join(" ", getSearch())));
         return results;
     }
 
@@ -90,7 +91,8 @@ public class UISearch {
      */
     public ArrayList<Movie> searchFull() {
         // Calls a full search and converts the keywords (String[]) to a single String separated by spaces/
-        results = applyFilters(MovieSearch.searchFull(String.join(" ", getSearch())));
+        MovieSearch m = new MovieSearch();
+        results = applyFilters(m.searchFull(String.join(" ", getSearch())));
         return results;
     }
 
