@@ -37,7 +37,6 @@ public class SearchResultsActivity extends AppCompatActivity {
      * @param searchText The name of the movie being searched.
      */
     protected static void search(String searchText){
-        //TODO: Retrieve a pair of movies from the search property
         //mySearch.setSearch(searchText);
         //Movie[] moviesToLoad = mySearch.getMovies(0,1);
         //loadedMovies[0] = moviesToLoad[0];
@@ -51,11 +50,13 @@ public class SearchResultsActivity extends AppCompatActivity {
     public void resultButtonAOnClick(View v){
         HistoryActivity.addClick(loadedMovies[0]);
         MoviePageActivity.setCurrentMovie(loadedMovies[0]);
+        MoviePageActivity.setFromHistoryActivity(false);
         startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
     }
     public void resultButtonBOnClick(View v){
         HistoryActivity.addClick(loadedMovies[1]);
         MoviePageActivity.setCurrentMovie(loadedMovies[1]);
+        MoviePageActivity.setFromHistoryActivity(false);
         startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
     }
 
@@ -95,7 +96,6 @@ public class SearchResultsActivity extends AppCompatActivity {
             displayAll();
         }
     }
-
     public void backOnClick(View v){ startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class)); }
 
     protected static String stripBrackets(String input){ return input.substring(1, input.length() - 1); }

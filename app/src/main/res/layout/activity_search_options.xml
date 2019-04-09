@@ -61,10 +61,8 @@
         android:layout_width="0dp"
         android:layout_height="46dp"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="10dp"
         android:onClick="submitOnClick"
         android:text="@string/submit_filter"
-        app:layout_constraintBottom_toTopOf="@+id/resetButton"
         app:layout_constraintEnd_toEndOf="@+id/radioGroupGAD"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/radioGroupGAD"
@@ -95,8 +93,7 @@
         android:text="@string/reset_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sendButton" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <RadioGroup
         android:id="@+id/radioGroupDisplay"
@@ -155,10 +152,8 @@
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
         android:onClick="deleteOnClick"
         android:text="@string/delete_filter"
-        app:layout_constraintBottom_toTopOf="@+id/resetButton"
         app:layout_constraintEnd_toEndOf="@+id/radioGroupDisplay"
         app:layout_constraintStart_toStartOf="@+id/radioGroupDisplay"
         app:layout_constraintTop_toBottomOf="@+id/radioGroupDisplay" />
@@ -171,10 +166,24 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:onClick="historyOnClick"
-        android:text="@string/back"
+        android:text="@android:string/cancel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/backButtonLower"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:onClick="backOnClick"
+        android:text="@string/back"
+        app:layout_constraintBottom_toTopOf="@+id/resetButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

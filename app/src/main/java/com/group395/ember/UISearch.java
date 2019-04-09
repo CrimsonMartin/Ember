@@ -76,41 +76,12 @@ public class UISearch {
     }
 
     /**
-     * Sorts the Movies by checking if they are applicable to each filter.
-     * @param rawList is the unfiltered List of Movies to sort
-     * @return a filtered List of Movies.
-     */
-    public ArrayList<Movie> applyFilters(ArrayList<Movie> rawList) {
-        ArrayList<Movie> filteredList = new ArrayList<Movie>();
-
-        // Loops each filter for each movie to determine if they fit the filters.
-        for (Filter filter : getFilters()) {
-
-            if (filteredList.size() == 0) {
-                for (Movie movie : rawList) {
-                    if (filter.fitsFilter(movie))
-                        filteredList.add(movie);
-                }
-            }
-
-            // Narrowing in on remaining movies with the rest of the filters.
-            else {
-                for (Movie movie : filteredList) {
-                    // If it does not fit the next filter, remove it.
-                    if (!filter.fitsFilter(movie))
-                        filteredList.remove(movie);
-                }
-            }
-        }
-            return filteredList;
-    }
-
-    /**
      * Default search method to make a Movie api call to get some amount of Movies (stores in results and returns).
      * @return List of Movies
      */
     public ArrayList<Movie> search() {
-        results = applyFilters(MovieSearch.searchFirstPage(String.join(" ", getSearch())));
+        MovieSearch m = new MovieSearch();
+        results = applyFilters(m.searchFirstPage(String.join(" ", getSearch())));
         return results;
     }
 
@@ -120,7 +91,8 @@ public class UISearch {
      */
     public ArrayList<Movie> searchFull() {
         // Calls a full search and converts the keywords (String[]) to a single String separated by spaces/
-        results = applyFilters(MovieSearch.searchFull(String.join(" ", getSearch())));
+        MovieSearch m = new MovieSearch();
+        results = applyFilters(m.searchFull(String.join(" ", getSearch())));
         return results;
     }
 
@@ -159,12 +131,13 @@ public class UISearch {
             return null;
         }
     }
-     * Sorts the Movies by checking if they are applicable to each filter.
+
+    /** Sorts the Movies by checking if they are applicable to each filter.
      * @param rawList is the unfiltered List of Movies to sort
      * @return a filtered List of Movies.
      */
-    public List<Movie> applyFilters(List<Movie> rawList) {
-        List<Movie> filteredList = new List<Movie>();
+    public ArrayList<Movie> applyFilters(ArrayList<Movie> rawList) {
+        ArrayList<Movie> filteredList = new ArrayList<Movie>();
 
         // Loops each filter for each movie to determine if they fit the filters.
         for (Filter filter : getFilters()) {
@@ -185,7 +158,8 @@ public class UISearch {
                 }
             }
 
-            return filteredList;
         }
+
+        return filteredList;
     }
 }

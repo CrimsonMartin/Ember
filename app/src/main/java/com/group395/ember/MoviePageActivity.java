@@ -5,15 +5,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 public class MoviePageActivity extends AppCompatActivity {
 
     private static Movie currentMovie = null;
+    //This field specifies where the user was directed from, and thus where the back button takes them.
+    //If true, it takes them to HistoryActivity. If false, it takes them to
+    private static boolean fromHistoryActivity = false;
 
     public static void setCurrentMovie(Movie input){
         currentMovie = input;
     }
+    public static void setFromHistoryActivity(boolean input){ fromHistoryActivity = input; }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,26 +30,6 @@ public class MoviePageActivity extends AppCompatActivity {
     }
 
     private void displayAll(){
-//        TextView tempView = findViewById(R.id.titleText);
-//        tempView.setText(currentMovie.getTitle());
-//        tempView = findViewById(R.id.yearText);
-//        tempView.setText(currentMovie.getYear().toString());
-//        tempView = findViewById(R.id.genreText);
-//        tempView.setText(getApplicationContext().getString(R.string.genre_list, SearchResultsActivity.stripBrackets(currentMovie.getGenre().toString())));
-//        tempView = findViewById(R.id.runtimeText);
-//        tempView.setText(getApplicationContext().getString(R.string.runtime, SearchResultsActivity.stripBrackets(currentMovie.getRuntime())));
-//        tempView = findViewById(R.id.actorText);
-//        tempView.setText(getApplicationContext().getString(R.string.actor_list, SearchResultsActivity.stripBrackets(currentMovie.getActors().toString())));
-//        tempView = findViewById(R.id.writerText);
-//        tempView.setText(getApplicationContext().getString(R.string.writer_list, SearchResultsActivity.stripBrackets(currentMovie.getWriter().toString())));
-//        tempView = findViewById(R.id.directorText);
-//        tempView.setText(getApplicationContext().getString(R.string.director_list, SearchResultsActivity.stripBrackets(currentMovie.getDirector())));
-//        tempView = findViewById(R.id.metascoreText);
-//        tempView.setText(getApplicationContext().getString(R.string.metascore, currentMovie.getMetascore()));
-//        tempView = findViewById(R.id.imdbRatingText);
-//        tempView.setText(getApplicationContext().getString(R.string.imdb_rating, currentMovie.getImdbRating().toString()));
-//        tempView = findViewById(R.id.plotText);
-//        tempView.setText(currentMovie.getPlot());
         Button tempDisp = findViewById(R.id.titleDisp);
         tempDisp.setText(currentMovie.getTitle());
         tempDisp = findViewById(R.id.yearDisp);
@@ -63,10 +50,18 @@ public class MoviePageActivity extends AppCompatActivity {
         tempDisp.setText(getApplicationContext().getString(R.string.imdb_rating, currentMovie.getImdbRating().toString()));
         tempDisp = findViewById(R.id.plotDisp);
         tempDisp.setText(currentMovie.getPlot());
+        ImageView image = findViewById(R.id.imageView);
+        Picasso.get().load(currentMovie.getPoster()).into(image);
     }
 
     protected void setMovie(Movie input){ currentMovie = input; }
 
-    public void backOnClick(View v){ startActivity(new Intent(MoviePageActivity.this, SearchResultsActivity.class)); }
+    public void backOnClick(View v){
+        if(fromHistoryActivity){
+            startActivity(new Intent(MoviePageActivity.this, HistoryActivity.class));
+        }else{
+            startActivity(new Intent(MoviePageActivity.this, SearchResultsActivity.class));
+        }
+    }
     public void searchAgainOnClick(View v){ startActivity(new Intent(MoviePageActivity.this, SearchStartActivity.class)); }
 }

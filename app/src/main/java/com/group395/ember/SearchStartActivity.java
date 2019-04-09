@@ -28,4 +28,6 @@ public class SearchStartActivity extends AppCompatActivity {
         startActivity(new Intent(SearchStartActivity.this, SearchResultsActivity.class));
     }
 
+    public void backOnClick(View v){ startActivity(new Intent(SearchStartActivity.this, HistoryActivity.class)); }
+
 }

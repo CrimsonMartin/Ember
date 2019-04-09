@@ -19,9 +19,7 @@ public class SearchOptionsActivity extends AppCompatActivity {
     private int currentNumFilters = 0;
     private FilterHolder[] myFiltersLinear = new FilterHolder[5];
     private FilterType selected = null;
-    private enum RadioFive{
-        RADIO_A, RADIO_B, RADIO_C, RADIO_D, RADIO_E
-    }
+    private enum RadioFive{ RADIO_A, RADIO_B, RADIO_C, RADIO_D, RADIO_E }
     private class FilterHolder{
         private String text;
         private FilterType type;
@@ -31,6 +29,7 @@ public class SearchOptionsActivity extends AppCompatActivity {
         }
         public String getText() { return text; }
         public FilterType getType(){ return type; }
+        public String toString(){ return text; }
     }
     private RadioFive selectedRadio = null;
 
@@ -62,18 +61,23 @@ public class SearchOptionsActivity extends AppCompatActivity {
     public void radioDOnClick(View v){ selectedRadio = RadioFive.RADIO_D; }
     public void radioEOnClick(View v){ selectedRadio = RadioFive.RADIO_E; }
 
+
+    private void displayMessage(String message){
+        Button display = findViewById(R.id.backButtonLower);
+        Button display2 = findViewById(R.id.resetButton);
+        display.setText(message);
+    }
+
     //TODO: Filters are not added once a filter is deleted.
     public void submitOnClick(View v){
         //If no FilterType has been selected, do nothing.
-        if(selected == null){
-            return;
-        }
-        EditText editText = findViewById(R.id.filterText);
+        if(selected == null){ return; }
         //If there's no more room for filters, do nothing.
-        if (findFirstEmpty(myFiltersLinear) == -1) {
-            return;
-        }
+        if (findFirstEmpty(myFiltersLinear) == -1) { return; }
+        EditText editText = findViewById(R.id.filterText);
         String inputString = editText.getText().toString();
+        //If the input box is empty, do nothing.
+        if((inputString == null) || (inputString.equals(""))){ return; }
         int firstEmptyLinear = findFirstEmpty(myFiltersLinear);
         myFiltersLinear[firstEmptyLinear] = new FilterHolder(inputString, selected);
         //add filter to display of filters
@@ -92,8 +96,6 @@ public class SearchOptionsActivity extends AppCompatActivity {
         }
         displayRadio.setText(inputString);
         currentNumFilters++;
-
-
     }
 
     public void resetOnClick(View v){
@@ -125,61 +127,64 @@ public class SearchOptionsActivity extends AppCompatActivity {
     }
 
     public void deleteOnClick(View v){
-        if(selectedRadio != null){
-            RadioButton displayRadioA = findViewById(R.id.filterDisplayA);
-            RadioButton displayRadioB = findViewById(R.id.filterDisplayB);
-            RadioButton displayRadioC = findViewById(R.id.filterDisplayC);
-            RadioButton displayRadioD = findViewById(R.id.filterDisplayD);
-            RadioButton displayRadioE = findViewById(R.id.filterDisplayE);
-            switch(selectedRadio){
-                case RADIO_A:
-                    displayRadioA.setText(displayRadioB.getText().toString());
-                    displayRadioB.setText(displayRadioC.getText().toString());
-                    displayRadioC.setText(displayRadioD.getText().toString());
-                    displayRadioD.setText(displayRadioE.getText().toString());
-                    displayRadioE.setText(null);
-                    myFiltersLinear[0] = myFiltersLinear[1];
-                    myFiltersLinear[1] = myFiltersLinear[2];
-                    myFiltersLinear[2] = myFiltersLinear[3];
-                    myFiltersLinear[3] = myFiltersLinear[4];
-                    myFiltersLinear[4] = null;
-                    break;
-                case RADIO_B:
-                    displayRadioB.setText(displayRadioC.getText().toString());
-                    displayRadioC.setText(displayRadioD.getText().toString());
-                    displayRadioD.setText(displayRadioE.getText().toString());
-                    displayRadioE.setText(null);
-                    myFiltersLinear[1] = myFiltersLinear[2];
-                    myFiltersLinear[2] = myFiltersLinear[3];
-                    myFiltersLinear[3] = myFiltersLinear[4];
-                    myFiltersLinear[4] = null;
-                    break;
-                case RADIO_C:
-                    displayRadioC.setText(displayRadioD.getText().toString());
-                    displayRadioD.setText(displayRadioE.getText().toString());
-                    displayRadioE.setText(null);
-                    myFiltersLinear[2] = myFiltersLinear[3];
-                    myFiltersLinear[3] = myFiltersLinear[4];
-                    myFiltersLinear[4] = null;
-                    break;
-                case RADIO_D:
-                    displayRadioD.setText(displayRadioE.getText().toString());
-                    displayRadioE.setText(null);
-                    myFiltersLinear[3] = myFiltersLinear[4];
-                    myFiltersLinear[4] = null;
-                    break;
-                case RADIO_E:
-                    displayRadioE.setText(null);
-                    myFiltersLinear[4] = null;
-                    break;
-            }
-            if(currentNumFilters > 0){
-                currentNumFilters--;
+        if(!checkRadioEmpty()) {
+            if (selectedRadio != null) {
+                RadioButton displayRadioA = findViewById(R.id.filterDisplayA);
+                RadioButton displayRadioB = findViewById(R.id.filterDisplayB);
+                RadioButton displayRadioC = findViewById(R.id.filterDisplayC);
+                RadioButton displayRadioD = findViewById(R.id.filterDisplayD);
+                RadioButton displayRadioE = findViewById(R.id.filterDisplayE);
+                switch (selectedRadio) {
+                    case RADIO_A:
+                        displayRadioA.setText(displayRadioB.getText().toString());
+                        displayRadioB.setText(displayRadioC.getText().toString());
+                        displayRadioC.setText(displayRadioD.getText().toString());
+                        displayRadioD.setText(displayRadioE.getText().toString());
+                        displayRadioE.setText(null);
+                        myFiltersLinear[0] = myFiltersLinear[1];
+                        myFiltersLinear[1] = myFiltersLinear[2];
+                        myFiltersLinear[2] = myFiltersLinear[3];
+                        myFiltersLinear[3] = myFiltersLinear[4];
+                        myFiltersLinear[4] = null;
+                        break;
+                    case RADIO_B:
+                        displayRadioB.setText(displayRadioC.getText().toString());
+                        displayRadioC.setText(displayRadioD.getText().toString());
+                        displayRadioD.setText(displayRadioE.getText().toString());
+                        displayRadioE.setText(null);
+                        myFiltersLinear[1] = myFiltersLinear[2];
+                        myFiltersLinear[2] = myFiltersLinear[3];
+                        myFiltersLinear[3] = myFiltersLinear[4];
+                        myFiltersLinear[4] = null;
+                        break;
+                    case RADIO_C:
+                        displayRadioC.setText(displayRadioD.getText().toString());
+                        displayRadioD.setText(displayRadioE.getText().toString());
+                        displayRadioE.setText(null);
+                        myFiltersLinear[2] = myFiltersLinear[3];
+                        myFiltersLinear[3] = myFiltersLinear[4];
+                        myFiltersLinear[4] = null;
+                        break;
+                    case RADIO_D:
+                        displayRadioD.setText(displayRadioE.getText().toString());
+                        displayRadioE.setText(null);
+                        myFiltersLinear[3] = myFiltersLinear[4];
+                        myFiltersLinear[4] = null;
+                        break;
+                    case RADIO_E:
+                        displayRadioE.setText(null);
+                        myFiltersLinear[4] = null;
+                        break;
+                }
+                if (currentNumFilters > 0) {
+                    currentNumFilters--;
+                }
             }
         }
     }
 
-    public void historyOnClick(View v){ startActivity(new Intent(SearchOptionsActivity.this, HistoryActivity.class)); }
+
+    public void backOnClick(View v){ startActivity(new Intent(SearchOptionsActivity.this, SearchStartActivity.class)); }
 
     protected static int findFirstEmpty(Object[] input){
         for(int i = 0; i < input.length; i++){
@@ -189,4 +194,25 @@ public class SearchOptionsActivity extends AppCompatActivity {
         }
         return -1;
     }
+    private boolean checkRadioEmpty(){
+        switch(selectedRadio){
+            case RADIO_A:
+                if(((RadioButton) findViewById(R.id.filterDisplayA)).getText().equals("")){ return true;}
+                break;
+            case RADIO_B:
+                if(((RadioButton) findViewById(R.id.filterDisplayB)).getText().equals("")){ return true;}
+                break;
+            case RADIO_C:
+                if(((RadioButton) findViewById(R.id.filterDisplayC)).getText().equals("")){ return true;}
+                break;
+            case RADIO_D:
+                if(((RadioButton) findViewById(R.id.filterDisplayD)).getText().equals("")){ return true;}
+                break;
+            case RADIO_E:
+                if(((RadioButton) findViewById(R.id.filterDisplayE)).getText().equals("")){ return true;}
+                break;
+        }
+        return false;
+    }
 }
+
