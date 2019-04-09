@@ -10,10 +10,12 @@ public class MovieSearchTest {
     private Movie m1;
     private Movie m2;
     private MovieList ml;
+    private MovieSearch m;
 
 
     @Before
     public void initialize(){
+        m = new MovieSearch();
     }
 
     @Test
@@ -36,16 +38,31 @@ public class MovieSearchTest {
         String query = "Blues Brothers";
         System.out.println("** By Movie **");
         long start = System.nanoTime();
-        MovieSearch.searchFirstPage(query);
+        m.searchFirstPage(query);
         long end = System.nanoTime();
         System.out.println("First Page: "+ (end-start)/(1000000*1000.0));
         start = System.nanoTime();
-        List<Movie> res = MovieSearch.searchByActorFull(query);
+        List<Movie> res = m.searchFull(query);
         System.out.println("Number of Results: " + res.size());
         end = System.nanoTime();
         System.out.println("Full: "+(end-start)/(1000000*1000.0));
        // assertTrue(MovieSearch.search("Return of the").getResponse());
        // assertTrue(MovieSearch.search("Titan").getResponse());
       //  assertFalse(MovieSearch.search("the").getResponse());
+    }
+
+    @Test
+    public void testing()throws InterruptedException{
+        String query = "Remember the";
+        System.out.println("** By Movie **");
+        long start = System.nanoTime();
+        System.out.println(m.searchFirstPage(query).size());
+        long end = System.nanoTime();
+        System.out.println("First Page: "+ (end-start)/(1000000*1000.0));
+        start = System.nanoTime();
+        List<Movie> res = m.searchFull(query);
+        System.out.println("Number of Results: " + res.toString());
+        end = System.nanoTime();
+        System.out.println("Full: "+(end-start)/(1000000*1000.0));
     }
 }

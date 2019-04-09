@@ -16,7 +16,8 @@ public class MovieSuggestionsTest {
 
     @Ignore
     public void getSuggestions(){
-        Movie m = MovieSearch.searchFirstPage("Space Jam").get(0);
+        MovieSearch search = new MovieSearch();
+        Movie m = search.searchFirstPage("Space Jam").get(0);
         System.out.println(MovieSuggestions.getSuggestions(m));
        // assertTrue(MovieSearch.search("Return of the").getResponse());
        // assertTrue(MovieSearch.search("Titan").getResponse());
