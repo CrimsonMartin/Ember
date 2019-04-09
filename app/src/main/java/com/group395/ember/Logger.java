@@ -9,19 +9,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.util.ArrayList;
 
-
 public class Logger {
 
     // For general errors and other data
-    private String fileName;
+    private static String fileName;
     // For just movie history
-    private String movieFileName;
-
+    private static String movieFileName;
 
     /**
      * Default constructor; uses a default file name: EmberLogDDMMYY
      */
-    public Logger() {
+    protected Logger() {
         // Formatting date
         LocalDateTime date = LocalDateTime.now();
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dMMMyy");
@@ -33,7 +31,7 @@ public class Logger {
      * Constructor for a Logger, takes a String for a file name
      * @param fileName is a file to write logging details to
      */
-    public Logger(String fileName) {
+    protected Logger(String fileName) {
         this.fileName = fileName + ".txt";
     }
 
@@ -42,7 +40,7 @@ public class Logger {
      * Logs an exception related to any of the other classes.
      * @param e is the exception to log
      */
-    public void logException(Exception e) throws IOException {
+    protected static void logException(Exception e) throws IOException {
         FileWriter file = new FileWriter(fileName, true);
         // Writing relevant data pertaining to the Exception
         file.write(LocalDateTime.now().format(DateTimeFormatter.ofPattern("H:m")));
@@ -57,12 +55,15 @@ public class Logger {
      * Saves a movie to the movie file of the day.
      * @param movie to save to history
      */
-    public void saveToHistory(Movie movie) throws IOException {
-        // TODO: getTitle() -> getImdbID()
+    protected static void saveToHistory(Movie movie) throws IOException {
+        try {
+            // TODO: getTitle() -> getImdbID()
 //        if (this.write(movie.getImdbID()))
-        // Temp identification
-        if (!write(movie.getTitle(), movieFileName)) {
+            // Temp identification
+            write(movie.getTitle(), movieFileName);
+       }catch(Exception e){
             logException(new Exception(movie.getTitle() + " Failed to store write."));
+            System.out.println(e.toString());
         }
     }
 
@@ -71,9 +72,9 @@ public class Logger {
      * Reads the movie history file and turns them into an ArrayList
      * @return ArrayList of Movies
      */
-    public ArrayList<Movie> pullAllFromHistory() {
+    protected static ArrayList<Movie> pullAllFromHistory() {
         ArrayList<String> movieIDs = readByLine(movieFileName);
-        ArrayList<Movie> movies = new ArrayList<Movie>();
+        ArrayList<Movie> movies = new ArrayList<>();
         UISearch tempSearch = new UISearch();
 
         // Gets each movie from the DB again
@@ -91,7 +92,7 @@ public class Logger {
      * @param s is what to write
      * @return true if write was successful, false if exception thrown
      */
-    public boolean write(String s, String fileName) {
+    private static boolean write(String s, String fileName) {
         try {
             FileWriter file = new FileWriter(fileName, true);
             file.write(LocalDateTime.now().format(DateTimeFormatter.ofPattern("H:m")));
@@ -101,6 +102,7 @@ public class Logger {
         }
         catch (Exception e) {
             System.out.println("There was an error writing to a file");
+            System.out.println(e.toString());
             return false;
         }
     }
@@ -111,9 +113,9 @@ public class Logger {
      * @param fileName is the file to read
      * @return ArrayList of Strings
      */
-    public ArrayList<String> readByLine(String fileName) {
+    private static ArrayList<String> readByLine(String fileName) {
         try {
-            ArrayList<String> output = new ArrayList<String>();
+            ArrayList<String> output = new ArrayList<>();
             Scanner toRead = new Scanner(new File(fileName));
             while (toRead.hasNextLine()) {
                 output.add(toRead.nextLine());

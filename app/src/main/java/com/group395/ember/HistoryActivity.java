@@ -6,25 +6,36 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import java.util.ArrayList;
 
 
 public class HistoryActivity extends AppCompatActivity {
 
-
+    //Specifies whether the app has just started
+    private boolean startUp = true;
     private static Movie[][] recentClicks = new Movie[5][8];
-    //This field specifies how many sets of 8 Movies have been moved past by the "next" button.
+    //Specifies how many sets of 8 Movies have been moved past by the "next" button.
     private int pagesSkipped = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
+        try {
+            if (startUp) {
+                load();
+            }
+        } catch(Exception e) {
+            System.out.println("Couldn't load history.");
+        }
         displayAll();
         TextView pageNumber = findViewById(R.id.pageNumber);
         pageNumber.setText(getApplicationContext().getString(R.string.page_number, pagesSkipped + 1));
+        startUp = false;
     }
 
     public void searchButtonOnClick(View v){ startActivity(new Intent(HistoryActivity.this, SearchStartActivity.class)); }
+
 
     public void tileALOnClick(View v) { tileOnClick(0); }
     public void tileAROnClick(View v) { tileOnClick(1); }
@@ -122,4 +133,31 @@ public class HistoryActivity extends AppCompatActivity {
         display((Button) findViewById(R.id.tileDR), recentClicks[pagesSkipped][7]);
     }
 
+    private void load(){
+        ArrayList<Movie> loadList = Logger.pullAllFromHistory();
+        //If there's no data in loadList, use the default size
+        if(loadList.size() != 0){
+            Movie[] tempLinear = new Movie[loadList.size()];
+            for(int i = 0; i < loadList.size(); i++){
+                tempLinear[i] = loadList.get(i);
+            }
+            //How big the 2D array should be
+            int maxRows = loadList.size() / 8;
+            //Add an extra row if something got cut off by the int division
+            if(maxRows * 8 != loadList.size()){ maxRows++; }
+            Movie[][] tempFull = new Movie[maxRows][8];
+            int outer = 0;
+            int inner = 0;
+            for(int i = 0; i < loadList.size(); i++) {
+                tempFull[outer][inner] = loadList.get(i);
+                if(inner == 7){
+                    outer++;
+                    inner = 0;
+                }else {
+                    inner++;
+                }
+            }
+            recentClicks = tempFull;
+        }
+    }
 }

@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.io.IOException;
+
 public class SearchResultsActivity extends AppCompatActivity {
 
     private static Movie[] loadedMovies = new Movie[2];
@@ -47,17 +49,28 @@ public class SearchResultsActivity extends AppCompatActivity {
 
     public void searchAgainOnClick(View v){ startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class)); }
 
-    public void resultButtonAOnClick(View v){
-        HistoryActivity.addClick(loadedMovies[0]);
-        MoviePageActivity.setCurrentMovie(loadedMovies[0]);
-        MoviePageActivity.setFromHistoryActivity(false);
-        startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
+    public void resultButtonAOnClick(View v) {
+        try {
+            HistoryActivity.addClick(loadedMovies[0]);
+            MoviePageActivity.setCurrentMovie(loadedMovies[0]);
+            MoviePageActivity.setFromHistoryActivity(false);
+            Logger.saveToHistory(loadedMovies[0]);
+            startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
+        } catch(IOException io) {
+            System.out.println(io.toString());
+        }
     }
     public void resultButtonBOnClick(View v){
-        HistoryActivity.addClick(loadedMovies[1]);
-        MoviePageActivity.setCurrentMovie(loadedMovies[1]);
-        MoviePageActivity.setFromHistoryActivity(false);
-        startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
+        try {
+            HistoryActivity.addClick(loadedMovies[1]);
+            MoviePageActivity.setCurrentMovie(loadedMovies[1]);
+            MoviePageActivity.setFromHistoryActivity(false);
+            Logger.saveToHistory(loadedMovies[1]);
+            startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
+        } catch(IOException io) {
+            System.out.println(io.toString());
+        }
+
     }
 
     public void filtersOnClick(View v){ startActivity(new Intent(SearchResultsActivity.this, SearchOptionsActivity.class)); }
