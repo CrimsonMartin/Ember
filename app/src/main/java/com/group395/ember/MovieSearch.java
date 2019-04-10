@@ -193,7 +193,7 @@ public class MovieSearch {
             do {
                 results.add(loadedResults.poll(5, TimeUnit.SECONDS));
                 System.out.println(currentPage+" "+totalResults);
-            }while(loadedResults.size()<totalResults && running);
+            }while(!loadedResults.isEmpty() || running);
             System.out.println("done");
         } catch (InterruptedException e) {
             e.printStackTrace();

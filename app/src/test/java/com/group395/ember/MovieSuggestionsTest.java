@@ -20,7 +20,7 @@ public class MovieSuggestionsTest {
     @Test
     public void getSuggestions(){
         MovieSearch search = new MovieSearch();
-        Movie m = search.searchFirstPage("War of the Worlds").get(0);
+        Movie m = search.searchFirstPage("John Wick").get(0);
         System.out.println(m);
         System.out.println(ms.getSuggestions(m));
        // assertTrue(MovieSearch.search("Return of the").getResponse());

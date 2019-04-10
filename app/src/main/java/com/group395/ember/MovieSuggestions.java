@@ -47,7 +47,7 @@ public class MovieSuggestions {
             executor.submit(new SuggestionsThread());
             do {
                 suggestions.add(loadedSuggestions.poll(5, TimeUnit.SECONDS));
-            }while(!loadedSuggestions.isEmpty() && running);
+            }while(!loadedSuggestions.isEmpty());
 
         } catch (InterruptedException e) {
             e.printStackTrace();
