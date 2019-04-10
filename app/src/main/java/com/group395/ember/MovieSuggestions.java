@@ -9,6 +9,12 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class MovieSuggestions {
 
@@ -18,29 +24,66 @@ public class MovieSuggestions {
     private static String tmdbSettings = "&language=en-US&include_adult=false&page=1";
 
     private static BufferedReader reader = null;
+    public static Movie currentMovie;
+    public BlockingQueue<Movie> loadedSuggestions = new ArrayBlockingQueue<>(MAXNUMMOVIES);
+    public int totalResults = 0;
+    public int currentPage = 0;
+
+    private static int MAXNUMMOVIES = 1000;
+    private static int MAXNUMTHREADS = 8;
+    private BlockingQueue<String> movietitles = new ArrayBlockingQueue<>(MAXNUMMOVIES);
+    private ExecutorService executor = Executors.newFixedThreadPool(MAXNUMTHREADS);
+    private ThreadPoolExecutor pool = (ThreadPoolExecutor) executor;
+    private static boolean running = false;
+    private String exception = "";
 
     // Returns a list of movies
-    public static ArrayList<Movie> getSuggestions(Movie movie){
-        try{
-            Integer id = movie.getTmdbID();
-            Gson gson = new Gson();
-            URL obj = new URL(tmdbSuggestions(id));
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-            con.setRequestMethod("GET");
-            reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            SuggestionResults results = gson.fromJson(reader, SuggestionResults.class);
-            return results.getResults();
+    public ArrayList<Movie> getSuggestions(Movie movie){
+        ArrayList<Movie> suggestions = new ArrayList<Movie>();
+        currentMovie = movie;
+        try {
+            //System.out.println("Loader thread starting");
+            String response = null;
+            executor.submit(new SuggestionsThread());
+            do {
+                suggestions.add(loadedSuggestions.poll(5, TimeUnit.SECONDS));
+            }while(!loadedSuggestions.isEmpty() && running);
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-        catch (MalformedURLException e){
-            System.out.println("Title search failed: " + e.getMessage());
-            e.printStackTrace();
-            close();
-            return null;
-        } catch (IOException e) {
-            System.out.println("INVALID URL FORMAT");
-            e.printStackTrace();
-            close();
-            return null;
+        return suggestions;
+    }
+
+    private class SuggestionsThread implements Runnable {
+
+        @Override
+        public void run(){
+            running = true;
+            try {
+                Integer id = currentMovie.getTmdbID();
+                Gson gson = new Gson();
+                URL obj = new URL(tmdbSuggestions(id));
+                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                con.setRequestMethod("GET");
+                reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                SuggestionResults results = gson.fromJson(reader, SuggestionResults.class);
+                loadedSuggestions.addAll(results.getResults());
+            }
+            catch (MalformedURLException e){
+                System.out.println("Title search failed: " + e.getMessage());
+                e.printStackTrace();
+                exception = e.toString();
+                close();
+            } catch (IOException e) {
+                System.out.println("INVALID URL FORMAT");
+                e.printStackTrace();
+                exception = e.toString();
+                close();
+            }
+            finally {
+                running = false;
+            }
         }
     }
 

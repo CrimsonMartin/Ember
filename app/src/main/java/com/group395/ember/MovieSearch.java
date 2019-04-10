@@ -18,6 +18,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class MovieSearch {
 
@@ -53,7 +54,7 @@ public class MovieSearch {
             query = title;
             executor.submit(new SearchFirstPageThread());
             do {
-                results.add(loadedResults.take());
+                results.add(loadedResults.poll(5, TimeUnit.SECONDS));
             }while(!loadedResults.isEmpty());
 
         } catch (InterruptedException e) {
@@ -112,7 +113,7 @@ public class MovieSearch {
                 query = actor;
                 executor.submit(new SearchByActorThread());
                 do {
-                    results.add(loadedResults.take());
+                    results.add(loadedResults.poll(5, TimeUnit.SECONDS));
                 }while(!loadedResults.isEmpty());
 
             } catch (InterruptedException e) {
@@ -178,7 +179,7 @@ public class MovieSearch {
         // if it's being executed from the main thread, then it needs to create another thread
         // that calls this function instead of directly calling it.
         while (returned.size() < movies.size()){
-            returned.add(loader.loadedmovies.take());
+            returned.add(loader.loadedmovies.poll(5, TimeUnit.SECONDS));
         }
 
         return returned;
@@ -190,7 +191,7 @@ public class MovieSearch {
             query = title;
             executor.submit(new SearchFullThread());
             do {
-                results.add(loadedResults.take());
+                results.add(loadedResults.poll(5, TimeUnit.SECONDS));
                 System.out.println(currentPage+" "+totalResults);
             }while(loadedResults.size()<totalResults && running);
             System.out.println("done");
