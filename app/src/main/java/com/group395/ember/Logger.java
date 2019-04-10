@@ -35,6 +35,9 @@ public class Logger {
         this.fileName = fileName + ".txt";
     }
 
+    protected static String getFileName() { return fileName; }
+
+    protected static String getMovieFileName() { return fileName; }
 
     /**
      * Logs an exception related to any of the other classes.
@@ -93,16 +96,20 @@ public class Logger {
      * @return true if write was successful, false if exception thrown
      */
     private static boolean write(String s, String fileName) {
-        try {
-            FileWriter file = new FileWriter(fileName, true);
-            file.write(LocalDateTime.now().format(DateTimeFormatter.ofPattern("H:m")));
-            file.write(s + "\n");
-            file.close();
-            return true;
+        if (s != null && !s.isEmpty()) {
+            try {
+                FileWriter file = new FileWriter(fileName, true);
+                file.write(LocalDateTime.now().format(DateTimeFormatter.ofPattern("H:m")));
+                file.write(s + "\n");
+                file.close();
+                return true;
+            } catch (Exception e) {
+                System.out.println("There was an error writing to a file");
+                System.out.println(e.toString());
+                return false;
+            }
         }
-        catch (Exception e) {
-            System.out.println("There was an error writing to a file");
-            System.out.println(e.toString());
+        else {
             return false;
         }
     }
