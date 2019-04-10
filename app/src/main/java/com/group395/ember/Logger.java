@@ -95,7 +95,7 @@ public class Logger {
      * @param s is what to write
      * @return true if write was successful, false if exception thrown
      */
-    private static boolean write(String s, String fileName) {
+    protected static boolean write(String s, String fileName) {
         if (s != null && !s.isEmpty()) {
             try {
                 FileWriter file = new FileWriter(fileName, true);
@@ -120,7 +120,7 @@ public class Logger {
      * @param fileName is the file to read
      * @return ArrayList of Strings
      */
-    private static ArrayList<String> readByLine(String fileName) {
+    protected static ArrayList<String> readByLine(String fileName) {
         try {
             ArrayList<String> output = new ArrayList<>();
             Scanner toRead = new Scanner(new File(fileName));
