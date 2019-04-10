@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import java.lang.Exception;
 import java.util.ArrayList;
+import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -15,7 +16,7 @@ public class LoggerTest {
     private Movie m1;
 
     @Before
-    public void initialize() {
+    public void initialize() throws IOException {
         log1 = new Logger();
         // Should write to line 1
         log1.logException(new Exception("Test Exception"));
@@ -26,26 +27,26 @@ public class LoggerTest {
     }
 
     @Test
-    public void testException() {
-        ArrayList<String> exceptions = log1.readByLine(log1.getFileName());
+    public void testException() throws IOException {
+        ArrayList<String> exceptions = log1.readByLine(Logger.getFileName());
         // The first line should be the exception
         assertTrue(exceptions.get(0).contains("Test Exception"));
     }
 
     @Test
-    public void testHistory() {
-        ArrayList<String> history = log1.pullAllFromHistory();
+    public void testHistory() throws IOException {
+        ArrayList<Movie> history = Logger.pullAllFromHistory();
         assertEquals(history.get(0), m1);
     }
 
     @Test
-    public void testWrite() {
-        boolean writeStatus = log1.write("Some text", log1.getFileName());
+    public void testWrite() throws IOException {
+        boolean writeStatus = log1.write("Some text", Logger.getFileName());
         assertTrue(writeStatus);
-        ArrayList<String> writeOut = log1.readByLine(log1.getFileName());
+        ArrayList<String> writeOut = log1.readByLine(Logger.getFileName());
         assertTrue(writeOut.get(1).contains("Some text"));
 
-        boolean nullStatus = log1.write(null, log1.getFileName());
+        boolean nullStatus = log1.write(null, Logger.getFileName());
         assertFalse(nullStatus);
     }
 }
