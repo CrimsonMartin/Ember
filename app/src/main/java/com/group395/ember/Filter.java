@@ -12,8 +12,6 @@ public class Filter {
         return filterType;
     }
 
-    private Logger log = new Logger();
-
     /**
      * Creates an empty filter given a FilterType.
      * @param filterType to use for the new Filter
