@@ -15,7 +15,7 @@ public class SearchResultsActivity extends AppCompatActivity {
 
     private static Movie[] loadedMovies = new Movie[2];
     //This field specifies how many sets of 2 Movies have been moved past by the "next" button.
-    private int pagesSkipped = 0;
+    private static int pagesSkipped = 0;
     private static UISearch mySearch = new UISearch();
 
     public static Movie exampleMovie = Movie.parseFromJson("{\"Title\":\"Space Jam\",\"Year\":\"1996\",\"Rated\":\"PG\",\"Released\":\"15 Nov 1996\",\"Runtime\":\"88 min\",\"Genre\":\"Animation, Adventure, " +
@@ -37,10 +37,11 @@ public class SearchResultsActivity extends AppCompatActivity {
 
     /**
      * @param searchText The name of the movie being searched.
+     * @param actorNotTitle True if searching by actor, false if searching by title.
      */
-    protected static void search(String searchText){
-        //mySearch.setSearch(searchText);
-        //Movie[] moviesToLoad = mySearch.getMovies(0,1);
+    protected static void search(String searchText, boolean actorNotTitle){
+        UISearch.searchFromButton(searchText, actorNotTitle);
+        loadedMovies = UISearch.getTwo(pagesSkipped);
         //loadedMovies[0] = moviesToLoad[0];
         //loadedMovies[1] = moviesToLoad[1];
         loadedMovies[0] = exampleMovie;
@@ -74,6 +75,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     }
 
     public void filtersOnClick(View v){ startActivity(new Intent(SearchResultsActivity.this, SearchOptionsActivity.class)); }
+    public static void addFilters(){ }
 
     private void display(Movie inputMovie, TextView title, TextView actors, TextView director, TextView plot){
         title.setText(getApplicationContext().getString(R.string.title_with_year, inputMovie.getTitle(), inputMovie.getYear().toString()));

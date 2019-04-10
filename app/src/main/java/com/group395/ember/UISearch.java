@@ -11,14 +11,14 @@ import java.util.ArrayList;
 
 public class UISearch {
 
-    private ArrayList<Filter> filters = new ArrayList<Filter>(0);  // Filter list to hold all 3 possible filters.
+    private ArrayList<Filter> filters = new ArrayList<>(0);  // Filter list to hold all 3 possible filters.
     private String searchTerms;                                                 // The search terms to access the database with
-    private ArrayList<Movie> results;                                                // Results from an API call
+    private static ArrayList<Movie> results;                                                // Results from an API call
 
     /**
      * Default constructor for a UISearch
      */
-    public UISearch() {
+    protected UISearch() {
         // Creating basic filters as placeholders
         filters.add(new Filter(FilterType.ACTOR));
         filters.add(new Filter(FilterType.GENRE));
@@ -104,7 +104,6 @@ public class UISearch {
      */
     public Movie[] getMovies(int start, int end) {
         Movie[] arr = new Movie[start - end + 1];
-
         try {
             for (int i = start; i <= end; i++) {
                 arr[i] = results.get(i);
@@ -161,5 +160,22 @@ public class UISearch {
         }
 
         return filteredList;
+    }
+
+    protected static void searchFromButton(String input, boolean actorNotTitle) {
+        System.out.println("Running searchFromButton(" + input + ", " + actorNotTitle + ")");
+        if (actorNotTitle) {
+            results = MovieSearch.searchByActor(input);
+        } else {
+            results = MovieSearch.searchFirstPage(input);
+        }
+    }
+
+    protected static Movie[] getTwo(int pagesSkipped){
+        System.out.println("Running getTwo(" + pagesSkipped + ")");
+        Movie[] output = new Movie[2];
+        if(pagesSkipped * 2 < results.size()){ output[0] = results.get(pagesSkipped * 2); }
+        if(pagesSkipped * 2 + 1 < results.size()){ output[1] = results.get(pagesSkipped * 2 + 1); }
+        return output;
     }
 }

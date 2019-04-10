@@ -35,7 +35,6 @@ public class Logger {
         this.fileName = fileName + ".txt";
     }
 
-
     /**
      * Logs an exception related to any of the other classes.
      * @param e is the exception to log

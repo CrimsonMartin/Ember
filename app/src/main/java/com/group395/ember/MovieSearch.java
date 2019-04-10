@@ -29,13 +29,13 @@ public class MovieSearch {
     private static String tmdbMovieCredits = "/movie_credits?api_key=";
     private static String tmdbSettings = "&language=en-US&include_adult=false";
 
-    public static String query = "";
-    public BlockingQueue<Movie> loadedResults = new ArrayBlockingQueue<>(MAXNUMMOVIES);
-
     private static int MAXNUMMOVIES = 1000;
     private static int MAXNUMTHREADS = 8;
+    public static String query = "";
+    public static BlockingQueue<Movie> loadedResults = new ArrayBlockingQueue<>(MAXNUMMOVIES);
+
     private BlockingQueue<String> movietitles = new ArrayBlockingQueue<>(MAXNUMMOVIES);
-    private ExecutorService executor = Executors.newFixedThreadPool(MAXNUMTHREADS);
+    private static ExecutorService executor = Executors.newFixedThreadPool(MAXNUMTHREADS);
     private ThreadPoolExecutor pool = (ThreadPoolExecutor) executor;
     private static boolean run = false;
 
@@ -43,7 +43,7 @@ public class MovieSearch {
     private static BufferedReader reader = null;
 
     // Returns a list of movies
-    public ArrayList<Movie> searchFirstPage(String title) {
+    public static ArrayList<Movie> searchFirstPage(String title) {
         ArrayList<Movie> results = new ArrayList<Movie>();
         try {
             //System.out.println("Loader thread starting");
@@ -60,7 +60,7 @@ public class MovieSearch {
         return results;
     }
 
-    private class SearchFirstPageThread implements Runnable{
+    private static class SearchFirstPageThread implements Runnable{
 
         @Override
         public void run() {
@@ -308,7 +308,6 @@ public class MovieSearch {
             return searchResults;
         }
     }
-
 
 
 

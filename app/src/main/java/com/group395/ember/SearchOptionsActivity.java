@@ -120,15 +120,15 @@ public class SearchOptionsActivity extends AppCompatActivity {
         currentNumFilters = 0;
     }
 
-    public void searchOnClick(View v){
+    public void acceptOnClick(View v){
         EditText editText = findViewById(R.id.filterText);
-        SearchResultsActivity.search(editText.getText().toString());
+        SearchResultsActivity.addFilters();
         startActivity(new Intent(SearchOptionsActivity.this, SearchResultsActivity.class));
     }
 
     public void deleteOnClick(View v){
-        if(!checkRadioEmpty()) {
-            if (selectedRadio != null) {
+        if(selectedRadio != null) {
+            if (!checkRadioEmpty()) {
                 RadioButton displayRadioA = findViewById(R.id.filterDisplayA);
                 RadioButton displayRadioB = findViewById(R.id.filterDisplayB);
                 RadioButton displayRadioC = findViewById(R.id.filterDisplayC);
