@@ -31,13 +31,15 @@ public class MovieSearch {
 
     public static String query = "";
     public BlockingQueue<Movie> loadedResults = new ArrayBlockingQueue<>(MAXNUMMOVIES);
+    public int totalResults = 0;
+    public int currentPage = 0;
 
     private static int MAXNUMMOVIES = 1000;
     private static int MAXNUMTHREADS = 8;
     private BlockingQueue<String> movietitles = new ArrayBlockingQueue<>(MAXNUMMOVIES);
     private ExecutorService executor = Executors.newFixedThreadPool(MAXNUMTHREADS);
     private ThreadPoolExecutor pool = (ThreadPoolExecutor) executor;
-    private static boolean run = false;
+    private static boolean running = false;
 
 
     private static BufferedReader reader = null;
@@ -60,12 +62,12 @@ public class MovieSearch {
         return results;
     }
 
-    private class SearchFirstPageThread implements Runnable{
+    private class SearchFirstPageThread implements Runnable {
 
         @Override
         public void run() {
             try {
-                run = true;
+                running = true;
                 Gson gson = new Gson();
                 URL obj = new URL(tmdbSearch(query, 1));
                 HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -85,55 +87,79 @@ public class MovieSearch {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                running = false;
+            }
+        }
+
+        private String tmdbSearch(String title, Integer page) {
+            title = title.replaceAll(" ", "+");
+            if (title.length() > 0)
+                return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings + "&page=" + page + "&query=" + title;
+            else
+                return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings + "&page=" + page;
+        }
+    }
+
+
+
+
+        public ArrayList<Movie> searchByActor(String actor){
+            ArrayList<Movie> results = new ArrayList<Movie>();
+            try {
+                //System.out.println("Loader thread starting");
+                String response = null;
+                query = actor;
+                executor.submit(new SearchByActorThread());
+                do {
+                    results.add(loadedResults.take());
+                }while(!loadedResults.isEmpty());
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return results;
+    }
+
+    private class SearchByActorThread implements Runnable {
+
+        @Override
+        public void run() {
+            try{
+                running = true;
+                Gson gson = new Gson();
+
+                System.out.println("Starting Search");
+                PersonResults searchedActor =  gson.fromJson(
+                        Unirest.get(tmdbSearchPeople(query))
+                                .asJson()
+                                .getBody()
+                                .toString(),
+                        PersonResults.class);
+
+                Integer id = searchedActor.getId();
+
+                System.out.println("Actor ID is " + id);
+
+                MoviesByPersonResults movieResults = gson.fromJson(
+                        Unirest.get(tmdbMoviesByPerson(id))
+                                .asJson()
+                                .getBody()
+                                .toString(),
+                        MoviesByPersonResults.class);
+
+                loadedResults.addAll(movieResults.getResults());
+
+            }catch(UnirestException e){
+                System.out.println("Unirest Exception thrown");
             }
             finally {
-                run = false;
+                running = false;
             }
         }
-        private String tmdbSearch(String title, Integer page){
-            title = title.replaceAll(" ", "+");
-            if(title.length()>0)
-                return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings+ "&page=" + page + "&query=" + title;
-            else
-                return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings+ "&page=" + page;
-        }
     }
 
-
-
-
-        public static ArrayList<Movie> searchByActor(String actor){
-        try{
-            Gson gson = new Gson();
-
-            System.out.println("Starting Search");
-            PersonResults searchedActor =  gson.fromJson(
-                    Unirest.get(tmdbSearchPeople(actor))
-                            .asJson()
-                            .getBody()
-                            .toString(),
-                    PersonResults.class);
-
-            Integer id = searchedActor.getId();
-
-            System.out.println("Actor ID is " + id);
-
-            MoviesByPersonResults movieResults = gson.fromJson(
-                    Unirest.get(tmdbMoviesByPerson(id))
-                            .asJson()
-                            .getBody()
-                            .toString(),
-                    MoviesByPersonResults.class);
-
-            return movieResults.getResults();
-
-        }catch(UnirestException e){
-            System.out.println("Unirest Exception thrown");
-            return null;
-        }
-    }
-
-    public static ArrayList<Movie> searchByActorFull(String actor) throws InterruptedException{
+    public ArrayList<Movie> searchByActorFull(String actor) throws InterruptedException{
         MovieLoader loader = new MovieLoader();
         ArrayList<Movie> movies = searchByActor(actor);
 
@@ -158,8 +184,6 @@ public class MovieSearch {
         return returned;
     }
 
-
-
     public ArrayList<Movie> searchFull(String title){
         ArrayList<Movie> results = new ArrayList<Movie>();
         try{
@@ -167,8 +191,9 @@ public class MovieSearch {
             executor.submit(new SearchFullThread());
             do {
                 results.add(loadedResults.take());
-            }while(!loadedResults.isEmpty() && run);
-
+                System.out.println(currentPage+" "+totalResults);
+            }while(loadedResults.size()<totalResults && running);
+            System.out.println("done");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -179,7 +204,7 @@ public class MovieSearch {
 
         @Override
         public void run() {
-            run = true;
+            running = true;
             try{
                 MovieLoader loader = new MovieLoader();
                 Gson gson = new Gson();
@@ -192,11 +217,13 @@ public class MovieSearch {
                 SearchResults results = gson.fromJson(reader, SearchResults.class);
 
                 int pages = results.getTotal_pages();
+                totalResults = results.getNumberofResults();
                 if(pages>20){
                     // Throw some sort of Exception
                 }
                 else{
                     for(int page = 1; page<=pages; page++){
+                        currentPage = page;
                         tmdb = new URL(tmdbSearch(query,  page));
                         tmdbCon = (HttpURLConnection) tmdb.openConnection();
                         tmdbCon.setRequestMethod("GET");
@@ -204,15 +231,14 @@ public class MovieSearch {
                         results = gson.fromJson(reader, SearchResults.class);
 
                         ArrayList<Movie> moviesPage = results.getResults();
-
                         try{
                             loader.loadMoviebyTitle(collectTitles(results.getResults()));
                             for (Movie m : moviesPage){
-                                System.out.println(m.getTitle());
+                                //System.out.println(m.getTitle());
                                 loadedResults.add(loader.loadedmovies.take());
                             }
                         }catch(InterruptedException e){
-                            //pass
+                            e.printStackTrace();
                         }
                     }
                 }
@@ -227,7 +253,7 @@ public class MovieSearch {
                 close();
             }
             finally {
-                run = false;
+                running = false;
             }
         }
 
