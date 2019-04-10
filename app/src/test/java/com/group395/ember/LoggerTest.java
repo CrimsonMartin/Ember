@@ -17,6 +17,7 @@ public class LoggerTest {
 
     @Before
     public void initialize() throws IOException {
+        Logger log1 = new Logger();
         // Should write to line 1
         Logger.logException(new Exception("Test Exception"));
         // Should write to line 2
