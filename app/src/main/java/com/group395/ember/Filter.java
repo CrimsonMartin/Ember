@@ -45,6 +45,7 @@ public class Filter {
         filterKeywords.addAll(input);
     }
 
+    public void add(String input){filterKeywords.add(input);}
 
     /**
      * Checks if a Movie fits the current filter by comparing the filterKeywords of both movies

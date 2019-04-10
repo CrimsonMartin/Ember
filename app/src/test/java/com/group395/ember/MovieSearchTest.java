@@ -2,6 +2,7 @@ package com.group395.ember;
 
 import org.junit.Before;
 import org.junit.Test;
+import java.util.ArrayList;
 
 import java.util.List;
 
@@ -10,6 +11,7 @@ public class MovieSearchTest {
     private Movie m1;
     private Movie m2;
     private MovieList ml;
+    private ArrayList<Movie> m2;
     private MovieSearch m;
 
 
@@ -36,6 +38,7 @@ public class MovieSearchTest {
     @Test
     public void search()throws InterruptedException{
         String query = "Blues Brothers";
+        m2 = m.searchFull("Batman");
         System.out.println("** By Movie **");
         long start = System.nanoTime();
         m.searchFirstPage(query);
@@ -46,9 +49,14 @@ public class MovieSearchTest {
         System.out.println("Number of Results: " + res.size());
         end = System.nanoTime();
         System.out.println("Full: "+(end-start)/(1000000*1000.0));
-       // assertTrue(MovieSearch.search("Return of the").getResponse());
-       // assertTrue(MovieSearch.search("Titan").getResponse());
-      //  assertFalse(MovieSearch.search("the").getResponse());
+        assertEquals(MovieSearch.search("Return of the").getResponse());
+        assertTrue(MovieSearch.search("Batman").length() > 0);
+        for(int i = 0; i<5; i++){
+            assertTrue(m2.get(i).getTitle().contains("Batman"));
+        }
+
+        assertTrue(MovieSearch.search("Titan").getResponse());
+        assertFalse(MovieSearch.search("the").getResponse());
     }
 
     @Test
@@ -66,3 +74,4 @@ public class MovieSearchTest {
         System.out.println("Full: "+(end-start)/(1000000*1000.0));
     }
 }
+
