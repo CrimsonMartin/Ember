@@ -11,7 +11,7 @@ public class MovieSearchTest {
     private Movie m1;
     private Movie m2;
     private MovieList ml;
-    private ArrayList<Movie> m2;
+    private ArrayList<Movie> m3;
     private MovieSearch m;
 
 
@@ -38,7 +38,7 @@ public class MovieSearchTest {
     @Test
     public void search()throws InterruptedException{
         String query = "Blues Brothers";
-        m2 = m.searchFull("Batman");
+        m3 = m.searchFull("Batman");
         System.out.println("** By Movie **");
         long start = System.nanoTime();
         m.searchFirstPage(query);
@@ -49,10 +49,10 @@ public class MovieSearchTest {
         System.out.println("Number of Results: " + res.size());
         end = System.nanoTime();
         System.out.println("Full: "+(end-start)/(1000000*1000.0));
-        assertEquals(MovieSearch.search("Return of the").getResponse());
-        assertTrue(MovieSearch.search("Batman").length() > 0);
+        assertEquals(m.searchFull("Return of the").getResponse());
+        assertTrue(m.searchFull("Batman").length() > 0);
         for(int i = 0; i<5; i++){
-            assertTrue(m2.get(i).getTitle().contains("Batman"));
+            assertTrue(m3.get(i).getTitle().contains("Batman"));
         }
 
         assertTrue(MovieSearch.search("Titan").getResponse());
