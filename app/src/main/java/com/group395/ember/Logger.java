@@ -19,12 +19,19 @@ public class Logger {
     /**
      * Default constructor; uses a default file name: EmberLogDDMMYY
      */
-    protected Logger() {
+    protected Logger() throws IOException {
         // Formatting date
         LocalDateTime date = LocalDateTime.now();
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dMMMyy");
         fileName = "EmberLog" + date.format(dateFormat) + ".txt";
         movieFileName = "MovieLog" + date.format(dateFormat) + ".txt";
+
+        File generalFile = new File(fileName);
+        generalFile.createNewFile();
+
+        File movieFile = new File(movieFileName);
+        movieFile.createNewFile();
+
     }
 
     /**
