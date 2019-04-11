@@ -38,8 +38,10 @@ public class SearchStartActivity extends AppCompatActivity {
 
     public void searchOnClick(View v){
         EditText nameText = findViewById(R.id.nameText);
-        SearchResultsActivity.search(nameText.getText().toString(), actorNotTitle);
-        startActivity(new Intent(SearchStartActivity.this, SearchResultsActivity.class));
+        if((nameText.getText() != null) && !(nameText.getText().toString().equals(""))) {
+            SearchResultsActivity.search(nameText.getText().toString(), actorNotTitle);
+            startActivity(new Intent(SearchStartActivity.this, SearchResultsActivity.class));
+        }
     }
 
     public void backOnClick(View v){ startActivity(new Intent(SearchStartActivity.this, HistoryActivity.class)); }

@@ -164,10 +164,15 @@ public class UISearch {
 
     protected static void searchFromButton(String input, boolean actorNotTitle) {
         System.out.println("Running searchFromButton(" + input + ", " + actorNotTitle + ")");
-        if (actorNotTitle) {
-            results = MovieSearch.searchByActor(input);
-        } else {
-            results = MovieSearch.searchFirstPage(input);
+        try {
+            if (actorNotTitle) {
+                results = MovieSearch.searchByActorFull(input);
+            } else {
+                results = MovieSearch.searchFull(input);
+            }
+            System.out.println("Finished searchFromButton(" + input + ", " + actorNotTitle + ")");
+        }catch(Exception e){
+            System.out.println("Caught exception: " + e.toString());
         }
     }
 
@@ -176,6 +181,7 @@ public class UISearch {
         Movie[] output = new Movie[2];
         if(pagesSkipped * 2 < results.size()){ output[0] = results.get(pagesSkipped * 2); }
         if(pagesSkipped * 2 + 1 < results.size()){ output[1] = results.get(pagesSkipped * 2 + 1); }
+        System.out.println("Finished getTwo(" + pagesSkipped + ")");
         return output;
     }
 }

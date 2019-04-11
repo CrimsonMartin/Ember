@@ -77,7 +77,7 @@ public class SearchOptionsActivity extends AppCompatActivity {
         EditText editText = findViewById(R.id.filterText);
         String inputString = editText.getText().toString();
         //If the input box is empty, do nothing.
-        if((inputString == null) || (inputString.equals(""))){ return; }
+        if(inputString.equals("")){ return; }
         int firstEmptyLinear = findFirstEmpty(myFiltersLinear);
         myFiltersLinear[firstEmptyLinear] = new FilterHolder(inputString, selected);
         //add filter to display of filters

@@ -40,34 +40,36 @@ public class SearchResultsActivity extends AppCompatActivity {
      * @param actorNotTitle True if searching by actor, false if searching by title.
      */
     protected static void search(String searchText, boolean actorNotTitle){
+        System.out.println("Running search(" + searchText + ", " + actorNotTitle + ")");
         UISearch.searchFromButton(searchText, actorNotTitle);
         loadedMovies = UISearch.getTwo(pagesSkipped);
-        //loadedMovies[0] = moviesToLoad[0];
-        //loadedMovies[1] = moviesToLoad[1];
-        //loadedMovies[0] = exampleMovie;
-        //loadedMovies[1] = exampleMovie;
+        System.out.println("Finished search(" + searchText + ", " + actorNotTitle + ")");
     }
 
     public void searchAgainOnClick(View v){ startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class)); }
 
     public void resultButtonAOnClick(View v) {
         try {
-            HistoryActivity.addClick(loadedMovies[0]);
-            MoviePageActivity.setCurrentMovie(loadedMovies[0]);
-            MoviePageActivity.setFromHistoryActivity(false);
-            Logger.saveToHistory(loadedMovies[0]);
-            startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
+            if(loadedMovies[0] != null) {
+                HistoryActivity.addClick(loadedMovies[0]);
+                MoviePageActivity.setCurrentMovie(loadedMovies[0]);
+                MoviePageActivity.setFromHistoryActivity(false);
+                Logger.saveToHistory(loadedMovies[0]);
+                startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
+            }
         } catch(IOException io) {
             System.out.println(io.toString());
         }
     }
     public void resultButtonBOnClick(View v){
         try {
-            HistoryActivity.addClick(loadedMovies[1]);
-            MoviePageActivity.setCurrentMovie(loadedMovies[1]);
-            MoviePageActivity.setFromHistoryActivity(false);
-            Logger.saveToHistory(loadedMovies[1]);
-            startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
+            if(loadedMovies[1] != null) {
+                HistoryActivity.addClick(loadedMovies[1]);
+                MoviePageActivity.setCurrentMovie(loadedMovies[1]);
+                MoviePageActivity.setFromHistoryActivity(false);
+                Logger.saveToHistory(loadedMovies[1]);
+                startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
+            }
         } catch(IOException io) {
             System.out.println(io.toString());
         }
@@ -78,14 +80,16 @@ public class SearchResultsActivity extends AppCompatActivity {
     public static void addFilters(){ }
 
     private void display(Movie inputMovie, TextView title, TextView actors, TextView director, TextView plot){
-        title.setText(getApplicationContext().getString(R.string.title_with_year, inputMovie.getTitle(), inputMovie.getYear().toString()));
-        actors.setText(getApplicationContext().getString(R.string.starring, stripBrackets(inputMovie.getActors().toString())));
-        director.setText(getApplicationContext().getString(R.string.directed_by, inputMovie.getDirector()));
-        plot.setText(inputMovie.getPlot());
-        title.bringToFront();
-        actors.bringToFront();
-        director.bringToFront();
-        plot.bringToFront();
+        if(inputMovie != null) {
+            title.setText(getApplicationContext().getString(R.string.title_with_year, inputMovie.getTitle(), inputMovie.getYear().toString()));
+            actors.setText(getApplicationContext().getString(R.string.starring, stripBrackets(inputMovie.getActors().toString())));
+            director.setText(getApplicationContext().getString(R.string.directed_by, inputMovie.getDirector()));
+            plot.setText(inputMovie.getPlot());
+            title.bringToFront();
+            actors.bringToFront();
+            director.bringToFront();
+            plot.bringToFront();
+        }
     }
     private void displayAll(){
         display(loadedMovies[0], (TextView) findViewById(R.id.resultTitleA), (TextView) findViewById(R.id.resultActorsA), (TextView) findViewById(R.id.resultDirectorA), (TextView) findViewById(R.id.resultPlotA));
@@ -95,8 +99,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     }
 
     public void nextOnClick(View v){
-        //Movie[] moviesToLoad = mySearch.getMovies(2 * pagesSkipped + 2, 2 * pagesSkipped + 3);
-        Movie[] moviesToLoad = new Movie[]{exampleMovie, exampleMovie};
+        Movie[] moviesToLoad = UISearch.getTwo(pagesSkipped + 1);
         if(moviesToLoad[0] != null){
             pagesSkipped++;
             loadedMovies = moviesToLoad;
@@ -106,8 +109,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     public void prevOnClick(View v){
         if(pagesSkipped > 0){
             pagesSkipped--;
-            //loadedMovies = mySearch.getMovies(2 * pagesSkipped + 2, 2 * pagesSkipped + 3);
-            loadedMovies = new Movie[]{exampleMovie, exampleMovie};
+            loadedMovies = UISearch.getTwo(pagesSkipped);
             displayAll();
         }
     }
