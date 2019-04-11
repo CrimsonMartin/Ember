@@ -15,7 +15,7 @@ public class SearchResultsActivity extends AppCompatActivity {
 
     private static Movie[] loadedMovies = new Movie[2];
     //This field specifies how many sets of 2 Movies have been moved past by the "next" button.
-    private int pagesSkipped = 0;
+    private static int pagesSkipped = 0;
     private static UISearch mySearch = new UISearch();
 
     public static Movie exampleMovie = Movie.parseFromJson("{\"Title\":\"Space Jam\",\"Year\":\"1996\",\"Rated\":\"PG\",\"Released\":\"15 Nov 1996\",\"Runtime\":\"88 min\",\"Genre\":\"Animation, Adventure, " +
@@ -37,36 +37,39 @@ public class SearchResultsActivity extends AppCompatActivity {
 
     /**
      * @param searchText The name of the movie being searched.
+     * @param actorNotTitle True if searching by actor, false if searching by title.
      */
-    protected static void search(String searchText){
-        //mySearch.setSearch(searchText);
-        //Movie[] moviesToLoad = mySearch.getMovies(0,1);
-        //loadedMovies[0] = moviesToLoad[0];
-        //loadedMovies[1] = moviesToLoad[1];
-        //loadedMovies[0] = exampleMovie;
-        //loadedMovies[1] = exampleMovie;
+    protected static void search(String searchText, boolean actorNotTitle){
+        System.out.println("Running search(" + searchText + ", " + actorNotTitle + ")");
+        UISearch.searchFromButton(searchText, actorNotTitle);
+        loadedMovies = UISearch.getTwo(pagesSkipped);
+        System.out.println("Finished search(" + searchText + ", " + actorNotTitle + ")");
     }
 
     public void searchAgainOnClick(View v){ startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class)); }
 
     public void resultButtonAOnClick(View v) {
         try {
-            HistoryActivity.addClick(loadedMovies[0]);
-            MoviePageActivity.setCurrentMovie(loadedMovies[0]);
-            MoviePageActivity.setFromHistoryActivity(false);
-            Logger.saveToHistory(loadedMovies[0]);
-            startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
+            if(loadedMovies[0] != null) {
+                HistoryActivity.addClick(loadedMovies[0]);
+                MoviePageActivity.setCurrentMovie(loadedMovies[0]);
+                MoviePageActivity.setFromHistoryActivity(false);
+                Logger.saveToHistory(loadedMovies[0]);
+                startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
+            }
         } catch(IOException io) {
             System.out.println(io.toString());
         }
     }
     public void resultButtonBOnClick(View v){
         try {
-            HistoryActivity.addClick(loadedMovies[1]);
-            MoviePageActivity.setCurrentMovie(loadedMovies[1]);
-            MoviePageActivity.setFromHistoryActivity(false);
-            Logger.saveToHistory(loadedMovies[1]);
-            startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
+            if(loadedMovies[1] != null) {
+                HistoryActivity.addClick(loadedMovies[1]);
+                MoviePageActivity.setCurrentMovie(loadedMovies[1]);
+                MoviePageActivity.setFromHistoryActivity(false);
+                Logger.saveToHistory(loadedMovies[1]);
+                startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
+            }
         } catch(IOException io) {
             System.out.println(io.toString());
         }
@@ -74,16 +77,19 @@ public class SearchResultsActivity extends AppCompatActivity {
     }
 
     public void filtersOnClick(View v){ startActivity(new Intent(SearchResultsActivity.this, SearchOptionsActivity.class)); }
+    public static void addFilters(){ }
 
     private void display(Movie inputMovie, TextView title, TextView actors, TextView director, TextView plot){
-        title.setText(getApplicationContext().getString(R.string.title_with_year, inputMovie.getTitle(), inputMovie.getYear().toString()));
-        actors.setText(getApplicationContext().getString(R.string.starring, stripBrackets(inputMovie.getActors().toString())));
-        director.setText(getApplicationContext().getString(R.string.directed_by, inputMovie.getDirector()));
-        plot.setText(inputMovie.getPlot());
-        title.bringToFront();
-        actors.bringToFront();
-        director.bringToFront();
-        plot.bringToFront();
+        if(inputMovie != null) {
+            title.setText(getApplicationContext().getString(R.string.title_with_year, inputMovie.getTitle(), inputMovie.getYear().toString()));
+            actors.setText(getApplicationContext().getString(R.string.starring, stripBrackets(inputMovie.getActors().toString())));
+            director.setText(getApplicationContext().getString(R.string.directed_by, inputMovie.getDirector()));
+            plot.setText(inputMovie.getPlot());
+            title.bringToFront();
+            actors.bringToFront();
+            director.bringToFront();
+            plot.bringToFront();
+        }
     }
     private void displayAll(){
         display(loadedMovies[0], (TextView) findViewById(R.id.resultTitleA), (TextView) findViewById(R.id.resultActorsA), (TextView) findViewById(R.id.resultDirectorA), (TextView) findViewById(R.id.resultPlotA));
@@ -93,8 +99,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     }
 
     public void nextOnClick(View v){
-        //Movie[] moviesToLoad = mySearch.getMovies(2 * pagesSkipped + 2, 2 * pagesSkipped + 3);
-        Movie[] moviesToLoad = new Movie[]{exampleMovie, exampleMovie};
+        Movie[] moviesToLoad = UISearch.getTwo(pagesSkipped + 1);
         if(moviesToLoad[0] != null){
             pagesSkipped++;
             loadedMovies = moviesToLoad;
@@ -104,8 +109,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     public void prevOnClick(View v){
         if(pagesSkipped > 0){
             pagesSkipped--;
-            //loadedMovies = mySearch.getMovies(2 * pagesSkipped + 2, 2 * pagesSkipped + 3);
-            loadedMovies = new Movie[]{exampleMovie, exampleMovie};
+            loadedMovies = UISearch.getTwo(pagesSkipped);
             displayAll();
         }
     }

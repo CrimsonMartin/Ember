@@ -6,9 +6,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.group395.ember.FilterType.*;
+
 public class Filter {
 
-    private Set<String> filterKeywords;
+    private Set<String> filterKeywords = new LinkedHashSet<>();
     private FilterType filterType;
 
     public FilterType getFilterType() {
@@ -24,17 +26,17 @@ public class Filter {
 
     // All of these pretty much do the same thing: Change the filter to the method name and fill in the keywords
     public void setDirectors(ArrayList<String> directors) {
-        filterType = FilterType.DIRECTOR;
+        filterType = DIRECTOR;
         filterKeywords = new LinkedHashSet<>(directors);
     }
 
     public void setActors(ArrayList<String> actors) {
-        filterType = FilterType.ACTOR;
+        filterType = ACTOR;
         filterKeywords = new LinkedHashSet<>(actors);
     }
 
     public void setGenres(ArrayList<String> genres) {
-        filterType = FilterType.GENRE;
+        filterType = GENRE;
         filterKeywords = new LinkedHashSet<>(genres);
     }
 
@@ -46,6 +48,7 @@ public class Filter {
         filterKeywords.addAll(input);
     }
 
+    public void add(String input){filterKeywords.add(input);}
 
     /**
      * Checks if a Movie fits the current filter by comparing the filterKeywords of both movies
@@ -73,7 +76,8 @@ public class Filter {
                 throw new NullPointerException("This Filter has no filter type set");
         }
 
-        return getKeywords().containsAll(compareTo);
+        boolean is = compareTo.containsAll(getKeywords());
+        return is;
 
     }
 

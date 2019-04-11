@@ -33,7 +33,7 @@ public class MovieSearchTest {
         System.out.println("Full: "+(end-start)/(1000000*1000.0));
     }
 
-    @Test
+    @Ignore
     public void search()throws InterruptedException{
         String query = "Blues Brothers";
         System.out.println("** By Movie **");
@@ -67,7 +67,7 @@ public class MovieSearchTest {
         System.out.println("Full: "+(end-start)/(1000000*1000.0));
     }
 
-    @Test
+    @Ignore
     public void url(){
         System.out.println("Test: " +MovieSearch.searchFull("Remember the"));
     }

@@ -94,8 +94,7 @@ public class MovieSearch {
                 e.printStackTrace();
             }
         }
-
-        private String tmdbSearch(String title, Integer page) {
+        private String tmdbSearch(String title, Integer page){
             title = title.replaceAll(" ", "+");
             if (title.length() > 0)
                 return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings + "&page=" + page + "&query=" + title;

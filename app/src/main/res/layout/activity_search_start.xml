@@ -26,13 +26,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
         android:background="@color/editText"
         android:hint="@string/enter_name"
         android:importantForAutofill="no"
         android:inputType="text"
-        app:layout_constraintBottom_toTopOf="@+id/searchInstructions"
+        app:layout_constraintBottom_toTopOf="@+id/searchBySwitch"
         app:layout_constraintEnd_toEndOf="@+id/searchButton"
+        app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="@+id/searchButton"
         app:layout_constraintTop_toBottomOf="@+id/searchButton" />
 
@@ -64,7 +64,7 @@
         app:layout_constraintBottom_toTopOf="@+id/button2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nameText" />
+        app:layout_constraintTop_toBottomOf="@+id/searchBySwitch" />
 
     <Button
         android:id="@+id/button2"
@@ -80,6 +80,44 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchInstructions" />
+
+    <Switch
+        android:id="@+id/searchBySwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="16dp"
+        android:onClick="switchOnClick"
+        android:showText="false"
+        app:layout_constraintBottom_toTopOf="@+id/searchInstructions"
+        app:layout_constraintEnd_toStartOf="@+id/byActor"
+        app:layout_constraintStart_toEndOf="@+id/byTitle"
+        app:layout_constraintTop_toBottomOf="@+id/nameText" />
+
+    <TextView
+        android:id="@+id/byTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/search_by_title"
+        app:layout_constraintEnd_toStartOf="@+id/searchBySwitch"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nameText" />
+
+    <TextView
+        android:id="@+id/byActor"
+        android:layout_width="wrap_content"
+        android:layout_height="19dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:text="@string/search_by_actor"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/searchBySwitch"
+        app:layout_constraintTop_toBottomOf="@+id/nameText" />
 
 
 </android.support.constraint.ConstraintLayout>
