@@ -12,19 +12,28 @@ import java.util.ArrayList;
 public class Logger {
 
     // For general errors and other data
-    private static String fileName;
+    private static String fileName = "EmberLog" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dMMMyy")) + ".txt";
     // For just movie history
-    private static String movieFileName;
+    private static String movieFileName = "MovieLog"
+            + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dMMMyy"))
+            + ".txt";;
 
     /**
      * Default constructor; uses a default file name: EmberLogDDMMYY
      */
-    protected Logger() {
+    protected Logger() throws IOException {
         // Formatting date
         LocalDateTime date = LocalDateTime.now();
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dMMMyy");
         fileName = "EmberLog" + date.format(dateFormat) + ".txt";
         movieFileName = "MovieLog" + date.format(dateFormat) + ".txt";
+
+        File generalFile = new File(fileName);
+        generalFile.createNewFile();
+
+        File movieFile = new File(movieFileName);
+        movieFile.createNewFile();
+
     }
 
     /**
@@ -35,6 +44,10 @@ public class Logger {
         this.fileName = fileName + ".txt";
     }
 
+    protected static String getFileName() { return fileName; }
+
+    protected static String getMovieFileName() { return movieFileName; }
+
     /**
      * Logs an exception related to any of the other classes.
      * @param e is the exception to log
@@ -44,8 +57,12 @@ public class Logger {
         // Writing relevant data pertaining to the Exception
         file.write(LocalDateTime.now().format(DateTimeFormatter.ofPattern("H:m")));
         file.write(e.getMessage());
-        file.write(e.getCause().toString());
-        file.write(e.getStackTrace().toString() + "\n");
+
+        if (e.getCause() != null)
+            file.write(e.getCause().toString());
+
+        if (e.getStackTrace() != null)
+            file.write(e.getStackTrace().toString() + "\n");
 
         file.close();
     }
@@ -91,17 +108,21 @@ public class Logger {
      * @param s is what to write
      * @return true if write was successful, false if exception thrown
      */
-    private static boolean write(String s, String fileName) {
-        try {
-            FileWriter file = new FileWriter(fileName, true);
-            file.write(LocalDateTime.now().format(DateTimeFormatter.ofPattern("H:m")));
-            file.write(s + "\n");
-            file.close();
-            return true;
+    protected static boolean write(String s, String fileName) {
+        if (s != null && !s.isEmpty()) {
+            try {
+                FileWriter file = new FileWriter(fileName, true);
+                file.write(LocalDateTime.now().format(DateTimeFormatter.ofPattern("H:m")));
+                file.write(s + "\n");
+                file.close();
+                return true;
+            } catch (Exception e) {
+                System.out.println("There was an error writing to a file");
+                System.out.println(e.toString());
+                return false;
+            }
         }
-        catch (Exception e) {
-            System.out.println("There was an error writing to a file");
-            System.out.println(e.toString());
+        else {
             return false;
         }
     }
@@ -112,7 +133,7 @@ public class Logger {
      * @param fileName is the file to read
      * @return ArrayList of Strings
      */
-    private static ArrayList<String> readByLine(String fileName) {
+    protected static ArrayList<String> readByLine(String fileName) {
         try {
             ArrayList<String> output = new ArrayList<>();
             Scanner toRead = new Scanner(new File(fileName));
