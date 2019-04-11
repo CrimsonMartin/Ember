@@ -44,8 +44,8 @@ public class SearchResultsActivity extends AppCompatActivity {
         loadedMovies = UISearch.getTwo(pagesSkipped);
         //loadedMovies[0] = moviesToLoad[0];
         //loadedMovies[1] = moviesToLoad[1];
-        loadedMovies[0] = exampleMovie;
-        loadedMovies[1] = exampleMovie;
+        //loadedMovies[0] = exampleMovie;
+        //loadedMovies[1] = exampleMovie;
     }
 
     public void searchAgainOnClick(View v){ startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class)); }

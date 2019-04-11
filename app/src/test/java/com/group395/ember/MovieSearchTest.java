@@ -38,12 +38,12 @@ public class MovieSearchTest {
         String query = "Blues Brothers";
         System.out.println("** By Movie **");
         long start = System.nanoTime();
-        MovieSearch.searchFirstPage(query);
+        System.out.println(MovieSearch.searchFirstPage(query));
         long end = System.nanoTime();
         System.out.println("First Page: "+ (end-start)/(1000000*1000.0));
         start = System.nanoTime();
         List<Movie> res = MovieSearch.searchFull(query);
-        System.out.println("Number of Results: " + res.size());
+        System.out.println("Number of Results: " + res);
         end = System.nanoTime();
         System.out.println("Full: "+(end-start)/(1000000*1000.0));
        // assertTrue(MovieSearch.search("Return of the").getResponse());
@@ -65,5 +65,10 @@ public class MovieSearchTest {
         System.out.println("Results: " + res.toString());
         end = System.nanoTime();
         System.out.println("Full: "+(end-start)/(1000000*1000.0));
+    }
+
+    @Ignore
+    public void url(){
+        System.out.println("Test: " +MovieSearch.searchFull("Remember the"));
     }
 }

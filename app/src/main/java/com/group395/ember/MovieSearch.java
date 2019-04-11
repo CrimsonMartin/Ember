@@ -30,6 +30,9 @@ public class MovieSearch {
     private static String tmdbMovieCredits = "/movie_credits?api_key=";
     private static String tmdbSettings = "&language=en-US&include_adult=false";
 
+    private static final String omdbApiKey = "db5b96c2";
+    private static final String omdbUrl = "http://www.omdbapi.com/?";
+
     private static int MAXNUMMOVIES = 1000;
     private static int MAXNUMTHREADS = 8;
     private static ExecutorService executor = Executors.newFixedThreadPool(MAXNUMTHREADS);
@@ -42,6 +45,7 @@ public class MovieSearch {
     public static int currentPage = 0;
 
     private static SearchFirstPageThread firstPage = new SearchFirstPageThread();
+
 
     private static BufferedReader reader = null;
 
@@ -68,13 +72,12 @@ public class MovieSearch {
         @Override
         public void run() {
             try {
-                running = true;
                 Gson gson = new Gson();
-                URL obj = new URL(tmdbSearch(query, 1));
+                URL obj = new URL(omdbSearch(query, 1));
                 HttpURLConnection con = (HttpURLConnection) obj.openConnection();
                 con.setRequestMethod("GET");
                 reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                SearchResults results = gson.fromJson(reader, SearchResults.class);
+                OmdbSearchResults results = gson.fromJson(reader, OmdbSearchResults.class);
                 loadedResults.addAll(results.getResults());
             } catch (MalformedURLException e) {
                 System.out.println("Title search failed: " + e.getMessage());
@@ -82,14 +85,13 @@ public class MovieSearch {
                 try {
                     reader.close();
                 } catch (IOException e2) {
+                    query = e.toString();
                     e2.printStackTrace();
                 }
             } catch (ProtocolException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            } finally {
-                running = false;
             }
         }
         private String tmdbSearch(String title, Integer page){
@@ -99,7 +101,10 @@ public class MovieSearch {
             else
                 return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings + "&page=" + page;
         }
+
+
     }
+
 
     public static ArrayList<Movie> searchByActor(String actor){
         ArrayList<Movie> results = new ArrayList<Movie>();
@@ -181,6 +186,64 @@ public class MovieSearch {
         return returned;
     }
 
+    public static String searchTest(String title){
+        query = title;
+        ArrayList<Movie> movieResults = new ArrayList<Movie>();
+        try{
+            MovieLoader loader = new MovieLoader();
+            Gson gson = new Gson();
+            URL search = new URL(omdbSearch(query, 1));
+            System.out.println(search);
+            HttpURLConnection searchCon = (HttpURLConnection) search.openConnection();
+
+            searchCon.setRequestMethod("GET");
+
+            reader = new BufferedReader(new InputStreamReader(searchCon.getInputStream()));
+            OmdbSearchResults results = gson.fromJson(reader, OmdbSearchResults.class);
+            int pages = results.getTotal_pages();
+            //System.out.println(pages);
+            totalResults = results.getNumberofResults();
+            if(pages>40){
+                // Throw some sort of Exception
+                return null;
+            }
+            else{
+                for(int page = 1; page<=pages; page++){
+                    currentPage = page;
+                    search = new URL(omdbSearch(query,  page));
+                    searchCon = (HttpURLConnection) search.openConnection();
+                    searchCon.setRequestMethod("GET");
+                    reader = new BufferedReader(new InputStreamReader(searchCon.getInputStream()));
+                    results = gson.fromJson(reader, OmdbSearchResults.class);
+                    //System.out.println(results);
+                    ArrayList<Movie> moviesPage = results.getResults();
+                    try{
+                        loader.loadMoviebyTitle(collectTitles(results.getResults()));
+                        for (Movie m : moviesPage){
+                            //System.out.println(m.getTitle());
+                            movieResults.add(loader.LoadedMovies.take());
+                        }
+                    }catch(InterruptedException e){
+                        e.printStackTrace();
+                    }
+                }
+                System.out.println("In Method:" +movieResults.toString());
+                return movieResults.toString();
+            }
+        }
+        catch (MalformedURLException e){
+            System.out.println("Title search failed: " + e.getMessage());
+            e.printStackTrace();
+            close();
+            return null;
+        } catch (IOException e) {
+            System.out.println("INVALID URL FORMAT");
+            e.printStackTrace();
+            close();
+            return null;
+        }
+    }
+
     public static ArrayList<Movie> searchFull(String title){
         ArrayList<Movie> results = new ArrayList<Movie>();
         try{
@@ -188,7 +251,6 @@ public class MovieSearch {
             executor.submit(new SearchFullThread());
             do {
                 results.add(loadedResults.poll(5, TimeUnit.SECONDS));
-                System.out.println(currentPage+" "+totalResults);
             }while(!loadedResults.isEmpty() || running);
             System.out.println("done");
         } catch (InterruptedException e) {
@@ -205,28 +267,29 @@ public class MovieSearch {
             try{
                 MovieLoader loader = new MovieLoader();
                 Gson gson = new Gson();
-                URL tmdb = new URL(tmdbSearch(query, 1));
-                HttpURLConnection tmdbCon = (HttpURLConnection) tmdb.openConnection();
+                URL search = new URL(omdbSearch(query, 1));
+                System.out.println(search);
+                HttpURLConnection searchCon = (HttpURLConnection) search.openConnection();
 
-                tmdbCon.setRequestMethod("GET");
+                searchCon.setRequestMethod("GET");
 
-                reader = new BufferedReader(new InputStreamReader(tmdbCon.getInputStream()));
-                SearchResults results = gson.fromJson(reader, SearchResults.class);
-
+                reader = new BufferedReader(new InputStreamReader(searchCon.getInputStream()));
+                OmdbSearchResults results = gson.fromJson(reader, OmdbSearchResults.class);
                 int pages = results.getTotal_pages();
+                //System.out.println(pages);
                 totalResults = results.getNumberofResults();
-                if(pages>20){
+                if(pages>40){
                     // Throw some sort of Exception
                 }
                 else{
                     for(int page = 1; page<=pages; page++){
                         currentPage = page;
-                        tmdb = new URL(tmdbSearch(query,  page));
-                        tmdbCon = (HttpURLConnection) tmdb.openConnection();
-                        tmdbCon.setRequestMethod("GET");
-                        reader = new BufferedReader(new InputStreamReader(tmdbCon.getInputStream()));
-                        results = gson.fromJson(reader, SearchResults.class);
-
+                        search = new URL(omdbSearch(query,  page));
+                        searchCon = (HttpURLConnection) search.openConnection();
+                        searchCon.setRequestMethod("GET");
+                        reader = new BufferedReader(new InputStreamReader(searchCon.getInputStream()));
+                        results = gson.fromJson(reader, OmdbSearchResults.class);
+                        //System.out.println(results);
                         ArrayList<Movie> moviesPage = results.getResults();
                         try{
                             loader.loadMoviebyTitle(collectTitles(results.getResults()));
@@ -249,17 +312,6 @@ public class MovieSearch {
                 e.printStackTrace();
                 close();
             }
-            finally {
-                running = false;
-            }
-        }
-
-        private String tmdbSearch(String title, Integer page){
-            title = title.replaceAll(" ", "+");
-            if(title.length()>0)
-                return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings+ "&page=" + page + "&query=" + title;
-            else
-                return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings+ "&page=" + page;
         }
     }
 
@@ -272,7 +324,7 @@ public class MovieSearch {
     }
 
     //This is the class Gson parses to return the search results
-    private class SearchResults{
+    private class TmdbSearchResults{
         Integer page;
         Integer total_results;
         Integer total_pages;
@@ -299,7 +351,31 @@ public class MovieSearch {
         }
     }
 
-    private class PersonResults{
+    private class OmdbSearchResults {
+        Integer total_pages;
+        Boolean Response;
+        Integer totalResults;
+        ArrayList<Movie> Search;
+
+        public String toString(){
+            return "Response: " + Response+ ", Total Results: " + totalResults + ", Results: " + Search;
+        }
+
+        public Integer getTotal_pages() {
+            total_pages = totalResults/10+1;
+            return total_pages;
+        }
+
+        public Integer getNumberofResults(){
+            return totalResults;
+        }
+
+        public ArrayList<Movie> getResults(){
+            return Search;
+        }
+    }
+
+    public class PersonResults{
         public class Actor{
             String name;
             Integer id;
@@ -320,7 +396,7 @@ public class MovieSearch {
         }
     }
 
-    private class MoviesByPersonResults{
+    public class MoviesByPersonResults{
         ArrayList<TmdbMovie> cast;
 
         public ArrayList<Movie> getResults(){
@@ -332,19 +408,30 @@ public class MovieSearch {
         }
     }
 
-    private static String tmdbSearchPeople(String name){
+
+    public static String omdbSearch (String title, Integer page) {
+        title = title.replaceAll(" ", "+");
+        return omdbUrl +"apikey=" + omdbApiKey + "&s=" + title + "&page=" + page;
+    }
+
+    public static String tmdbSearch(String title, Integer page){
+        title = title.replaceAll(" ", "+");
+        if(title.length()>0)
+            return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings+ "&page=" + page + "&query=" + title;
+        else
+            return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings+ "&page=" + page;
+    }
+
+    public static String tmdbSearchPeople(String name){
         name = name.replaceAll(" ", "+");
         return tmdbUrl + tmdbSearchPeopleUrl + tmdbApiKey + tmdbSettings+ "&query=" + name;
     }
 
-    private static String tmdbMoviesByPerson(Integer id){
+    public static String tmdbMoviesByPerson(Integer id){
         return tmdbMoviesByPersonUrl + id + tmdbMovieCredits + tmdbApiKey + tmdbSettings;
     }
 
-    /**
-     *  Close the MovieSearch
-     * @return true if the operation was successful, false otheriwse.
-     */
+
     public static boolean close(){
         try{
             reader.close();
