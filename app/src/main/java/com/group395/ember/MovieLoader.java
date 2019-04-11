@@ -1,6 +1,5 @@
 package com.group395.ember;
 
-import android.os.AsyncTask;
 import android.support.annotation.VisibleForTesting;
 
 import com.mashape.unirest.http.HttpResponse;
@@ -19,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MovieLoader {
 
-    public BlockingQueue<Movie> loadedmovies = new ArrayBlockingQueue<>(MAXNUMMOVIES);
+    public BlockingQueue<Movie> LoadedMovies = new ArrayBlockingQueue<>(MAXNUMMOVIES);
 
 
     private static int MAXNUMMOVIES = 1000;
@@ -44,32 +43,38 @@ public class MovieLoader {
             while (MovieLoader.run && movietitles.peek() != null) {
                 //System.out.println("Loader thread starting");
                 String movieTitle;
-                String response = null;
+                String response;
 
                 try {
                     movieTitle = movietitles.take();
-                    //System.out.println("Loading title: " + movietitle);
                     String url = omdbUrlFromTitle(movieTitle);
 
                     response = Unirest.get(url).asJson().getBody().toString();
 
-                } catch (UnirestException | MalformedURLException | InterruptedException e) {
-                    //System.out.println("loading failed " + e.getMessage());
-                }
-                try {
                     if (response != null) {
-                        loadedmovies.put(Movie.parseFromJson(response));
+                        LoadedMovies.put(Movie.parseFromJson(response));
                     }
-                } catch (InterruptedException e) {
-                    return;
+
+                } catch (UnirestException | MalformedURLException | InterruptedException e) {
+                    System.out.println("loading failed " + e.getMessage());
+                    //pass - grab the next movie and repeat
+                    try{
+                        LoadedMovies.put(new Movie());
+                    } catch (InterruptedException e2){
+                        //pass
+                    }
                 }
+
             }
-            //System.out.println("Queue is empty, thread terminating");
         }
 
     }
 
-    private class LoadPlatformsTask extends AsyncTask<Movie, Void, Void> {
+    private class LoadPlatformsThread implements Runnable{
+
+        private Movie movie;
+
+        LoadPlatformsThread (Movie m){ movie = m; }
 
         private String utelliAPIKey = "6bff01b396msh0f92aae4b854e96p1277f2jsna247a9a391a8";
         private String utelliUrl = "https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?term=";
@@ -79,20 +84,17 @@ public class MovieLoader {
         }
 
         @Override
-        protected Void doInBackground(Movie... movies) {
+        public void run() {
             try {
-                HttpResponse<JsonNode> response = Unirest.get(createUtelliSearchURL(movies[0].getTitle()))
+                HttpResponse<JsonNode> response = Unirest.get(createUtelliSearchURL(movie.getTitle()))
                         .header("X-RapidAPI-Key", utelliAPIKey)
                         .asJson();
 
-                if (!isCancelled()){
-                    movies[0].addPlatforms(response.getBody().toString());
-                }
+                    movie.addPlatforms(response.getBody().toString());
 
             } catch (UnirestException e) {
                 //System.out.println("loading platform failed, exception " + e.getMessage());
             }
-            return null;
         }
     }
 
@@ -102,8 +104,6 @@ public class MovieLoader {
      */
     public void loadMoviebyTitle(String title) {
         movietitles.add(title);
-        //System.out.println("Starting new thread");
-        //System.out.println("Titlelist has" + movietitles.peek());
         executor.submit(new MovieLoaderThread());
     }
 
@@ -112,17 +112,9 @@ public class MovieLoader {
      * @return the list of movies that correspond to the titles
      */
     public void loadMoviebyTitle(List<String> titles) throws InterruptedException{
-        //System.out.println("attempting to put all titles");
         attemptPutAll(titles);
-
-        System.out.println("Put "  + movietitles.size() + " elements");
-
-        //System.out.println("Active Count is "+ pool.getActiveCount());
-        //System.out.println("Max Size  is " + pool.getMaximumPoolSize());
         while (pool.getActiveCount() < pool.getMaximumPoolSize()) {
-            //System.out.println("Pool Submitting Thread");
             executor.submit(new MovieLoaderThread());
-            //System.out.println("Pool size is now "+ pool.getActiveCount());
         }
     }
 
@@ -136,8 +128,8 @@ public class MovieLoader {
      * @param m Movie object to load the available platforms for
      */
     public void loadPlatforms(Movie m) {
-        LoadPlatformsTask t = new LoadPlatformsTask();
-        t.execute(m);
+        LoadPlatformsThread lpt = new LoadPlatformsThread(m);
+        lpt.run();
     }
 
     /**
@@ -158,18 +150,11 @@ public class MovieLoader {
     boolean close() {
         MovieLoader.run = false;
         try {
-            executor.awaitTermination(2, TimeUnit.SECONDS);
+            executor.awaitTermination(5, TimeUnit.SECONDS);
         } catch(InterruptedException e){
             executor.shutdownNow();
         }
         return executor.isShutdown();
     }
 
-    public boolean isActive(){
-        return pool.getActiveCount() > 0;
-    }
-
-    public int activeCount(){
-        return pool.getActiveCount();
-    }
 }

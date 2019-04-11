@@ -1,15 +1,22 @@
 package com.group395.ember;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
+import static org.awaitility.Awaitility.await;
+import static org.awaitility.Awaitility.fieldIn;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -34,7 +41,7 @@ public class MovieLoaderTest {
     @Test
     public void testLoadingMovie() throws InterruptedException{
         ml.loadMoviebyTitle("Space Jam");
-        assertEquals(goalSpaceJam, ml.loadedmovies.take());
+        assertEquals(goalSpaceJam, ml.LoadedMovies.take());
 
     }
 
@@ -48,10 +55,10 @@ public class MovieLoaderTest {
         }});
         try {
             Set<String> returned = new LinkedHashSet<String>();
-            returned.add(ml.loadedmovies.take().getTitle());
-            returned.add(ml.loadedmovies.take().getTitle());
-            returned.add(ml.loadedmovies.take().getTitle());
-            returned.add(ml.loadedmovies.take().getTitle());
+            returned.add(ml.LoadedMovies.take().getTitle());
+            returned.add(ml.LoadedMovies.take().getTitle());
+            returned.add(ml.LoadedMovies.take().getTitle());
+            returned.add(ml.LoadedMovies.take().getTitle());
             assertTrue(returned.contains("Space Jam"));
             assertTrue(returned.contains("Remember the Titans"));
             assertTrue(returned.contains("Saving Private Ryan"));
@@ -62,12 +69,43 @@ public class MovieLoaderTest {
 
     }
 
-    @Ignore
+    @Test
     public void loadPlatformsfromWeb(){
+
         ml.loadPlatforms(goalSpaceJam);
-        assertEquals("[Rakuten TV, TalkTalk TV Store, Sky Family HD (United Kingdom), Sky Cinema Family, iTunes, Amazon Prime, Now TV]", goalSpaceJam.getPlatforms().toString());
+
+        ArrayList<String> platforms = new ArrayList<String>(){{
+            add("Rakuten TV");
+            add("TalkTalk TV Store");
+            add("Sky Family HD (United Kingdom)");
+            add("Sky Cinema Family");
+            add("iTunes");
+            add("Amazon Prime");
+            add("Now TV");
+        }};
+
+        await().atMost(10, TimeUnit.SECONDS)
+                .until(fieldIn(goalSpaceJam)
+                                .ofType(List.class)
+                                .andWithName("Platforms"),
+                        CoreMatchers.<List>equalTo(platforms));
+}
+
+
+    @Test
+    public void loadSchindlersList() throws InterruptedException{
+        String title = "Schindler's List";
+        ml.loadMoviebyTitle(title);
+        Movie returned = ml.LoadedMovies.take();
+        assertThat(returned.getTitle(), equalTo(title));
     }
 
-
+    @Test
+    public void loadGiberish() throws InterruptedException{
+        String title = "ASDFASDFAVNFERKGJDFNGSDKF";
+        ml.loadMoviebyTitle(title);
+        Movie returned = ml.LoadedMovies.take();
+        assertThat(returned.isInvalid(),is(true));
+    }
 
 }

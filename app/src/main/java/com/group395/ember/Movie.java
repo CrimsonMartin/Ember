@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.Objects.isNull;
+
 public class Movie {
 
     private String Title;
@@ -36,7 +38,7 @@ public class Movie {
 
 
     private Integer tmdbID;
-    private List<String> Platforms = new ArrayList<>();
+    List<String> Platforms = new ArrayList<>();
 
     //Doubles and Ints we end up using need parsed first, because many times the API passes "N/A"
     private Double rating;
@@ -146,6 +148,10 @@ public class Movie {
     Movie(String title){
         setTitle(title);
     }
+
+    Movie(){ setTitle(null); }
+
+    boolean isInvalid(){return isNull(getTitle()); }
 
     //this version of the constructor is for loading full movies
     protected Movie(jsonMovie jmv){

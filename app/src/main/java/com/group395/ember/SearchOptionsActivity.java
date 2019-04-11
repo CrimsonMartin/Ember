@@ -63,7 +63,7 @@ public class SearchOptionsActivity extends AppCompatActivity {
 
 
     private void displayMessage(String message){
-        Button display = findViewById(R.id.backButtonLower);
+        Button display = findViewById(R.id.backButton);
         Button display2 = findViewById(R.id.resetButton);
         display.setText(message);
     }
