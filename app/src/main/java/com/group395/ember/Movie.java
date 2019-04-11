@@ -36,7 +36,7 @@ public class Movie {
 
 
     private Integer tmdbID;
-    private List<String> Platforms = new ArrayList<>();
+    List<String> Platforms = new ArrayList<>();
 
     //Doubles and Ints we end up using need parsed first, because many times the API passes "N/A"
     private Double rating;

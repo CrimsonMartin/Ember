@@ -1,6 +1,5 @@
 package com.group395.ember;
 
-import android.os.AsyncTask;
 import android.support.annotation.VisibleForTesting;
 
 import com.mashape.unirest.http.HttpResponse;
@@ -19,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MovieLoader {
 
-    public BlockingQueue<Movie> loadedmovies = new ArrayBlockingQueue<>(MAXNUMMOVIES);
+    public BlockingQueue<Movie> LoadedMovies = new ArrayBlockingQueue<>(MAXNUMMOVIES);
 
 
     private static int MAXNUMMOVIES = 1000;
@@ -48,28 +47,32 @@ public class MovieLoader {
 
                 try {
                     movieTitle = movietitles.take();
-                    //System.out.println("Loading title: " + movietitle);
                     String url = omdbUrlFromTitle(movieTitle);
 
                     response = Unirest.get(url).asJson().getBody().toString();
 
+                    if (response != null) {
+                        LoadedMovies.put(Movie.parseFromJson(response));
+                    }
+                    else{
+                        LoadedMovies.put(null);
+                    }
+
                 } catch (UnirestException | MalformedURLException | InterruptedException e) {
                     //System.out.println("loading failed " + e.getMessage());
+                    //pass - grab the next movie and repeat
                 }
-                try {
-                    if (response != null) {
-                        loadedmovies.put(Movie.parseFromJson(response));
-                    }
-                } catch (InterruptedException e) {
-                    return;
-                }
+
             }
-            //System.out.println("Queue is empty, thread terminating");
         }
 
     }
 
-    private class LoadPlatformsTask extends AsyncTask<Movie, Void, Void> {
+    private class LoadPlatformsThread implements Runnable{
+
+        private Movie movie;
+
+        LoadPlatformsThread (Movie m){ movie = m; }
 
         private String utelliAPIKey = "6bff01b396msh0f92aae4b854e96p1277f2jsna247a9a391a8";
         private String utelliUrl = "https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?term=";
@@ -79,20 +82,17 @@ public class MovieLoader {
         }
 
         @Override
-        protected Void doInBackground(Movie... movies) {
+        public void run() {
             try {
-                HttpResponse<JsonNode> response = Unirest.get(createUtelliSearchURL(movies[0].getTitle()))
+                HttpResponse<JsonNode> response = Unirest.get(createUtelliSearchURL(movie.getTitle()))
                         .header("X-RapidAPI-Key", utelliAPIKey)
                         .asJson();
 
-                if (!isCancelled()){
-                    movies[0].addPlatforms(response.getBody().toString());
-                }
+                    movie.addPlatforms(response.getBody().toString());
 
             } catch (UnirestException e) {
                 //System.out.println("loading platform failed, exception " + e.getMessage());
             }
-            return null;
         }
     }
 
@@ -136,8 +136,8 @@ public class MovieLoader {
      * @param m Movie object to load the available platforms for
      */
     public void loadPlatforms(Movie m) {
-        LoadPlatformsTask t = new LoadPlatformsTask();
-        t.execute(m);
+        LoadPlatformsThread lpt = new LoadPlatformsThread(m);
+        lpt.run();
     }
 
     /**
