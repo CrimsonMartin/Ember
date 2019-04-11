@@ -102,7 +102,12 @@ public class Movie {
     public void setWriter(List<String> writer) { Writer = writer; }
 
     public List<String> getActors() { return Actors; }
-    public void setActors(List<String> actors) { Actors = actors; }
+    public void setActors(List<String> actors) {
+        Actors = new LinkedList<>();
+        for (String s : actors){
+            Actors.add(s.trim());
+        }
+    }
 
     public String getPlot() { return Plot; }
     public void setPlot(String plot) { Plot = plot; }
