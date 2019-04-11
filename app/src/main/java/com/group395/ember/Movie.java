@@ -13,7 +13,7 @@ import static java.util.Objects.isNull;
 public class Movie {
 
     private String Title;
-    private Integer Year;
+    private String Year;
     private String Released;
     private String Runtime;
     private List<String> Genre;
@@ -61,11 +61,24 @@ public class Movie {
         this.tmdbID = tmdbID;
     }
 
-    public String getTitle() { return Title; }
+    public String getTitle() {
+        if (Title.length()>0)
+            return Title;
+        else
+            return "null";
+    }
     public void setTitle(String title) { Title = title; }
 
-    public Integer getYear() { return Year; }
-    public void setYear(Integer year) { Year = year; }
+    public Integer getYear() {
+        try {
+            Integer year = Integer.parseInt(Year);
+            return year;
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    public void setYear(Integer year) { Year = year.toString(); }
 
     public String getReleased() { return Released; }
     public void setReleased(String released) { Released = released; }
