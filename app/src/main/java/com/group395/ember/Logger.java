@@ -53,11 +53,9 @@ public class Logger {
      * @param e is the exception to log
      */
     protected static void logException(Exception e) throws IOException {
-
         FileWriter file = new FileWriter(fileName, true);
         // Writing relevant data pertaining to the Exception
         file.write(LocalDateTime.now().format(DateTimeFormatter.ofPattern("H:m")));
-
         file.write(e.getMessage());
 
         if (e.getCause() != null)

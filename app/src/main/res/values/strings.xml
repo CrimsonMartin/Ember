@@ -40,4 +40,6 @@
     <string name="metascore">Metacritic score: %1$s</string>
     <string name="imdb_rating">IMDb rating: %1$s</string>
     <string name="plot">Plot: </string>
+    <string name="search_by_title">Search by title</string>
+    <string name="search_by_actor">Search by actor</string>
 </resources>

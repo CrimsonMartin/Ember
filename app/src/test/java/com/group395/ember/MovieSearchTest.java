@@ -67,8 +67,8 @@ public class MovieSearchTest {
         System.out.println("Full: "+(end-start)/(1000000*1000.0));
     }
 
-    @Test
+    @Ignore
     public void url(){
-        System.out.println(MovieSearch.searchFirstPage("Remember the"));
+        System.out.println("Test: " +MovieSearch.searchFull("Remember the"));
     }
 }
