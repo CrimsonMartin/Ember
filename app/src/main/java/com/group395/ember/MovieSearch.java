@@ -43,7 +43,6 @@ public class MovieSearch {
 
     private static SearchFirstPageThread firstPage = new SearchFirstPageThread();
 
-
     private static BufferedReader reader = null;
 
     // Returns a list of movies
@@ -102,9 +101,6 @@ public class MovieSearch {
                 return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings + "&page=" + page;
         }
     }
-
-
-
 
     public static ArrayList<Movie> searchByActor(String actor){
         ArrayList<Movie> results = new ArrayList<Movie>();
@@ -277,7 +273,7 @@ public class MovieSearch {
     }
 
     //This is the class Gson parses to return the search results
-    class SearchResults{
+    private class SearchResults{
         Integer page;
         Integer total_results;
         Integer total_pages;
@@ -304,7 +300,7 @@ public class MovieSearch {
         }
     }
 
-    public class PersonResults{
+    private class PersonResults{
         public class Actor{
             String name;
             Integer id;
@@ -325,7 +321,7 @@ public class MovieSearch {
         }
     }
 
-    public class MoviesByPersonResults{
+    private class MoviesByPersonResults{
         ArrayList<TmdbMovie> cast;
 
         public ArrayList<Movie> getResults(){
@@ -337,20 +333,19 @@ public class MovieSearch {
         }
     }
 
-
-
-
-
-    public static String tmdbSearchPeople(String name){
+    private static String tmdbSearchPeople(String name){
         name = name.replaceAll(" ", "+");
         return tmdbUrl + tmdbSearchPeopleUrl + tmdbApiKey + tmdbSettings+ "&query=" + name;
     }
 
-    public static String tmdbMoviesByPerson(Integer id){
+    private static String tmdbMoviesByPerson(Integer id){
         return tmdbMoviesByPersonUrl + id + tmdbMovieCredits + tmdbApiKey + tmdbSettings;
     }
 
-
+    /**
+     *  Close the MovieSearch
+     * @return true if the operation was successful, false otheriwse.
+     */
     public static boolean close(){
         try{
             reader.close();
