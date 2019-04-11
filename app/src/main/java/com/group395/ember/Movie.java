@@ -1,17 +1,22 @@
 package com.group395.ember;
 
+import android.support.annotation.VisibleForTesting;
+
 import com.google.gson.Gson;
 
-import java.io.BufferedReader;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+
+import static java.util.Objects.isNull;
 
 public class Movie {
 
     private String Title;
-    private Integer Year;
+    private String Year;
     private String Released;
     private String Runtime;
     private List<String> Genre;
@@ -36,7 +41,7 @@ public class Movie {
 
 
     private Integer tmdbID;
-    private List<String> Platforms = new ArrayList<>();
+    public Set<String> Platforms = new LinkedHashSet<>();
 
     //Doubles and Ints we end up using need parsed first, because many times the API passes "N/A"
     private Double rating;
@@ -59,11 +64,22 @@ public class Movie {
         this.tmdbID = tmdbID;
     }
 
-    public String getTitle() { return Title; }
+    public String getTitle() {
+        return Title;
+    }
+
     public void setTitle(String title) { Title = title; }
 
-    public Integer getYear() { return Year; }
-    public void setYear(Integer year) { Year = year; }
+    public Integer getYear() {
+        try {
+            Integer year = Integer.parseInt(Year);
+            return year;
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    public void setYear(Integer year) { Year = year.toString(); }
 
     public String getReleased() { return Released; }
     public void setReleased(String released) { Released = released; }
@@ -72,7 +88,12 @@ public class Movie {
     public void setRuntime(String runtime) { Runtime = runtime; }
 
     public List<String> getGenre() { return Genre; }
-    public void setGenre(List<String> genre) { Genre = genre; }
+    public void setGenre(List<String> genre) {
+        Genre = new LinkedList<>();
+        for (String s : genre){
+            Genre.add(s.trim());
+        }
+    }
 
     public String getDirector() { return Director; }
     public void setDirector(String director) { Director = director; }
@@ -128,16 +149,23 @@ public class Movie {
     public Double getRating() {return rating; }
     public void setRating(Double newRating) { rating = newRating; }
 
-    public List<String> getPlatforms() { return Platforms; }
-    public void addPlatforms(List<location> platforms){
-        for (location l: platforms) {
+    public Set<String> getPlatforms() { return Platforms; }
+    public void addPlatforms(List<Location> platforms){
+        for (Location l: platforms) {
             addPlatform(l);
         }
     }
 
-    public void addPlatform(location l){ Platforms.add(l.display_name);}
+    /**
+     * Add a platform to this movie.
+     * @param l the Location of where this movie can be viewed.
+     */
+    void addPlatform(Location l){ Platforms.add(l.display_name);}
 
-    public void clearPlatforms(){ Platforms.clear(); }
+    /**
+     * Remove all the current platforms from this movie.
+     */
+    void clearPlatforms(){ Platforms.clear(); }
 
     /**
      * Creates a new Movie object with the given title
@@ -147,8 +175,19 @@ public class Movie {
         setTitle(title);
     }
 
-    //this version of the constructor is for loading full movies
-    protected Movie(jsonMovie jmv){
+    Movie(){ setTitle(null); }
+
+    /**
+     * Check that the loading of a movie was successfull or not.
+     * @return if a Movie was successfully loaded or not, ie if this movie is "valid".
+     */
+    boolean isInvalid(){return isNull(getTitle()); }
+
+    /**
+     * Load a full movie.
+     * @param jmv The Json response of a Movie
+     */
+    Movie(jsonMovie jmv){
 
         setTitle(jmv.Title);
         setReleased(jmv.Released);
@@ -181,41 +220,46 @@ public class Movie {
             if(jmv.imdbRating != null)
                 setImdbRating(Double.parseDouble(jmv.imdbRating));
         }catch (NumberFormatException e){
-
+            setImdbRating(null);
         }
 
         try {
             setYear(Integer.parseInt(jmv.Year));
         }catch (NumberFormatException e){
-
+            setImdbRating(null);
         }
     }
 
-
-    static Movie parseFromJson(BufferedReader reader){
-        Gson gson = new Gson();
-        jsonMovie jmv = gson.fromJson(reader, jsonMovie.class);
-        return new Movie(jmv);
-    }
-
+    /**
+     *  Load a Movie. This is only on for testing purposes, to minimiza api calls.
+     * @param str the Json response from OMDb for the information about this Movie
+     * @return Movie the movie that has information loaded
+     */
+    @VisibleForTesting
     static Movie parseFromJson(String str){
         Gson gson = new Gson();
         jsonMovie jmv = gson.fromJson(str, jsonMovie.class);
         return new Movie(jmv);
     }
 
+    /**
+     * Add platforms for viewing to this movie
+     * @param jsonPlatforms the Json String response from UTelli
+     *                      the platforms to be added to this movie
+     */
     void addPlatforms(String jsonPlatforms){
 
         clearPlatforms();
         Gson gson = new Gson ();
         jsonPlatformResponse platformResponse = gson.fromJson(jsonPlatforms, jsonPlatformResponse.class);
 
-        List<location> platforms = platformResponse.results.stream()
-                .findFirst()
-                .orElse(null)
-                .locations;
+        List<Location> platforms;
 
-        addPlatforms(platforms);
+        Result results = platformResponse.results.stream()
+                .findFirst()
+                .orElse(null);
+
+        if (results != null) addPlatforms(results.locations);
 
     }
 
@@ -238,6 +282,7 @@ public class Movie {
                 ", Metascore=" + Metascore +
                 ", imdbRating=" + imdbRating +
                 ", imdbID='" + imdbID + '\'' +
+                ", tmdbID='" + tmdbID + '\'' +
                 ", Type='" + Type + '\'' +
                 ", DVD='" + DVD + '\'' +
                 ", BoxOffice='" + BoxOffice + '\'' +
@@ -307,16 +352,16 @@ public class Movie {
         private String variant;
         private String term;
         private String updated;
-        List<result> results;
+        List<Result> results;
     }
 
-    private class result{
+    private class Result{
         private String name;
         private Integer weight;
-        List<location> locations;
+        List<Location> locations;
     }
 
-    private class location{
+    private class Location{
         private String name;
         private String icon;
         String display_name;
