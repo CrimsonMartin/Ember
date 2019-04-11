@@ -313,6 +313,9 @@ public class MovieSearch {
                 e.printStackTrace();
                 close();
             }
+            finally {
+                running = false;
+            }
         }
     }
 
