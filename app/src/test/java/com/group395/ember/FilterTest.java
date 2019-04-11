@@ -5,15 +5,20 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.TestCase.assertTrue;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public class FilterTest {
     
-    private Filter filter;
-    private Filter filter2;
+    private Filter filter = new Filter(FilterType.ACTOR);
+    private Filter filter2 = new Filter(FilterType.ACTOR);
     private Movie movie;
     private ArrayList<String> f = new ArrayList<>();
     private MovieSearch mov;
+
+
     @Test
     public void addTest() {
         for(int i = 0; i<=999; i++){
@@ -21,34 +26,37 @@ public class FilterTest {
         }
         filter.add("Test");
         //Test 1
-        assertEquals("Test", filter.getKeywords().get(0));
+        assertThat(filter.getKeywords().contains("Test"), is(true));
 
         for(int i = 1; i<=999; i++){
             filter.add("Test");
         }
         //Test 2
-        assertEquals(f, filter.getKeywords());
+        assertThat(filter.getKeywords().containsAll(f), is(true));
 
         //Test 3
         filter2.add("");
-        assertEquals("", filter2.getKeywords().get(0));
+        assertThat( filter2.getKeywords().contains(""), is(true));
     }
+
     @Test
-    public void fitsFilterTest(){
+    public void fitsFilterTest() throws InterruptedException{
         //Test 1
-        ArrayList<Movie> m = new ArrayList<>();
-        m = mov.searchFirstPage("Space Jam");
+        ArrayList<Movie> m = mov.searchFirstPage("Space Jam");
+        MovieLoader ml = new MovieLoader();
+        ml.loadMoviebyTitle(m.stream().findFirst().orElse(null).getTitle());
+        Movie result = ml.LoadedMovies.take();
         Filter f1 = new Filter(FilterType.GENRE);
         f1.add("Comedy");
-        assertEquals(f1.fitsFilter(m.get(0)), true);
+        assertThat(f1.fitsFilter(result), is(true));
         //Test 2
         Filter f2 = new Filter(FilterType.GENRE);
         f2.add("Horror");
-        assertEquals(f2.fitsFilter(m.get(0)), false);
+        assertFalse(f2.fitsFilter(result));
         //Test 3
         Filter f3 = new Filter(FilterType.DIRECTOR);
         f3.add("Joe Pytka");
-        assertEquals(f3.fitsFilter(m.get(0)), true);
+        assertTrue(f3.fitsFilter(result));
 
     }
 }

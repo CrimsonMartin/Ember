@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -87,7 +88,12 @@ public class Movie {
     public void setRuntime(String runtime) { Runtime = runtime; }
 
     public List<String> getGenre() { return Genre; }
-    public void setGenre(List<String> genre) { Genre = genre; }
+    public void setGenre(List<String> genre) {
+        Genre = new LinkedList<>();
+        for (String s : genre){
+            Genre.add(s.trim());
+        }
+    }
 
     public String getDirector() { return Director; }
     public void setDirector(String director) { Director = director; }
