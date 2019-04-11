@@ -14,7 +14,9 @@ public class Logger {
     // For general errors and other data
     private static String fileName = "EmberLog" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dMMMyy")) + ".txt";
     // For just movie history
-    private static String movieFileName = "MovieLog" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dMMMyy")) + ".txt";;
+    private static String movieFileName = "MovieLog"
+            + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dMMMyy"))
+            + ".txt";;
 
     /**
      * Default constructor; uses a default file name: EmberLogDDMMYY
