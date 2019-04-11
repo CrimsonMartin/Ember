@@ -179,7 +179,7 @@ public class MovieSearch {
         // if it's being executed from the main thread, then it needs to create another thread
         // that calls this function instead of directly calling it.
         while (returned.size() < movies.size()){
-            returned.add(loader.loadedmovies.poll(5, TimeUnit.SECONDS));
+            returned.add(loader.LoadedMovies.poll(5, TimeUnit.SECONDS));
         }
 
         return returned;
@@ -236,7 +236,7 @@ public class MovieSearch {
                             loader.loadMoviebyTitle(collectTitles(results.getResults()));
                             for (Movie m : moviesPage){
                                 //System.out.println(m.getTitle());
-                                loadedResults.add(loader.loadedmovies.take());
+                                loadedResults.add(loader.LoadedMovies.take());
                             }
                         }catch(InterruptedException e){
                             e.printStackTrace();

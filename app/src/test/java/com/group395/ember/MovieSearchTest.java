@@ -1,6 +1,7 @@
 package com.group395.ember;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -51,7 +52,7 @@ public class MovieSearchTest {
       //  assertFalse(MovieSearch.search("the").getResponse());
     }
 
-    @Test
+    @Ignore
     public void testing()throws InterruptedException{
         String query = "Remember the";
         System.out.println("** By Movie **");
