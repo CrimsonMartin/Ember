@@ -13,7 +13,10 @@ import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.await;
 import static org.awaitility.Awaitility.fieldIn;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -88,5 +91,21 @@ public class MovieLoaderTest {
                         CoreMatchers.<List>equalTo(platforms));
 }
 
+
+    @Test
+    public void loadSchindlersList() throws InterruptedException{
+        String title = "Schindler's List";
+        ml.loadMoviebyTitle(title);
+        Movie returned = ml.LoadedMovies.take();
+        assertThat(returned.getTitle(), equalTo(title));
+    }
+
+    @Test
+    public void loadGiberish() throws InterruptedException{
+        String title = "ASDFASDFAVNFERKGJDFNGSDKF";
+        ml.loadMoviebyTitle(title);
+        Movie returned = ml.LoadedMovies.take();
+        assertThat(returned.isInvalid(),is(true));
+    }
 
 }
