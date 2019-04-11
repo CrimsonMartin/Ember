@@ -64,11 +64,9 @@ public class Movie {
     }
 
     public String getTitle() {
-        if (Title.length()>0)
-            return Title;
-        else
-            return "null";
+        return Title;
     }
+
     public void setTitle(String title) { Title = title; }
 
     public Integer getYear() {

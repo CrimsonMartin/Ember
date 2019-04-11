@@ -103,7 +103,7 @@ public class MovieLoaderTest {
         String title = "ASDFASDFAVNFERKGJDFNGSDKF";
         ml.loadMoviebyTitle(title);
         Movie returned = ml.LoadedMovies.take();
-        assertThat(returned.isInvalid(),is(true));
+        assertThat(returned.isInvalid(), is(true));
     }
 
 }
