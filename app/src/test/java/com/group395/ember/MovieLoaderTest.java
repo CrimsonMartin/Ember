@@ -7,7 +7,6 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -70,11 +69,11 @@ public class MovieLoaderTest {
     }
 
     @Test
-    public void loadPlatformsfromWeb(){
+    public void loadPlatformsfromWeb() {
 
         ml.loadPlatforms(goalSpaceJam);
 
-        ArrayList<String> platforms = new ArrayList<String>(){{
+        LinkedHashSet<String> platforms = new LinkedHashSet<String>() {{
             add("Rakuten TV");
             add("TalkTalk TV Store");
             add("Sky Family HD (United Kingdom)");
@@ -86,11 +85,10 @@ public class MovieLoaderTest {
 
         await().atMost(10, TimeUnit.SECONDS)
                 .until(fieldIn(goalSpaceJam)
-                                .ofType(List.class)
+                                .ofType(Set.class)
                                 .andWithName("Platforms"),
-                        CoreMatchers.<List>equalTo(platforms));
-}
-
+                        CoreMatchers.<Set>equalTo(platforms));
+    }
 
     @Test
     public void loadSchindlersList() throws InterruptedException{
