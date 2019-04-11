@@ -238,6 +238,7 @@ public class Movie {
                 ", Metascore=" + Metascore +
                 ", imdbRating=" + imdbRating +
                 ", imdbID='" + imdbID + '\'' +
+                ", tmdbID='" + tmdbID + '\'' +
                 ", Type='" + Type + '\'' +
                 ", DVD='" + DVD + '\'' +
                 ", BoxOffice='" + BoxOffice + '\'' +
