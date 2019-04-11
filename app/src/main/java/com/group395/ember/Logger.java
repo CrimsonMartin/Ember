@@ -44,7 +44,7 @@ public class Logger {
 
     protected static String getFileName() { return fileName; }
 
-    protected static String getMovieFileName() { return fileName; }
+    protected static String getMovieFileName() { return movieFileName; }
 
     /**
      * Logs an exception related to any of the other classes.
@@ -55,9 +55,14 @@ public class Logger {
         FileWriter file = new FileWriter(fileName, true);
         // Writing relevant data pertaining to the Exception
         file.write(LocalDateTime.now().format(DateTimeFormatter.ofPattern("H:m")));
+
         file.write(e.getMessage());
-        file.write(e.getCause().toString());
-        file.write(e.getStackTrace().toString() + "\n");
+
+        if (e.getCause() != null)
+            file.write(e.getCause().toString());
+
+        if (e.getStackTrace() != null)
+            file.write(e.getStackTrace().toString() + "\n");
 
         file.close();
     }
