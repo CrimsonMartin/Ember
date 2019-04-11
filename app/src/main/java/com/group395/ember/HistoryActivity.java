@@ -24,7 +24,7 @@ public class HistoryActivity extends AppCompatActivity {
         pageNumber.setText(getApplicationContext().getString(R.string.page_number, pagesSkipped + 1));
     }
 
-    public void searchButtonOnClick(View v){ startActivity(new Intent(HistoryActivity.this, SearchOptionsActivity.class)); }
+    public void searchButtonOnClick(View v){ startActivity(new Intent(HistoryActivity.this, SearchStartActivity.class)); }
 
     public void tileALOnClick(View v) { tileOnClick(0); }
     public void tileAROnClick(View v) { tileOnClick(1); }
@@ -43,6 +43,7 @@ public class HistoryActivity extends AppCompatActivity {
         TextView pageNumber = findViewById(R.id.pageNumber);
         pageNumber.setText(getApplicationContext().getString(R.string.page_number, pagesSkipped + 1));
     }
+
     public void nextOnClick(View v){
         if(pagesSkipped + 1 >= recentClicks.length){
             return;
@@ -55,6 +56,7 @@ public class HistoryActivity extends AppCompatActivity {
 
     private void tileOnClick(int whichButton){
         MoviePageActivity.setCurrentMovie(recentClicks[pagesSkipped][whichButton]);
+        MoviePageActivity.setFromHistoryActivity(true);
         startActivity(new Intent(HistoryActivity.this, MoviePageActivity.class));
     }
 
@@ -108,6 +110,7 @@ public class HistoryActivity extends AppCompatActivity {
         }
         button.setText(movie.getTitle());
     }
+
     private void displayAll(){
         display((Button) findViewById(R.id.tileAL), recentClicks[pagesSkipped][0]);
         display((Button) findViewById(R.id.tileAR), recentClicks[pagesSkipped][1]);

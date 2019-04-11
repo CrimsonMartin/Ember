@@ -1,13 +1,11 @@
 package com.group395.ember;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class Filter {
 
     // Is a list the best way to represent this?
-    private String[] filterKeywords;
+    private ArrayList<String> filterKeywords;
     private FilterType filterType;
 
     public FilterType getFilterType() {
@@ -24,28 +22,27 @@ public class Filter {
 
 
     // All of these pretty much do the same thing: Change the filter to the method name and fill in the keywords
-    public void setDirectors(String[] directors) {
+    public void setDirectors(ArrayList<String> directors) {
         filterType = FilterType.DIRECTOR;
         filterKeywords = directors;
     }
 
-    public void setActors(String[] actors) {
+    public void setActors(ArrayList<String> actors) {
         filterType = FilterType.ACTOR;
         filterKeywords = actors;
     }
 
-    public void setGenres(String[] genres) {
+    public void setGenres(ArrayList<String> genres) {
         filterType = FilterType.GENRE;
         filterKeywords = genres;
     }
 
-    public void add(String input){
-        String[] tempKeywords = new String[filterKeywords.length + 1];
-        for(int i = 0; i < filterKeywords.length; i++){
-            tempKeywords[i] = filterKeywords[i];
-        }
-        tempKeywords[filterKeywords.length] = input;
-        filterKeywords = tempKeywords;
+    public ArrayList<String> getKeywords(){
+        return filterKeywords;
+    }
+    
+    public void add(ArrayList<String> input){
+        filterKeywords.addAll(input);
     }
 
 
@@ -56,7 +53,7 @@ public class Filter {
      */
     public boolean fitsFilter(Movie movie) {
 
-       List<String> compareTo = new ArrayList<>();
+        ArrayList<String> compareTo = new ArrayList<>();
 
         switch(filterType){
             case ACTOR:

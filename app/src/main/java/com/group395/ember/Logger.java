@@ -6,12 +6,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
+import java.util.ArrayList;
 
 
 public class Logger {
 
+    // For general errors and other data
     private String fileName;
-    private File file;
+    // For just movie history
+    private String movieFileName;
 
 
     /**
@@ -22,8 +26,7 @@ public class Logger {
         LocalDateTime date = LocalDateTime.now();
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dMMMyy");
         fileName = "EmberLog" + date.format(dateFormat) + ".txt";
-
-        file = new File(fileName);
+        movieFileName = "MovieLog" + date.format(dateFormat) + ".txt";
     }
 
     /**
@@ -32,7 +35,6 @@ public class Logger {
      */
     public Logger(String fileName) {
         this.fileName = fileName + ".txt";
-        file = new File(this.fileName);
     }
 
 
@@ -52,39 +54,36 @@ public class Logger {
     }
 
     /**
-     * Logs a click on a Movie for "today"
-     * @param movie to log for
+     * Saves a movie to the movie file of the day.
+     * @param movie to save to history
      */
-    public void logClick(Movie movie) {
-
-
-    }
-
-    /**
-     * Returns the number of times a movie has been clicked "today"
-     * @param movie to check
-     * @return
-     */
-    public int getClickCountToday(Movie movie) {
-        //TODO
-        return -1;
-    }
-
-    /**
-     * Saves a movie to the overall history
-     * @param movie
-     */
-    public void saveToHistory(Movie movie) {
-
+    public void saveToHistory(Movie movie) throws IOException {
+        // TODO: getTitle() -> getImdbID()
+//        if (this.write(movie.getImdbID()))
+        // Temp identification
+        if (!write(movie.getTitle(), movieFileName)) {
+            logException(new Exception(movie.getTitle() + " Failed to store write."));
+        }
     }
 
 
     /**
-     * Clears the clicks a movie has receieved "today"
-     * @param movie to clear clicks for
+     * Reads the movie history file and turns them into an ArrayList
+     * @return ArrayList of Movies
      */
-    public void clearClickCountToday(Movie movie) {
+    public ArrayList<Movie> pullAllFromHistory() {
+        ArrayList<String> movieIDs = readByLine(movieFileName);
+        ArrayList<Movie> movies = new ArrayList<Movie>();
+        UISearch tempSearch = new UISearch();
 
+        // Gets each movie from the DB again
+        for (String title : movieIDs) {
+            // TODO: getTitle() -> getImdbID()
+            tempSearch.setSearch(title);
+            movies.add(tempSearch.search().get(0));
+        }
+
+        return movies;
     }
 
     /**
@@ -92,7 +91,7 @@ public class Logger {
      * @param s is what to write
      * @return true if write was successful, false if exception thrown
      */
-    public boolean write(String s) {
+    public boolean write(String s, String fileName) {
         try {
             FileWriter file = new FileWriter(fileName, true);
             file.write(LocalDateTime.now().format(DateTimeFormatter.ofPattern("H:m")));
@@ -101,8 +100,30 @@ public class Logger {
             return true;
         }
         catch (Exception e) {
-            System.out.println("There was an error writing to this file!");
+            System.out.println("There was an error writing to a file");
             return false;
+        }
+    }
+
+
+    /**
+     * Reads the targeted file line by line and returns an ArrayList of each line as a String
+     * @param fileName is the file to read
+     * @return ArrayList of Strings
+     */
+    public ArrayList<String> readByLine(String fileName) {
+        try {
+            ArrayList<String> output = new ArrayList<String>();
+            Scanner toRead = new Scanner(new File(fileName));
+            while (toRead.hasNextLine()) {
+                output.add(toRead.nextLine());
+            }
+
+            return output;
+        }
+        catch (Exception e) {
+            System.out.println("Failed in reading " + fileName);
+            return null;
         }
     }
 

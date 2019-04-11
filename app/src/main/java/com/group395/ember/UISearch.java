@@ -12,8 +12,8 @@ import java.util.ArrayList;
 public class UISearch {
 
     private ArrayList<Filter> filters = new ArrayList<Filter>(0);  // Filter list to hold all 3 possible filters.
-    private String searchTerms;                          // The search terms to access the database with
-
+    private String searchTerms;                                                 // The search terms to access the database with
+    private ArrayList<Movie> results;                                                // Results from an API call
 
     /**
      * Default constructor for a UISearch
@@ -25,7 +25,6 @@ public class UISearch {
         filters.add(new Filter(FilterType.DIRECTOR));
         System.out.println("Init UISearch");
     }
-
 
     /**
      * Adds a new filter to the current search. If there exists a Filter with the same FilterType,
@@ -73,34 +72,67 @@ public class UISearch {
      */
     public void setSearch(String newSearch) {
         searchTerms = newSearch;
+        results = search();
     }
 
     /**
-     * Uses the current search Filter and String to access the database
-     * @return Array of movies to implement as MovieTiles later on
+     * Default search method to make a Movie api call to get some amount of Movies (stores in results and returns).
+     * @return List of Movies
      */
     public ArrayList<Movie> search() {
-        int moviesToLoad = 5;
-        return search(moviesToLoad);
+        MovieSearch m = new MovieSearch();
+        results = applyFilters(m.searchFirstPage(String.join(" ", getSearch())));
+        return results;
     }
 
     /**
-     * Overloads the default search method to load n number of movies rather than just 5.
-     * @param n is the number of movies to load
-     * @return Array of movies to implement as MovieTiles later on
+     * Extended search method to make an API call. Gets "all" of the related results based on title then filters results.
+     * @return List of Movies
      */
-    public ArrayList<Movie> search(int n) {
-        MovieLoader loader = new MovieLoader();
-        //TODO I'm turning this to load one movie, because I need some clarification on
-        // how the load N movies knows what sort of movies to load
-        // List<Movie> movies = loader.loadMovies(this, n);
-        ArrayList<Movie> movies = new ArrayList<>();
-        movies.add(loader.loadMovie(this));
-        return movies;
+    public ArrayList<Movie> searchFull() {
+        // Calls a full search and converts the keywords (String[]) to a single String separated by spaces/
+        MovieSearch m = new MovieSearch();
+        results = applyFilters(m.searchFull(String.join(" ", getSearch())));
+        return results;
     }
 
     /**
-     * Sorts the Movies by checking if they are applicable to each filter.
+     * Returns an array of Movies from index start to index end
+     * @param start left bound of the array.
+     * @param end right right of the array.
+     * @return array of Movies
+     */
+    public Movie[] getMovies(int start, int end) {
+        Movie[] arr = new Movie[start - end + 1];
+
+        try {
+            for (int i = start; i <= end; i++) {
+                arr[i] = results.get(i);
+            }
+        }
+        catch(IndexOutOfBoundsException e) {
+            return null;
+        }
+
+        return arr;
+    }
+
+    /**
+     * Returns the Movie at the given index.
+     * @param i the index of Movie to return.
+     * @return Movie
+     */
+    public Movie getMovie(int i) {
+        try {
+            return results.get(i);
+        }
+        catch(IndexOutOfBoundsException e) {
+            System.out.println("OUT OF RANGE - RETURNING @ 0");
+            return null;
+        }
+    }
+
+    /** Sorts the Movies by checking if they are applicable to each filter.
      * @param rawList is the unfiltered List of Movies to sort
      * @return a filtered List of Movies.
      */
@@ -126,8 +158,8 @@ public class UISearch {
                 }
             }
 
-            return filteredList;
         }
-    }
 
+        return filteredList;
+    }
 }

@@ -4,10 +4,11 @@
     <string name="reset_button">Reset</string>
     <string name="placeholder1">Coming soon!</string>
     <string name="title_activity_results_page">ResultsPage</string>
+    <string name="to_filters">Add filters</string>
     <string name="choose_filter">Choose a filter.</string>
-    <string name="submit_filter">Filter</string>
+    <string name="submit_filter">Add filter</string>
+    <string name="accept_filters">Accept filters</string>
     <string name="enter_name">Enter a name to search by.</string>
-    <string name="search_without_name">Search all movies</string>
     <string name="delete_filter">Delete</string>
     <string name="genre_filter">Enter a genre filter.</string>
     <string name="actor_filter">Enter an actor filter.</string>
@@ -25,5 +26,18 @@
     <string name="page_number">Page %1$d</string>
     <string name="next">Next</string>
     <string name="previous">Prev</string>
-    <string name="to_history_button">Back to recently viewed</string>
+    <string name="back">Back</string>
+    <string name="page_placeholder">Page x</string>
+    <string name="search_hint">Hint: You can search for a movie by just its title, or you can add
+        filters after you press search. If you just want to search by actor, genre, or director,
+        you can press "SEARCH" without typing anything in the search box and add whatever filters
+        you like.</string>
+    <string name="actor_list">Actors: %1$s</string>
+    <string name="genre_list">Genres: %1$s</string>
+    <string name="writer_list">Writers: %1$s</string>
+    <string name="director_list">Directors: %1$s</string>
+    <string name="runtime">%1$s minutes</string>
+    <string name="metascore">Metacritic score: %1$s</string>
+    <string name="imdb_rating">IMDb rating: %1$s</string>
+    <string name="plot">Plot: </string>
 </resources>

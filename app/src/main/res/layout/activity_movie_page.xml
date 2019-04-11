@@ -6,4 +6,190 @@
     android:layout_height="match_parent"
     tools:context=".MoviePageActivity">
 
+    <Button
+        android:id="@+id/backButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:onClick="backOnClick"
+        android:text="@string/back"
+        app:layout_constraintBottom_toTopOf="@+id/searchAgainButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/searchAgainButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:onClick="searchAgainOnClick"
+        android:text="@string/search_again_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/titleDisp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="96dp"
+        android:text="titleDisp"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/genreDisp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:maxLines="3"
+        android:text="genreDisp"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/writerDisp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/writerDisp"
+        app:layout_constraintTop_toBottomOf="@+id/yearDisp" />
+
+    <Button
+        android:id="@+id/yearDisp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:maxLines="3"
+        android:text="yearDisp"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/genreDisp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/genreDisp"
+        app:layout_constraintTop_toBottomOf="@+id/runtimeDisp" />
+
+    <Button
+        android:id="@+id/runtimeDisp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:maxLines="3"
+        android:text="runtimeDisp"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/yearDisp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/yearDisp"
+        app:layout_constraintTop_toBottomOf="@+id/titleDisp" />
+
+    <Button
+        android:id="@+id/actorDisp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:maxLines="3"
+        android:text="actorDisp"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/metascoreDisp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/directorDisp" />
+
+    <Button
+        android:id="@+id/writerDisp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:maxLines="3"
+        android:text="writerDisp"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/actorDisp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/directorDisp"
+        app:layout_constraintTop_toBottomOf="@+id/genreDisp" />
+
+    <Button
+        android:id="@+id/directorDisp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="2dp"
+        android:maxLines="3"
+        android:text="directorDisp"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/actorDisp"
+        app:layout_constraintEnd_toStartOf="@+id/writerDisp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/genreDisp" />
+
+    <Button
+        android:id="@+id/metascoreDisp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="2dp"
+        android:maxLines="3"
+        android:text="metascoreDisp"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/plotDisp"
+        app:layout_constraintEnd_toStartOf="@+id/imdbRatingDisp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/actorDisp" />
+
+    <Button
+        android:id="@+id/imdbRatingDisp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="16dp"
+        android:maxLines="3"
+        android:text="imdbRatingDisp"
+        android:textSize="12sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/metascoreDisp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/metascoreDisp" />
+
+    <Button
+        android:id="@+id/plotDisp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:maxLines="3"
+        android:text="plotDisp"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/backButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/metascoreDisp" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:src="@android:drawable/ic_lock_lock"
+        app:layout_constraintBottom_toTopOf="@+id/directorDisp"
+        app:layout_constraintEnd_toStartOf="@+id/yearDisp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/runtimeDisp" />
+
 </android.support.constraint.ConstraintLayout>
