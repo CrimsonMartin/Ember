@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.Objects.isNull;
+
 public class Movie {
 
     private String Title;
@@ -146,6 +148,10 @@ public class Movie {
     Movie(String title){
         setTitle(title);
     }
+
+    Movie(){ setTitle(null); }
+
+    boolean isInvalid(){return isNull(getTitle()); }
 
     //this version of the constructor is for loading full movies
     protected Movie(jsonMovie jmv){
