@@ -16,7 +16,6 @@ public class MovieSearchTest {
 
     @Before
     public void initialize(){
-        m = new MovieSearch();
     }
 
     @Test
@@ -24,11 +23,11 @@ public class MovieSearchTest {
         String query = "Tom Cruise";
         System.out.println("**By Actor**");
         long start = System.nanoTime();
-        System.out.println(m.searchByActor(query));
+        System.out.println(MovieSearch.searchByActor(query));
         long end = System.nanoTime();
         System.out.println("Partial: "+ (end-start)/(1000000*1000.0));
         start = System.nanoTime();
-        List<Movie> res = m.searchByActorFull(query);
+        List<Movie> res = MovieSearch.searchByActorFull(query);
         System.out.println("Number of Results: "+ res);
         end = System.nanoTime();
         System.out.println("Full: "+(end-start)/(1000000*1000.0));
@@ -39,11 +38,11 @@ public class MovieSearchTest {
         String query = "Blues Brothers";
         System.out.println("** By Movie **");
         long start = System.nanoTime();
-        m.searchFirstPage(query);
+        MovieSearch.searchFirstPage(query);
         long end = System.nanoTime();
         System.out.println("First Page: "+ (end-start)/(1000000*1000.0));
         start = System.nanoTime();
-        List<Movie> res = m.searchFull(query);
+        List<Movie> res = MovieSearch.searchFull(query);
         System.out.println("Number of Results: " + res.size());
         end = System.nanoTime();
         System.out.println("Full: "+(end-start)/(1000000*1000.0));
@@ -57,11 +56,11 @@ public class MovieSearchTest {
         String query = "Remember the";
         System.out.println("** By Movie **");
         long start = System.nanoTime();
-        m.searchFirstPage(query);
+        MovieSearch.searchFirstPage(query);
         long end = System.nanoTime();
         System.out.println("First Page: "+ (end-start)/(1000000*1000.0));
         start = System.nanoTime();
-        List<Movie> res = m.searchFull(query);
+        List<Movie> res = MovieSearch.searchFull(query);
         System.out.println("Number of Results: " + res.size());
         System.out.println("Results: " + res.toString());
         end = System.nanoTime();

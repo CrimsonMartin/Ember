@@ -23,22 +23,23 @@ public class MovieSuggestions {
     private static String tmdbSuggestionUrl = "recommendations?api_key=";
     private static String tmdbSettings = "&language=en-US&include_adult=false&page=1";
 
+    private static int MAXNUMMOVIES = 1000;
+    private static int MAXNUMTHREADS = 8;
+    private static BlockingQueue<String> movietitles = new ArrayBlockingQueue<>(MAXNUMMOVIES);
+    private static ExecutorService executor = Executors.newFixedThreadPool(MAXNUMTHREADS);
+    private static ThreadPoolExecutor pool = (ThreadPoolExecutor) executor;
+    private static boolean running = false;
+    private static String exception = "";
+
     private static BufferedReader reader = null;
     public static Movie currentMovie;
-    public BlockingQueue<Movie> loadedSuggestions = new ArrayBlockingQueue<>(MAXNUMMOVIES);
+    public static BlockingQueue<Movie> loadedSuggestions = new ArrayBlockingQueue<>(MAXNUMMOVIES);
     public int totalResults = 0;
     public int currentPage = 0;
 
-    private static int MAXNUMMOVIES = 1000;
-    private static int MAXNUMTHREADS = 8;
-    private BlockingQueue<String> movietitles = new ArrayBlockingQueue<>(MAXNUMMOVIES);
-    private ExecutorService executor = Executors.newFixedThreadPool(MAXNUMTHREADS);
-    private ThreadPoolExecutor pool = (ThreadPoolExecutor) executor;
-    private static boolean running = false;
-    private String exception = "";
 
     // Returns a list of movies
-    public ArrayList<Movie> getSuggestions(Movie movie){
+    public static ArrayList<Movie> getSuggestions(Movie movie){
         ArrayList<Movie> suggestions = new ArrayList<Movie>();
         currentMovie = movie;
         try {
@@ -55,7 +56,7 @@ public class MovieSuggestions {
         return suggestions;
     }
 
-    private class SuggestionsThread implements Runnable {
+    private static class SuggestionsThread implements Runnable {
 
         @Override
         public void run(){

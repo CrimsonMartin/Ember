@@ -30,23 +30,24 @@ public class MovieSearch {
     private static String tmdbMovieCredits = "/movie_credits?api_key=";
     private static String tmdbSettings = "&language=en-US&include_adult=false";
 
-    public static String query = "";
-    public BlockingQueue<Movie> loadedResults = new ArrayBlockingQueue<>(MAXNUMMOVIES);
-    public int totalResults = 0;
-    public int currentPage = 0;
-
     private static int MAXNUMMOVIES = 1000;
     private static int MAXNUMTHREADS = 8;
-    private BlockingQueue<String> movietitles = new ArrayBlockingQueue<>(MAXNUMMOVIES);
-    private ExecutorService executor = Executors.newFixedThreadPool(MAXNUMTHREADS);
+    private static ExecutorService executor = Executors.newFixedThreadPool(MAXNUMTHREADS);
     private ThreadPoolExecutor pool = (ThreadPoolExecutor) executor;
     private static boolean running = false;
+
+    public static String query = "";
+    public static BlockingQueue<Movie> loadedResults = new ArrayBlockingQueue<>(MAXNUMMOVIES);
+    public static int totalResults = 0;
+    public static int currentPage = 0;
+
+    private static SearchFirstPageThread firstPage = new SearchFirstPageThread();
 
 
     private static BufferedReader reader = null;
 
     // Returns a list of movies
-    public ArrayList<Movie> searchFirstPage(String title) {
+    public static ArrayList<Movie> searchFirstPage(String title) {
         ArrayList<Movie> results = new ArrayList<Movie>();
         try {
             //System.out.println("Loader thread starting");
@@ -63,7 +64,7 @@ public class MovieSearch {
         return results;
     }
 
-    private class SearchFirstPageThread implements Runnable {
+    private static class SearchFirstPageThread implements Runnable {
 
         @Override
         public void run() {
@@ -105,24 +106,24 @@ public class MovieSearch {
 
 
 
-        public ArrayList<Movie> searchByActor(String actor){
-            ArrayList<Movie> results = new ArrayList<Movie>();
-            try {
-                //System.out.println("Loader thread starting");
-                String response = null;
-                query = actor;
-                executor.submit(new SearchByActorThread());
-                do {
-                    results.add(loadedResults.poll(5, TimeUnit.SECONDS));
-                }while(!loadedResults.isEmpty());
+    public static ArrayList<Movie> searchByActor(String actor){
+        ArrayList<Movie> results = new ArrayList<Movie>();
+        try {
+            //System.out.println("Loader thread starting");
+            String response = null;
+            query = actor;
+            executor.submit(new SearchByActorThread());
+            do {
+                results.add(loadedResults.poll(5, TimeUnit.SECONDS));
+            }while(!loadedResults.isEmpty());
 
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return results;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return results;
     }
 
-    private class SearchByActorThread implements Runnable {
+    private static class SearchByActorThread implements Runnable {
 
         @Override
         public void run() {
@@ -160,7 +161,7 @@ public class MovieSearch {
         }
     }
 
-    public ArrayList<Movie> searchByActorFull(String actor) throws InterruptedException{
+    public static ArrayList<Movie> searchByActorFull(String actor) throws InterruptedException{
         MovieLoader loader = new MovieLoader();
         ArrayList<Movie> movies = searchByActor(actor);
 
@@ -185,7 +186,7 @@ public class MovieSearch {
         return returned;
     }
 
-    public ArrayList<Movie> searchFull(String title){
+    public static ArrayList<Movie> searchFull(String title){
         ArrayList<Movie> results = new ArrayList<Movie>();
         try{
             query = title;
@@ -201,7 +202,7 @@ public class MovieSearch {
         return results;
     }
 
-    private class SearchFullThread implements Runnable{
+    private static class SearchFullThread implements Runnable{
 
         @Override
         public void run() {
