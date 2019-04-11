@@ -49,7 +49,6 @@ public class MovieSearch {
 
     private static BufferedReader reader = null;
 
-
     // Returns a list of movies
     public static ArrayList<Movie> searchFirstPage(String title) {
         ArrayList<Movie> results = new ArrayList<Movie>();
@@ -188,6 +187,64 @@ public class MovieSearch {
         return returned;
     }
 
+    public static String searchTest(String title){
+        query = title;
+        ArrayList<Movie> movieResults = new ArrayList<Movie>();
+        try{
+            MovieLoader loader = new MovieLoader();
+            Gson gson = new Gson();
+            URL search = new URL(omdbSearch(query, 1));
+            System.out.println(search);
+            HttpURLConnection searchCon = (HttpURLConnection) search.openConnection();
+
+            searchCon.setRequestMethod("GET");
+
+            reader = new BufferedReader(new InputStreamReader(searchCon.getInputStream()));
+            OmdbSearchResults results = gson.fromJson(reader, OmdbSearchResults.class);
+            int pages = results.getTotal_pages();
+            //System.out.println(pages);
+            totalResults = results.getNumberofResults();
+            if(pages>40){
+                // Throw some sort of Exception
+                return null;
+            }
+            else{
+                for(int page = 1; page<=pages; page++){
+                    currentPage = page;
+                    search = new URL(omdbSearch(query,  page));
+                    searchCon = (HttpURLConnection) search.openConnection();
+                    searchCon.setRequestMethod("GET");
+                    reader = new BufferedReader(new InputStreamReader(searchCon.getInputStream()));
+                    results = gson.fromJson(reader, OmdbSearchResults.class);
+                    //System.out.println(results);
+                    ArrayList<Movie> moviesPage = results.getResults();
+                    try{
+                        loader.loadMoviebyTitle(collectTitles(results.getResults()));
+                        for (Movie m : moviesPage){
+                            //System.out.println(m.getTitle());
+                            movieResults.add(loader.LoadedMovies.take());
+                        }
+                    }catch(InterruptedException e){
+                        e.printStackTrace();
+                    }
+                }
+                System.out.println("In Method:" +movieResults.toString());
+                return movieResults.toString();
+            }
+        }
+        catch (MalformedURLException e){
+            System.out.println("Title search failed: " + e.getMessage());
+            e.printStackTrace();
+            close();
+            return null;
+        } catch (IOException e) {
+            System.out.println("INVALID URL FORMAT");
+            e.printStackTrace();
+            close();
+            return null;
+        }
+    }
+
     public static ArrayList<Movie> searchFull(String title){
         ArrayList<Movie> results = new ArrayList<Movie>();
         try{
@@ -211,28 +268,29 @@ public class MovieSearch {
             try{
                 MovieLoader loader = new MovieLoader();
                 Gson gson = new Gson();
-                URL omdb = new URL(omdbSearch(query, 1));
-                HttpURLConnection tmdbCon = (HttpURLConnection) omdb.openConnection();
+                URL search = new URL(omdbSearch(query, 1));
+                System.out.println(search);
+                HttpURLConnection searchCon = (HttpURLConnection) search.openConnection();
 
-                tmdbCon.setRequestMethod("GET");
+                searchCon.setRequestMethod("GET");
 
-                reader = new BufferedReader(new InputStreamReader(tmdbCon.getInputStream()));
+                reader = new BufferedReader(new InputStreamReader(searchCon.getInputStream()));
                 OmdbSearchResults results = gson.fromJson(reader, OmdbSearchResults.class);
-
                 int pages = results.getTotal_pages();
+                //System.out.println(pages);
                 totalResults = results.getNumberofResults();
-                if(pages>20){
+                if(pages>40){
                     // Throw some sort of Exception
                 }
                 else{
                     for(int page = 1; page<=pages; page++){
                         currentPage = page;
-                        omdb = new URL(tmdbSearch(query,  page));
-                        tmdbCon = (HttpURLConnection) omdb.openConnection();
-                        tmdbCon.setRequestMethod("GET");
-                        reader = new BufferedReader(new InputStreamReader(tmdbCon.getInputStream()));
+                        search = new URL(omdbSearch(query,  page));
+                        searchCon = (HttpURLConnection) search.openConnection();
+                        searchCon.setRequestMethod("GET");
+                        reader = new BufferedReader(new InputStreamReader(searchCon.getInputStream()));
                         results = gson.fromJson(reader, OmdbSearchResults.class);
-
+                        //System.out.println(results);
                         ArrayList<Movie> moviesPage = results.getResults();
                         try{
                             loader.loadMoviebyTitle(collectTitles(results.getResults()));
@@ -255,17 +313,6 @@ public class MovieSearch {
                 e.printStackTrace();
                 close();
             }
-            finally {
-                running = false;
-            }
-        }
-
-        private String tmdbSearch(String title, Integer page){
-            title = title.replaceAll(" ", "+");
-            if(title.length()>0)
-                return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings+ "&page=" + page + "&query=" + title;
-            else
-                return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings+ "&page=" + page;
         }
     }
 
@@ -368,6 +415,13 @@ public class MovieSearch {
         return omdbUrl +"apikey=" + omdbApiKey + "&s=" + title + "&page=" + page;
     }
 
+    public static String tmdbSearch(String title, Integer page){
+        title = title.replaceAll(" ", "+");
+        if(title.length()>0)
+            return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings+ "&page=" + page + "&query=" + title;
+        else
+            return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings+ "&page=" + page;
+    }
 
     public static String tmdbSearchPeople(String name){
         name = name.replaceAll(" ", "+");
