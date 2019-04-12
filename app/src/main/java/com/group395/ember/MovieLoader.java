@@ -25,7 +25,7 @@ public class MovieLoader {
 
 
     private static int MAXNUMMOVIES = 1000;
-    private static int MAXNUMTHREADS = 16;
+    private static int MAXNUMTHREADS = 8;
     private BlockingQueue<String> movietitles = new ArrayBlockingQueue<>(MAXNUMMOVIES);
     private ExecutorService executor = Executors.newFixedThreadPool(MAXNUMTHREADS);
     private ThreadPoolExecutor pool = (ThreadPoolExecutor) executor;
@@ -104,9 +104,12 @@ public class MovieLoader {
     private class MovieLoaderCallable implements Callable<Movie> {
 
         Movie movie;
+        Integer i;
 
-        public MovieLoaderCallable(/*List<Future<Movie>> tobereturned, List<Movie> m*/ Movie m){
+        public MovieLoaderCallable(/*List<Future<Movie>> tobereturned, List<Movie> m*/ Movie m, Integer i){
             movie = m;
+            i = i;
+            //TODO put the movie into a list at the index i;
         }
 
         @Override
@@ -118,14 +121,14 @@ public class MovieLoader {
     }
 
     public Future<Movie> loadMovie(Movie m) {
-        return executor.submit(new MovieLoaderCallable(m));
+        return executor.submit(new MovieLoaderCallable(m, 0));
     }
 
     public List<Future<Movie>> loadMovies(List<Movie> ms){
         List<Future<Movie>> ret = new ArrayList<>();
         for(Movie m : ms){
             System.out.println("Adding "+ m.getTitle() + " to loading queue");
-           ret.add (executor.submit(new MovieLoaderCallable(m)));
+           ret.add (executor.submit(new MovieLoaderCallable(m, ms.indexOf(m))));
         }
         return ret;
     }
