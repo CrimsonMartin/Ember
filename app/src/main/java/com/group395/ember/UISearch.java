@@ -81,6 +81,7 @@ public class UISearch {
      */
     public ArrayList<Movie> search() {
         MovieSearch m = new MovieSearch();
+        results = m.searchFull(getSearch());
         //results = applyFilters(m.searchFirstPage(String.join(" ", getSearch())));
         return results;
     }
