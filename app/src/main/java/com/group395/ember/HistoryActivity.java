@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import java.util.ArrayList;
 
 
@@ -21,6 +22,9 @@ public class HistoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
+        if(startUp){
+            Fresco.initialize(this);
+        }
         try {
             if (startUp) {
                 load();
@@ -54,7 +58,6 @@ public class HistoryActivity extends AppCompatActivity {
         TextView pageNumber = findViewById(R.id.pageNumber);
         pageNumber.setText(getApplicationContext().getString(R.string.page_number, pagesSkipped + 1));
     }
-
     public void nextOnClick(View v){
         if(pagesSkipped + 1 >= recentClicks.length){
             return;
@@ -69,6 +72,21 @@ public class HistoryActivity extends AppCompatActivity {
         MoviePageActivity.setCurrentMovie(recentClicks[pagesSkipped][whichButton]);
         MoviePageActivity.setFromHistoryActivity(true);
         startActivity(new Intent(HistoryActivity.this, MoviePageActivity.class));
+    }
+
+    public void testJamOnClick(View v){
+        HistoryActivity.addClick(SearchResultsActivity.exampleMovie);
+        MoviePageActivity.setCurrentMovie(SearchResultsActivity.exampleMovie);
+        MoviePageActivity.setFromHistoryActivity(false);
+        try {
+            Logger.saveToHistory(SearchResultsActivity.exampleMovie);
+        }catch(Exception e){
+            System.out.println(e.toString());
+        }
+        startActivity(new Intent(HistoryActivity.this, MoviePageActivity.class));
+    }
+    public void loadHistoryOnClick(View v){
+
     }
 
     protected static void addClick(Movie clickedMovie) {
@@ -137,10 +155,6 @@ public class HistoryActivity extends AppCompatActivity {
         ArrayList<Movie> loadList = Logger.pullAllFromHistory();
         //If there's no data in loadList, use the default size
         if(loadList.size() != 0){
-            Movie[] tempLinear = new Movie[loadList.size()];
-            for(int i = 0; i < loadList.size(); i++){
-                tempLinear[i] = loadList.get(i);
-            }
             //How big the 2D array should be
             int maxRows = loadList.size() / 8;
             //Add an extra row if something got cut off by the int division
