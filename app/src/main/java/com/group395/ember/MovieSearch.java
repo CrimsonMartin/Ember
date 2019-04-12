@@ -1,23 +1,21 @@
 package com.group395.ember;
 
 import com.google.gson.Gson;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 public class MovieSearch {
@@ -33,25 +31,27 @@ public class MovieSearch {
     private static final String omdbApiKey = "db5b96c2";
     private static final String omdbUrl = "http://www.omdbapi.com/?";
 
-    private static int MAXNUMMOVIES = 1000;
-    private static int MAXNUMTHREADS = 8;
-    private static ExecutorService executor = Executors.newFixedThreadPool(MAXNUMTHREADS);
-    private ThreadPoolExecutor pool = (ThreadPoolExecutor) executor;
-    private static boolean running = false;
+    private static MovieLoader loader = new MovieLoader();
+    private static ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public static String query = "";
-    public static BlockingQueue<Movie> loadedResults = new ArrayBlockingQueue<>(MAXNUMMOVIES);
+    public static ArrayList<Movie> results = new ArrayList<>();
+    public static ArrayList<Movie> toLoad;
+    //public static BlockingQueue<Movie> loadedResults = new ArrayBlockingQueue<>(MAXNUMMOVIES);
     public static int totalResults = 0;
+    public static int pages = 0;
     public static int currentPage = 0;
+    public static boolean running = false;
 
-    private static SearchFirstPageThread firstPage = new SearchFirstPageThread();
+    //private static SearchFirstPageThread firstPage = new SearchFirstPageThread();
 
 
     private static BufferedReader reader = null;
 
+    /*
     // Returns a list of movies
     public static ArrayList<Movie> searchFirstPage(String title) {
-        ArrayList<Movie> results = new ArrayList<Movie>();
+        results = new ArrayList<Movie>();
         try {
             //System.out.println("Loader thread starting");
             String response = null;
@@ -59,7 +59,7 @@ public class MovieSearch {
             executor.submit(new SearchFirstPageThread());
             do {
                 results.add(loadedResults.poll(5, TimeUnit.SECONDS));
-            }while(!loadedResults.isEmpty());
+            } while (!loadedResults.isEmpty());
 
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -67,55 +67,14 @@ public class MovieSearch {
         return results;
     }
 
-    private static class SearchFirstPageThread implements Runnable {
-
-        @Override
-        public void run() {
-            try {
-                Gson gson = new Gson();
-                URL obj = new URL(omdbSearch(query, 1));
-                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-                con.setRequestMethod("GET");
-                reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                OmdbSearchResults results = gson.fromJson(reader, OmdbSearchResults.class);
-                loadedResults.addAll(results.getResults());
-            } catch (MalformedURLException e) {
-                System.out.println("Title search failed: " + e.getMessage());
-                e.printStackTrace();
-                try {
-                    reader.close();
-                } catch (IOException e2) {
-                    query = e.toString();
-                    e2.printStackTrace();
-                }
-            } catch (ProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        private String tmdbSearch(String title, Integer page){
-            title = title.replaceAll(" ", "+");
-            if (title.length() > 0)
-                return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings + "&page=" + page + "&query=" + title;
-            else
-                return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings + "&page=" + page;
-        }
-
-
-    }
-
-
-    public static ArrayList<Movie> searchByActor(String actor){
+    public static ArrayList<Movie> searchByActor(String actor) {
         ArrayList<Movie> results = new ArrayList<Movie>();
         try {
-            //System.out.println("Loader thread starting");
-            String response = null;
             query = actor;
             executor.submit(new SearchByActorThread());
             do {
                 results.add(loadedResults.poll(5, TimeUnit.SECONDS));
-            }while(!loadedResults.isEmpty());
+            } while (!loadedResults.isEmpty());
 
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -127,12 +86,11 @@ public class MovieSearch {
 
         @Override
         public void run() {
-            try{
-                running = true;
+            try {
                 Gson gson = new Gson();
 
                 System.out.println("Starting Search");
-                PersonResults searchedActor =  gson.fromJson(
+                PersonResult searchedActor = gson.fromJson(
                         Unirest.get(tmdbSearchPeople(query))
                                 .asJson()
                                 .getBody()
@@ -152,185 +110,154 @@ public class MovieSearch {
 
                 loadedResults.addAll(movieResults.getResults());
 
-            }catch(UnirestException e){
+            } catch (UnirestException e) {
                 System.out.println("Unirest Exception thrown");
-            }
-            finally {
+            } finally {
                 running = false;
             }
         }
     }
 
-    public static ArrayList<Movie> searchByActorFull(String actor) throws InterruptedException{
+
+    public static void searchByActorFull(String actor, ArrayList<Movie> resultsPointer) throws InterruptedException {
         MovieLoader loader = new MovieLoader();
-        ArrayList<Movie> movies = searchByActor(actor);
-
-        ArrayList<String> titles = new ArrayList<>();
-        for (Movie movie : movies){
-            //System.out.println("Title getting added: " + movie.getTitle());
-            titles.add(movie.getTitle());
-        }
-        loader.loadMoviebyTitle(titles);
-
-        System.out.println("Loading " + movies.size() + " movies");
-
-        ArrayList<Movie> returned = new ArrayList<>();
-
-        // This blocks until all the movies have been loaded
-        // if it's being executed from the main thread, then it needs to create another thread
-        // that calls this function instead of directly calling it.
-        while (returned.size() < movies.size()){
-            returned.add(loader.LoadedMovies.poll(5, TimeUnit.SECONDS));
-        }
-
-        return returned;
+        results = resultsPointer;
+        toLoad = searchByActor(actor);
+        executor.submit(new SearchByActorFullThread());
     }
+    */
 
-    public static String searchTest(String title){
-        query = title;
-        ArrayList<Movie> movieResults = new ArrayList<Movie>();
-        try{
+    private static class SearchByActorFullThread implements Runnable {
+
+        @Override
+        public void run() {
             MovieLoader loader = new MovieLoader();
-            Gson gson = new Gson();
-            URL search = new URL(omdbSearch(query, 1));
-            System.out.println(search);
-            HttpURLConnection searchCon = (HttpURLConnection) search.openConnection();
-
-            searchCon.setRequestMethod("GET");
-
-            reader = new BufferedReader(new InputStreamReader(searchCon.getInputStream()));
-            OmdbSearchResults results = gson.fromJson(reader, OmdbSearchResults.class);
-            int pages = results.getTotal_pages();
-            //System.out.println(pages);
-            totalResults = results.getNumberofResults();
-            if(pages>40){
-                // Throw some sort of Exception
-                return null;
-            }
-            else{
-                for(int page = 1; page<=pages; page++){
-                    currentPage = page;
-                    search = new URL(omdbSearch(query,  page));
-                    searchCon = (HttpURLConnection) search.openConnection();
-                    searchCon.setRequestMethod("GET");
-                    reader = new BufferedReader(new InputStreamReader(searchCon.getInputStream()));
-                    results = gson.fromJson(reader, OmdbSearchResults.class);
-                    //System.out.println(results);
-                    ArrayList<Movie> moviesPage = results.getResults();
-                    try{
-                        loader.loadMoviebyTitle(collectTitles(results.getResults()));
-                        for (Movie m : moviesPage){
-                            //System.out.println(m.getTitle());
-                            movieResults.add(loader.LoadedMovies.take());
-                        }
-                    }catch(InterruptedException e){
-                        e.printStackTrace();
-                    }
+            List<Future<Movie>> futures = loader.loadMovies(toLoad);
+            for (Future<Movie> future : futures) {
+                try {
+                    results.add(future.get(3, TimeUnit.SECONDS));
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                System.out.println("In Method:" +movieResults.toString());
-                return movieResults.toString();
             }
-        }
-        catch (MalformedURLException e){
-            System.out.println("Title search failed: " + e.getMessage());
-            e.printStackTrace();
-            close();
-            return null;
-        } catch (IOException e) {
-            System.out.println("INVALID URL FORMAT");
-            e.printStackTrace();
-            close();
-            return null;
         }
     }
 
-    public static ArrayList<Movie> searchFull(String title){
-        ArrayList<Movie> results = new ArrayList<Movie>();
-        try{
-            query = title;
-            executor.submit(new SearchFullThread());
-            do {
-                results.add(loadedResults.poll(5, TimeUnit.SECONDS));
-            }while(!loadedResults.isEmpty() || running);
-            System.out.println("done");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    public static ArrayList<Movie> searchFull(String title) {
+        executor.submit(new SearchFullThread(title));
+        while(running){
+            System.out.println("R: "+results);
         }
+
         return results;
     }
 
-    private static class SearchFullThread implements Runnable{
+    private static class SearchFullThread implements Runnable {
+
+        private String query;
+
+        public SearchFullThread(String q){
+            query = q;
+        }
 
         @Override
         public void run() {
             running = true;
-            try{
-                MovieLoader loader = new MovieLoader();
+
+            OmdbSearchResults searchResults = null;
+            List<Future<Movie>> loaded = new ArrayList<>();
+
+            try {
+
+                //TODO rewrite to a single for loop
+                /*Gson gson = new Gson();
+
+                String searchurl = omdbSearch(query, 1);
+
+                HttpResponse<JsonNode> response = Unirest.get(searchurl).asJson();
+                String responsebodystring = response.getBody().toString();
+                searchResults = gson.fromJson(responsebodystring, OmdbSearchResults.class);
+                results.addAll(searchResults.getResults());
+                loaded.addAll(loader.loadMovies(searchResults.getResults()));
+                */
+
                 Gson gson = new Gson();
-                URL search = new URL(omdbSearch(query, 1));
-                System.out.println(search);
-                HttpURLConnection searchCon = (HttpURLConnection) search.openConnection();
+                URL obj = new URL(omdbSearch(query, 1));
+                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                con.setRequestMethod("GET");
+                reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                /*
+                String line = "";
+                while((line = reader.readLine()) != null){
+                    System.out.println("-"+line);
+                }*/
+                searchResults = gson.fromJson(reader, OmdbSearchResults.class);
+                loaded.addAll(loader.loadMovies(searchResults.getResults()));
 
-                searchCon.setRequestMethod("GET");
-
-                reader = new BufferedReader(new InputStreamReader(searchCon.getInputStream()));
-                OmdbSearchResults results = gson.fromJson(reader, OmdbSearchResults.class);
-                int pages = results.getTotal_pages();
-                //System.out.println(pages);
-                totalResults = results.getNumberofResults();
-                if(pages>40){
-                    // Throw some sort of Exception
-                }
-                else{
-                    for(int page = 1; page<=pages; page++){
-                        currentPage = page;
-                        search = new URL(omdbSearch(query,  page));
-                        searchCon = (HttpURLConnection) search.openConnection();
-                        searchCon.setRequestMethod("GET");
-                        reader = new BufferedReader(new InputStreamReader(searchCon.getInputStream()));
-                        results = gson.fromJson(reader, OmdbSearchResults.class);
-                        //System.out.println(results);
-                        ArrayList<Movie> moviesPage = results.getResults();
-                        try{
-                            loader.loadMoviebyTitle(collectTitles(results.getResults()));
-                            for (Movie m : moviesPage){
-                                //System.out.println(m.getTitle());
-                                loadedResults.add(loader.LoadedMovies.take());
-                            }
-                        }catch(InterruptedException e){
-                            e.printStackTrace();
-                        }
-                    }
-                }
+            //} catch (UnirestException e) {
+                //System.out.println("Title search failed: " + e.getMessage());
+                //e.printStackTrace();
+            } catch (Exception e){
+                e.printStackTrace();
             }
-            catch (MalformedURLException e){
+
+            Objects.requireNonNull(searchResults);
+
+            pages = searchResults.getTotal_pages();
+            totalResults = searchResults.getNumberofResults();
+
+            pages = pages > 40 ? 40 : pages;
+
+            List<Future<Movie>> loaded2;
+
+            try {
+                for (int p = 2; p < pages; p++) {
+                    Gson gson = new Gson();
+                    URL obj = new URL(omdbSearch(query, p));
+                    HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                    con.setRequestMethod("GET");
+                    reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    searchResults = gson.fromJson(reader, OmdbSearchResults.class);
+                    loaded.addAll(loader.loadMovies(searchResults.getResults()));             System.out.println("--"+searchResults.toString());
+                    loaded.addAll(loader.loadMovies(searchResults.getResults()));
+                    System.out.println("-load- "+p+" of "+pages+" "+ loaded);
+                }
+            } catch (Exception e) {
                 System.out.println("Title search failed: " + e.getMessage());
                 e.printStackTrace();
-                close();
-            } catch (IOException e) {
-                System.out.println("INVALID URL FORMAT");
-                e.printStackTrace();
-                close();
             }
+            for (int i=0; i<loaded.size(); i++) {
+                try {
+                    System.out.println("results: "+results);
+                    results.add(loaded.get(i).get(3, TimeUnit.SECONDS));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println("done");
+
+            running = false;
+
         }
     }
 
-    private static List<String> collectTitles(List<Movie> results){
+
+    private static List<String> collectTitles(List<Movie> results) {
         List<String> titles = new ArrayList<>();
-        for (Movie m : results){
+        for (Movie m : results) {
             titles.add(m.getTitle());
         }
         return titles;
     }
 
     //This is the class Gson parses to return the search results
-    private class TmdbSearchResults{
+    private class TmdbSearchResults {
         Integer page;
         Integer total_results;
         Integer total_pages;
         ArrayList<TmdbMovie> results;
 
-        public String toString(){
+        public String toString() {
             return "Page: " + page + "Total Results: " + total_results + ", Results: " + results.get(0).toString();
         }
 
@@ -338,13 +265,13 @@ public class MovieSearch {
             return total_pages;
         }
 
-        public Integer getNumberofResults(){
+        public Integer getNumberofResults() {
             return total_results;
         }
 
-        public ArrayList<Movie> getResults(){
+        public ArrayList<Movie> getResults() {
             ArrayList<Movie> searchResults = new ArrayList<Movie>();
-            for(TmdbMovie movie : results){
+            for (TmdbMovie movie : results) {
                 searchResults.add(movie.toMovie());
             }
             return searchResults;
@@ -357,88 +284,113 @@ public class MovieSearch {
         Integer totalResults;
         ArrayList<Movie> Search;
 
-        public String toString(){
-            return "Response: " + Response+ ", Total Results: " + totalResults + ", Results: " + Search;
+        public String toString() {
+            return "Response: " + Response + ", Total Results: " + totalResults + ", Results: " + Search;
         }
 
         public Integer getTotal_pages() {
-            total_pages = totalResults/10+1;
+            total_pages = totalResults / 10 + 1;
             return total_pages;
         }
 
-        public Integer getNumberofResults(){
+        public Integer getNumberofResults() {
             return totalResults;
         }
 
-        public ArrayList<Movie> getResults(){
+        public ArrayList<Movie> getResults() {
             return Search;
         }
     }
 
-    public class PersonResults{
-        public class Actor{
+    public class PersonResults {
+        public class Actor {
             String name;
             Integer id;
 
-            public String getName(){
+            public String getName() {
                 return name;
             }
 
-            public Integer getId(){
+            public Integer getId() {
                 return id;
             }
         }
 
         ArrayList<Actor> results;
 
-        public Integer getId(){
+        public Integer getId() {
             return results.get(0).getId();
         }
     }
 
-    public class MoviesByPersonResults{
+    public class MoviesByPersonResults {
         ArrayList<TmdbMovie> cast;
 
-        public ArrayList<Movie> getResults(){
+        public ArrayList<Movie> getResults() {
             ArrayList<Movie> searchResults = new ArrayList<Movie>();
-            for(TmdbMovie movie : cast){
+            for (TmdbMovie movie : cast) {
                 searchResults.add(movie.toMovie());
             }
             return searchResults;
         }
     }
 
-
-    public static String omdbSearch (String title, Integer page) {
+    public static String omdbSearch(String title, Integer page) {
         title = title.replaceAll(" ", "+");
-        return omdbUrl +"apikey=" + omdbApiKey + "&s=" + title + "&page=" + page;
+        return omdbUrl + "apikey=" + omdbApiKey + "&s=" + title + "&page=" + page;
     }
 
-    public static String tmdbSearch(String title, Integer page){
+    public static String tmdbSearch(String title, Integer page) {
         title = title.replaceAll(" ", "+");
-        if(title.length()>0)
-            return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings+ "&page=" + page + "&query=" + title;
+        if (title.length() > 0)
+            return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings + "&page=" + page + "&query=" + title;
         else
-            return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings+ "&page=" + page;
+            return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings + "&page=" + page;
     }
 
-    public static String tmdbSearchPeople(String name){
+    public static String tmdbSearchPeople(String name) {
         name = name.replaceAll(" ", "+");
-        return tmdbUrl + tmdbSearchPeopleUrl + tmdbApiKey + tmdbSettings+ "&query=" + name;
+        return tmdbUrl + tmdbSearchPeopleUrl + tmdbApiKey + tmdbSettings + "&query=" + name;
     }
 
-    public static String tmdbMoviesByPerson(Integer id){
+    public static String tmdbMoviesByPerson(Integer id) {
         return tmdbMoviesByPersonUrl + id + tmdbMovieCredits + tmdbApiKey + tmdbSettings;
     }
 
+    /*
+    private static class SearchFirstPageThread implements Runnable {
 
-    public static boolean close(){
-        try{
-            reader.close();
-            return true;
+        @Override
+        public void run() {
+            OmdbSearchResults results;
+
+            try {
+
+                results = new Gson()
+                        .fromJson(Unirest.get(omdbSearch(query, 1))
+                                        .asJson()
+                                        .getBody()
+                                        .toString(),
+                                OmdbSearchResults.class);
+
+                loadedResults.addAll(results.getResults());
+
+            } catch (UnirestException e) {
+                System.out.println("Title search failed: " + e.getMessage());
+                e.printStackTrace();
+            }
         }
-        catch (IOException e){
-            return false;
+
+        private String tmdbSearch(String title, Integer page) {
+            title = title.replaceAll(" ", "+");
+            if (title.length() > 0)
+                return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings + "&page=" + page + "&query=" + title;
+            else
+                return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings + "&page=" + page;
         }
+
     }
+    */
+
 }
+

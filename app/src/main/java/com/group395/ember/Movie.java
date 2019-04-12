@@ -1,9 +1,8 @@
 package com.group395.ember;
 
-import android.support.annotation.VisibleForTesting;
-
 import com.google.gson.Gson;
 
+import java.io.BufferedReader;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -16,7 +15,7 @@ import static java.util.Objects.isNull;
 public class Movie {
 
     private String Title;
-    private String Year;
+    private String Year = null;
     private String Released;
     private String Runtime;
     private List<String> Genre;
@@ -102,7 +101,12 @@ public class Movie {
     public void setWriter(List<String> writer) { Writer = writer; }
 
     public List<String> getActors() { return Actors; }
-    public void setActors(List<String> actors) { Actors = actors; }
+    public void setActors(List<String> actors) {
+        Actors = new LinkedList<>();
+        for (String s : actors){
+            Actors.add(s.trim());
+        }
+    }
 
     public String getPlot() { return Plot; }
     public void setPlot(String plot) { Plot = plot; }
@@ -235,10 +239,15 @@ public class Movie {
      * @param str the Json response from OMDb for the information about this Movie
      * @return Movie the movie that has information loaded
      */
-    @VisibleForTesting
     static Movie parseFromJson(String str){
         Gson gson = new Gson();
         jsonMovie jmv = gson.fromJson(str, jsonMovie.class);
+        return new Movie(jmv);
+    }
+
+    static Movie parseFromReader(BufferedReader reader){
+        Gson gson = new Gson();
+        jsonMovie jmv = gson.fromJson(reader, jsonMovie.class);
         return new Movie(jmv);
     }
 
@@ -298,12 +307,7 @@ public class Movie {
         if (this == o) return true;
         if (!(o instanceof Movie)) return false;
         Movie movie = (Movie) o;
-        return Objects.equals(getTitle(), movie.getTitle()) &&
-                Objects.equals(getYear(), movie.getYear()) &&
-                Objects.equals(getReleased(), movie.getReleased()) &&
-                Objects.equals(getDirector(), movie.getDirector()) &&
-                Objects.equals(getActors(), movie.getActors()) &&
-                Objects.equals(getProduction(), movie.getProduction());
+        return movie.getTitle().toLowerCase().equals(this.getTitle().toLowerCase());
     }
 
     @Override

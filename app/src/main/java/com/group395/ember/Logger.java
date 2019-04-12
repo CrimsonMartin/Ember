@@ -1,31 +1,31 @@
 
 package com.group395.ember;
 
-import java.io.File;
+import android.content.Context;
 import android.util.Log;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Scanner;
 import java.util.ArrayList;
-import android.content.Context;
+import java.util.Scanner;
 
-public class Logger2 {
+public class Logger {
 
-    private Context context;
-    private File cache;
+    private static Context context;
+    private static File cache;
     // For general errors and other data
-    private File generalLog = new File(cache, "logfile.txt");
+    private static File generalLog = new File(cache, "logfile.txt");
     // For just movie history
-    private File movieLog = new File(cache, "movies.txt");
+    private static File movieLog = new File(cache, "movies.txt");
 
     /**
      * Default constructor; takes context (ctx) to create cache files for logging.
      * @param ctx is Context to use for logging.
      */
-    protected Logger2(Context ctx) {
+    protected Logger(Context ctx) {
         context = ctx;
 
         if (!context.getCacheDir().exists())
@@ -34,29 +34,29 @@ public class Logger2 {
         cache = context.getCacheDir();
     }
 
-    protected File getGeneralLog() { return generalLog; }
+    protected static File getGeneralLog() { return generalLog; }
 
-    protected File getMovieLog() { return movieLog; }
+    protected static File getMovieLog() { return movieLog; }
 
-    protected String[] getFileList() { return context.fileList(); }
+    protected static String[] getFileList() { return context.fileList(); }
 
     /**
      * Logs an exception related to any of the other classes. Logs are available using `adb logcat` on phone in dev mode.
      * @param e is the exception to log
      */
-    protected void logException(Exception e) { Log.e("Ember", e.getMessage()); }
+    protected static void logException(Exception e) { Log.e("Ember", e.getMessage()); }
 
     /**
      * Writes any String to this log
      * @param s is what to write
      */
-    protected void write(String s) { Log.d("Ember", s); }
+    protected static void write(String s) { Log.d("Ember", s); }
 
     /**
      * Saves a movie to the movie file in the cache.
      * @param movie to save to history
      */
-    protected void saveToHistory(Movie movie) throws IOException {
+    protected static void saveToHistory(Movie movie) throws IOException {
         try {
             // TODO: getTitle() -> getImdbID()
 //        if (this.write(movie.getImdbID()))
@@ -75,7 +75,7 @@ public class Logger2 {
      * Reads the movie history file and turns them into an ArrayList
      * @return ArrayList of Movies
      */
-    protected ArrayList<Movie> pullAllFromHistory() throws FileNotFoundException {
+    protected static ArrayList<Movie> pullAllFromHistory() throws FileNotFoundException {
 
         FileInputStream inputStream = context.openFileInput(getMovieLog().getName());
 
@@ -102,7 +102,7 @@ public class Logger2 {
      * @param inputStream is the file to read
      * @return ArrayList of Strings
      */
-    protected ArrayList<String> readByLine(FileInputStream inputStream) {
+    protected static ArrayList<String> readByLine(FileInputStream inputStream) {
         try {
             ArrayList<String> output = new ArrayList<>();
             Scanner toRead = new Scanner(inputStream);

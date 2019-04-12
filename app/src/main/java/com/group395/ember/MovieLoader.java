@@ -7,19 +7,25 @@ import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class MovieLoader {
 
     public BlockingQueue<Movie> LoadedMovies = new ArrayBlockingQueue<>(MAXNUMMOVIES);
-
 
     private static int MAXNUMMOVIES = 1000;
     private static int MAXNUMTHREADS = 8;
@@ -49,13 +55,15 @@ public class MovieLoader {
                     movieTitle = movietitles.take();
                     String url = omdbUrlFromTitle(movieTitle);
 
-                    response = Unirest.get(url).asJson().getBody().toString();
+                   // response = Unirest.get(url).asJson().getBody().toString();
+                    URL obj = new URL(url);
+                    HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                    con.setRequestMethod("GET");
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
-                    if (response != null) {
-                        LoadedMovies.put(Movie.parseFromJson(response));
-                    }
+                    LoadedMovies.put(Movie.parseFromReader(reader));
 
-                } catch (UnirestException | MalformedURLException | InterruptedException e) {
+                } catch (Exception e) {
                     System.out.println("loading failed " + e.getMessage());
                     //pass - grab the next movie and repeat
                     try{
@@ -97,6 +105,49 @@ public class MovieLoader {
             }
         }
     }
+
+    private class MovieLoaderCallable implements Callable<Movie> {
+
+        Movie movie;
+        Integer i;
+
+        public MovieLoaderCallable(/*List<Future<Movie>> tobereturned, List<Movie> m*/ Movie m, Integer i){
+            movie = m;
+            i = i;
+            //TODO put the movie into a list at the index i;
+        }
+
+        @Override
+        public Movie call() throws Exception{
+                //start the load
+            loadMoviebyTitle(movie.getTitle());
+            return LoadedMovies.take();
+        }
+    }
+
+    public Future<Movie> loadMovie(Movie m) {
+        return executor.submit(new MovieLoaderCallable(m, 0));
+    }
+
+    public List<Future<Movie>> loadMovies(List<Movie> ms){
+        List<Future<Movie>> ret = new ArrayList<>();
+        for(Movie m : ms){
+            System.out.println("Adding "+ m.getTitle() + " to loading queue");
+           ret.add (executor.submit(new MovieLoaderCallable(m, ms.indexOf(m))));
+        }
+        return ret;
+    }
+
+    /**
+     * Load a list of movies in place
+     * @param movies Replace movies in place in the list
+     */ /*
+    public List<Future<Movie>> loadMovies(List<Movie> movies){
+        List<Future<Movie>> returned = new ArrayList<Future<Movie>>();
+
+        MovieAssembler ma = new MovieAssembler(returned, movies);
+        ma.run();
+    }*/
 
     /**
      * @param title the string representation of the title of the movie we want to know more about
