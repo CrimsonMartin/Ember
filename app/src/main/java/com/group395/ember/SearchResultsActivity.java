@@ -28,16 +28,21 @@ public class SearchResultsActivity extends AppCompatActivity {
             "Action, Adventure, Fantasy, Sci-Fi\",\"Director\":\"George Lucas\",\"Writer\":\"George Lucas\",\"Actors\":\"Mark Hamill, Harrison Ford, Carrie Fisher, Peter Cushing\",\"Plot\":\"The Imperial Forces," +
             " under orders from cruel Darth Vader, hold Princess Leia hostage in their efforts to quell the rebellion against the Galactic Empire. Luke Skywalker and Han Solo, captain of the Millennium Falcon, work " +
             "together with the companionable droid duo R2-D2 and C-3PO to rescue the beautiful princess, help the Rebel Alliance and restore freedom and justice to the Galaxy.\",\"Language\":\"English\",\"Country\":\"USA\"" +
-            ",\"Awards\":\"Won 6 Oscars. Another 50 wins & 28 nominations.\",\"Poster\":\"https://m.media-amazon.com/images/M/MV5BNzVlY2MwMjktM2E4OS00Y2Y3LWE3ZjctYzhkZGM3YzA1ZWM2XkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_SX300.jpg\\" +
-            "https://m.media-amazon.com/images/M/MV5BNzVlY2MwMjktM2E4OS00Y2Y3LWE3ZjctYzhkZGM3YzA1ZWM2XkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_SX300.jpg\",\"Ratings\":[{\"Source\":\"Internet Movie Database\",\"Value\":\"8.6/10\"},{\"So" +
-            "urce\":\"Rotten Tomatoes\",\"Value\":\"93%\"},{\"Source\":\"Metacritic\",\"Value\":\"90/100\"}],\"Metascore\":\"90\",\"imdbRating\":\"8.6\",\"imdbVotes\":\"1,109,357\",\"imdbID\":\"tt0076759\",\"Type\":\"m" +
-            "ovie\",\"DVD\":\"21 Sep 2004\",\"BoxOffice\":\"N/A\",\"Production\":\"20th Century Fox\",\"Website\":\"http://www.starwars.com/episode-iv/\",\"Response\":\"True\"}"
+            ",\"Awards\":\"Won 6 Oscars. Another 50 wins & 28 nominations.\",\"Poster\":\"https://m.media-amazon.com/images/M/MV5BNzVlY2MwMjktM2E4OS00Y2Y3LWE3ZjctYzhkZGM3YzA1ZWM2XkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_SX300.jpg\"" +
+            ",\"Ratings\":[{\"Source\":\"Internet Movie Database\",\"Value\":\"8.6/10\"},{\"Source\":\"Rotten Tomatoes\",\"Value\":\"93%\"},{\"Source\":\"Metacritic\",\"Value\":\"90/100\"}],\"Metascore\":\"90\",\"imdbRating\":" +
+            "\"8.6\",\"imdbVotes\":\"1,109,357\",\"imdbID\":\"tt0076759\",\"Type\":\"movie\",\"DVD\":\"21 Sep 2004\",\"BoxOffice\":\"N/A\",\"Production\":\"20th Century Fox\",\"Website\":\"http://www.starwars.com/episode-iv/\",\"" +
+            "Response\":\"True\"}"
     );
-
-    public static Movie exampleMovie2 = null;
-    public static Movie exampleMovie3 = null;
-    public static Movie exampleMovie4 = null;
-    public static Movie[] examples = {exampleMovie, exampleMovie1, exampleMovie2, exampleMovie3, exampleMovie4};
+    public static Movie exampleMovie2 = Movie.parseFromJson("{\"Title\":\"Remember the Titans\",\"Year\":\"2000\",\"Rated\":\"PG\",\"Released\":\"29 Sep 2000\",\"Runtime\":\"113 min\",\"Genre\":\"Biography, Drama, Sport\",\"" +
+            "Director\":\"Boaz Yakin\",\"Writer\":\"Gregory Allen Howard\",\"Actors\":\"Denzel Washington, Will Patton, Wood Harris, Ryan Hurst\",\"Plot\":\"Suburban Virginia schools have been segregated for generations." +
+            " One Black and one White high school are closed and the students sent to T.C. Williams High School under federal mandate to integrate. The year is seen through the eyes of the football team where the man hired to" +
+            " coach the Black school is made head coach over the highly successful white coach. Based on the actual events of 1971, the team becomes the unifying symbol for the community as the boys and the adults learn to depend " +
+            "on and trust each other.\",\"Language\":\"English\",\"Country\":\"USA\",\"Awards\":\"8 wins & 17 nominations.\",\"Poster\":\"https://m.media-amazon.com/images/M/MV5BYThkMzgxNjEtMzFiOC00MTI0LWI5MDItNDVmYjA4NzY5MDQ2L2ltYW" +
+            "dlL2ltYWdlXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg\",\"Ratings\":[{\"Source\":\"Internet Movie Database\",\"Value\":\"7.8/10\"},{\"Source\":\"Rotten Tomatoes\",\"Value\":\"73%\"},{\"Source\":\"Metacritic\",\"Value\":\"48/" +
+            "100\"}],\"Metascore\":\"48\",\"imdbRating\":\"7.8\",\"imdbVotes\":\"183,192\",\"imdbID\":\"tt0210945\",\"Type\":\"movie\",\"DVD\":\"20 Mar 2001\",\"BoxOffice\":\"$114,297,071\",\"Production\":\"Walt Disney Pictures\",\"Website" +
+            "\":\"http://disney.go.com/disneypictures/rememberthetitans/index.html\",\"Response\":\"True\"}"
+    );
+    public static Movie[] examples = {exampleMovie, exampleMovie1, exampleMovie2};
 
 
     @Override
@@ -45,8 +50,8 @@ public class SearchResultsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_results);
         if(!HistoryActivity.searchWorks){
-            loadedMovies[0] = exampleMovie;
-            loadedMovies[1] = exampleMovie;
+            loadedMovies[0] = examples[0];
+            loadedMovies[1] = examples[1];
         }
         //TODO: Test boundary cases (large + small movie data sets) once UISearch is up and running
         displayAll();
@@ -131,8 +136,8 @@ public class SearchResultsActivity extends AppCompatActivity {
             }
         }else{
             pagesSkipped++;
-            loadedMovies[0] = examples [(2 * pagesSkipped) % 5];
-            loadedMovies[1] = examples [(2 * pagesSkipped + 1) % 5];
+            loadedMovies[0] = examples [(2 * pagesSkipped) % 3];
+            loadedMovies[1] = examples [(2 * pagesSkipped + 1) % 3];
             displayAll();
         }
     }
@@ -144,8 +149,8 @@ public class SearchResultsActivity extends AppCompatActivity {
                 displayAll();
             }else{
                 pagesSkipped--;
-                loadedMovies[0] = examples [(2 * pagesSkipped) % 5];
-                loadedMovies[1] = examples [(2 * pagesSkipped + 1) % 5];
+                loadedMovies[0] = examples [(2 * pagesSkipped) % 3];
+                loadedMovies[1] = examples [(2 * pagesSkipped + 1) % 3];
                 displayAll();
             }
         }

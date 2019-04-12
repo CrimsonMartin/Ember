@@ -16,7 +16,7 @@ public class SearchStartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_start);
-
+        if(!HistoryActivity.searchWorks){ ((Button) findViewById(R.id.searchButton)).setText("View example"); }
     }
 
     public void switchOnClick(View v) {
@@ -52,9 +52,5 @@ public class SearchStartActivity extends AppCompatActivity {
     }
 
     public void backOnClick(View v){ startActivity(new Intent(SearchStartActivity.this, HistoryActivity.class)); }
-
-    private void hackJob(){
-        ((Button) findViewById(R.id.searchButton)).setText("View example");
-    }
 
 }
