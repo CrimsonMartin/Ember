@@ -13,7 +13,7 @@ public class UISearch {
 
     private ArrayList<Filter> filters = new ArrayList<>(0);  // Filter list to hold all 3 possible filters.
     private String searchTerms;                                                 // The search terms to access the database with
-    private static ArrayList<Movie> results;                                                // Results from an API call
+    private static ArrayList<Movie> results = new ArrayList<Movie>();                                                // Results from an API call
 
     /**
      * Default constructor for a UISearch
@@ -92,7 +92,8 @@ public class UISearch {
     public ArrayList<Movie> searchFull() {
         // Calls a full search and converts the keywords (String[]) to a single String separated by spaces/
         MovieSearch m = new MovieSearch();
-        results = applyFilters(m.searchFull(String.join(" ", getSearch())));
+        MovieSearch.searchFull(String.join(" ", getSearch()), results);
+        results = applyFilters(results);
         return results;
     }
 
@@ -166,9 +167,9 @@ public class UISearch {
         System.out.println("Running searchFromButton(" + input + ", " + actorNotTitle + ")");
         try {
             if (actorNotTitle) {
-                results = MovieSearch.searchByActorFull(input);
+                MovieSearch.searchByActorFull(input, results);
             } else {
-                results = MovieSearch.searchFull(input);
+                MovieSearch.searchFull(input, results);
             }
             System.out.println("Finished searchFromButton(" + input + ", " + actorNotTitle + ")");
         }catch(Exception e){
@@ -179,9 +180,14 @@ public class UISearch {
     protected static Movie[] getTwo(int pagesSkipped){
         System.out.println("Running getTwo(" + pagesSkipped + ")");
         Movie[] output = new Movie[2];
-        if(pagesSkipped * 2 < results.size()){ output[0] = results.get(pagesSkipped * 2); }
-        if(pagesSkipped * 2 + 1 < results.size()){ output[1] = results.get(pagesSkipped * 2 + 1); }
-        System.out.println("Finished getTwo(" + pagesSkipped + ")");
+        if(results.size() == 0){
+            output[0] = null;
+            output[1] = null;
+        }else{
+            if(pagesSkipped * 2 < results.size()){ output[0] = results.get(pagesSkipped * 2); }
+            if(pagesSkipped * 2 + 1 < results.size()){ output[1] = results.get(pagesSkipped * 2 + 1); }
+            System.out.println("Finished getTwo(" + pagesSkipped + ")");
+        }
         return output;
     }
 }
