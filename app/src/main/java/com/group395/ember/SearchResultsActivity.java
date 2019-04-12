@@ -1,13 +1,10 @@
 package com.group395.ember;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 
@@ -16,6 +13,8 @@ public class SearchResultsActivity extends AppCompatActivity {
     private static Movie[] loadedMovies = new Movie[2];
     //This field specifies how many sets of 2 Movies have been moved past by the "next" button.
     private static int pagesSkipped = 0;
+    private static UISearch mySearch = new UISearch();
+    //private Logger logger = new Logger(getApplicationContext());
 
     public static Movie exampleMovie = Movie.parseFromJson("{\"Title\":\"Space Jam\",\"Year\":\"1996\",\"Rated\":\"PG\",\"Released\":\"15 Nov 1996\",\"Runtime\":\"88 min\",\"Genre\":\"Animation, Adventure, " +
             "Comedy, Family, Fantasy, Sci-Fi, Sport\",\"Director\":\"Joe Pytka\",\"Writer\":\"Leo Benvenuti, Steve Rudnick, Timothy Harris, Herschel Weingrod\",\"Actors\":\"Michael Jordan, Wayne Knight, " +
@@ -51,7 +50,6 @@ public class SearchResultsActivity extends AppCompatActivity {
         }
         //TODO: Test boundary cases (large + small movie data sets) once UISearch is up and running
         displayAll();
-
     }
 
     /**
@@ -85,6 +83,7 @@ public class SearchResultsActivity extends AppCompatActivity {
             System.out.println(io.toString());
         }
     }
+
     public void resultButtonBOnClick(View v){
         try {
             if(loadedMovies[1] != null) {

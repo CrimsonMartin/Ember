@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import com.facebook.drawee.backends.pipeline.Fresco;
+
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class HistoryActivity extends AppCompatActivity {
@@ -18,6 +20,7 @@ public class HistoryActivity extends AppCompatActivity {
     private static Movie[][] recentClicks = new Movie[5][8];
     //Specifies how many sets of 8 Movies have been moved past by the "next" button.
     private int pagesSkipped = 0;
+   // private Logger logger = new Logger(getApplicationContext());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +82,7 @@ public class HistoryActivity extends AppCompatActivity {
         MoviePageActivity.setCurrentMovie(SearchResultsActivity.exampleMovie);
         MoviePageActivity.setFromHistoryActivity(false);
         try {
-            Logger.saveToHistory(SearchResultsActivity.exampleMovie);
+            //logger.saveToHistory(SearchResultsActivity.exampleMovie);
         }catch(Exception e){
             System.out.println(e.toString());
         }
@@ -151,7 +154,7 @@ public class HistoryActivity extends AppCompatActivity {
         display((Button) findViewById(R.id.tileDR), recentClicks[pagesSkipped][7]);
     }
 
-    private void load(){
+    private void load() throws FileNotFoundException {
         ArrayList<Movie> loadList = Logger.pullAllFromHistory();
         //If there's no data in loadList, use the default size
         if(loadList.size() != 0){

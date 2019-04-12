@@ -81,7 +81,7 @@ public class UISearch {
      */
     public ArrayList<Movie> search() {
         MovieSearch m = new MovieSearch();
-        results = applyFilters(m.searchFirstPage(String.join(" ", getSearch())));
+        //results = applyFilters(m.searchFirstPage(String.join(" ", getSearch())));
         return results;
     }
 
@@ -92,7 +92,7 @@ public class UISearch {
     public ArrayList<Movie> searchFull() {
         // Calls a full search and converts the keywords (String[]) to a single String separated by spaces/
         MovieSearch m = new MovieSearch();
-        MovieSearch.searchFull(String.join(" ", getSearch()), results);
+        MovieSearch.searchFull(String.join(" ", getSearch()));
         results = applyFilters(results);
         return results;
     }
@@ -167,9 +167,9 @@ public class UISearch {
         System.out.println("Running searchFromButton(" + input + ", " + actorNotTitle + ")");
         try {
             if (actorNotTitle) {
-                MovieSearch.searchByActorFull(input, results);
+                //MovieSearch.searchByActorFull(input, results);
             } else {
-                MovieSearch.searchFull(input, results);
+                MovieSearch.searchFull(input);
             }
             System.out.println("Finished searchFromButton(" + input + ", " + actorNotTitle + ")");
         }catch(Exception e){

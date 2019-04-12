@@ -5,8 +5,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -39,7 +37,8 @@ public class FilterTest {
         assertThat( filter2.getKeywords().contains(""), is(true));
     }
 
-    @Test
+    /*
+    @Ignore
     public void fitsFilterTest() throws InterruptedException{
         //Test 1
         ArrayList<Movie> m = mov.searchFirstPage("Space Jam");
@@ -59,4 +58,5 @@ public class FilterTest {
         assertTrue(f3.fitsFilter(result));
 
     }
+    */
 }
