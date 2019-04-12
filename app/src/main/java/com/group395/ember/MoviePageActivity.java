@@ -31,21 +31,25 @@ public class MoviePageActivity extends AppCompatActivity {
         Button tempDisp = findViewById(R.id.titleDisp);
         tempDisp.setText(currentMovie.getTitle());
         tempDisp = findViewById(R.id.yearDisp);
-        tempDisp.setText(currentMovie.getYear().toString());
+        if(currentMovie.getYear() > 0) {
+            tempDisp.setText(currentMovie.getYear().toString());
+        }else{
+            tempDisp.setText("No year found");
+        }
         tempDisp = findViewById(R.id.genreDisp);
         tempDisp.setText(getApplicationContext().getString(R.string.genre_list, SearchResultsActivity.stripBrackets(currentMovie.getGenre().toString())));
         tempDisp = findViewById(R.id.runtimeDisp);
-        tempDisp.setText(getApplicationContext().getString(R.string.runtime, SearchResultsActivity.stripBrackets(currentMovie.getRuntime())));
+        tempDisp.setText(currentMovie.getRuntime());
         tempDisp = findViewById(R.id.actorDisp);
         tempDisp.setText(getApplicationContext().getString(R.string.actor_list, SearchResultsActivity.stripBrackets(currentMovie.getActors().toString())));
         tempDisp = findViewById(R.id.writerDisp);
         tempDisp.setText(getApplicationContext().getString(R.string.writer_list, SearchResultsActivity.stripBrackets(currentMovie.getWriter().toString())));
         tempDisp = findViewById(R.id.directorDisp);
-        tempDisp.setText(getApplicationContext().getString(R.string.director_list, SearchResultsActivity.stripBrackets(currentMovie.getDirector())));
+        tempDisp.setText(getApplicationContext().getString(R.string.director_list, (currentMovie.getDirector())));
         tempDisp = findViewById(R.id.metascoreDisp);
         tempDisp.setText(getApplicationContext().getString(R.string.metascore, currentMovie.getMetascore()));
         tempDisp = findViewById(R.id.imdbRatingDisp);
-        tempDisp.setText(getApplicationContext().getString(R.string.imdb_rating, currentMovie.getImdbRating().toString()));
+        if(currentMovie.getImdbRating() != null){ tempDisp.setText(getApplicationContext().getString(R.string.imdb_rating, currentMovie.getImdbRating().toString())); }
         tempDisp = findViewById(R.id.plotDisp);
         tempDisp.setText(currentMovie.getPlot());
         Uri uri = Uri.parse(currentMovie.getPoster());

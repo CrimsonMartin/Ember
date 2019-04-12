@@ -15,7 +15,7 @@ public class HistoryActivity extends AppCompatActivity {
 
     //Specifies whether the app has just started
     private boolean startUp = true;
-    public static final boolean searchWorks = false;
+    public static final boolean searchWorks = true;
     public static final boolean loadWorks = false;
     private static Movie[][] recentClicks = new Movie[5][8];
     //Specifies how many sets of 8 Movies have been moved past by the "next" button.
@@ -72,9 +72,11 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     private void tileOnClick(int whichButton){
-        MoviePageActivity.setCurrentMovie(recentClicks[pagesSkipped][whichButton]);
-        MoviePageActivity.setFromHistoryActivity(true);
-        startActivity(new Intent(HistoryActivity.this, MoviePageActivity.class));
+        if(recentClicks[pagesSkipped][whichButton] != null) {
+            MoviePageActivity.setCurrentMovie(recentClicks[pagesSkipped][whichButton]);
+            MoviePageActivity.setFromHistoryActivity(true);
+            startActivity(new Intent(HistoryActivity.this, MoviePageActivity.class));
+        }
     }
 
     public void testJamOnClick(View v){
