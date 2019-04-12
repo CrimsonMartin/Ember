@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.util.ArrayList;
 import android.content.Context;
-import android.view.View;
 
 public class Logger2 {
 
@@ -23,10 +22,11 @@ public class Logger2 {
     private File movieLog = new File(cache, "movies.txt");
 
     /**
-     * Default constructor; uses a default file name: EmberLogDDMMYY
+     * Default constructor; takes context (ctx) to create cache files for logging.
+     * @param ctx is Context to use for logging.
      */
-    protected Logger2(View view) {
-        context = view.getContext();
+    protected Logger2(Context ctx) {
+        context = context;
 
         if (!context.getCacheDir().exists())
             context.getCacheDir().mkdirs();
