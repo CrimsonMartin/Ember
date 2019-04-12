@@ -17,6 +17,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -40,8 +41,11 @@ public class MovieSearch {
     private static boolean running = false;
 
     public static String query = "";
+    public static ArrayList<Movie> results;
+    public static ArrayList<Movie> toLoad;
     public static BlockingQueue<Movie> loadedResults = new ArrayBlockingQueue<>(MAXNUMMOVIES);
     public static int totalResults = 0;
+    public static int pages = 0;
     public static int currentPage = 0;
 
     private static SearchFirstPageThread firstPage = new SearchFirstPageThread();
@@ -51,7 +55,7 @@ public class MovieSearch {
 
     // Returns a list of movies
     public static ArrayList<Movie> searchFirstPage(String title) {
-        ArrayList<Movie> results = new ArrayList<Movie>();
+        results = new ArrayList<Movie>();
         try {
             //System.out.println("Loader thread starting");
             String response = null;
@@ -109,8 +113,6 @@ public class MovieSearch {
     public static ArrayList<Movie> searchByActor(String actor){
         ArrayList<Movie> results = new ArrayList<Movie>();
         try {
-            //System.out.println("Loader thread starting");
-            String response = null;
             query = actor;
             executor.submit(new SearchByActorThread());
             do {
@@ -161,102 +163,33 @@ public class MovieSearch {
         }
     }
 
-    public static ArrayList<Movie> searchByActorFull(String actor) throws InterruptedException{
+    public static void searchByActorFull(String actor, ArrayList<Movie> resultsPointer) throws InterruptedException{
         MovieLoader loader = new MovieLoader();
-        ArrayList<Movie> movies = searchByActor(actor);
-
-        ArrayList<String> titles = new ArrayList<>();
-        for (Movie movie : movies){
-            //System.out.println("Title getting added: " + movie.getTitle());
-            titles.add(movie.getTitle());
-        }
-        loader.loadMoviebyTitle(titles);
-
-        System.out.println("Loading " + movies.size() + " movies");
-
-        ArrayList<Movie> returned = new ArrayList<>();
-
-        // This blocks until all the movies have been loaded
-        // if it's being executed from the main thread, then it needs to create another thread
-        // that calls this function instead of directly calling it.
-        while (returned.size() < movies.size()){
-            returned.add(loader.LoadedMovies.poll(5, TimeUnit.SECONDS));
-        }
-
-        return returned;
+        results = resultsPointer;
+        toLoad = searchByActor(actor);
+        executor.submit(new SearchByActorFullThread());
     }
 
-    public static String searchTest(String title){
-        query = title;
-        ArrayList<Movie> movieResults = new ArrayList<Movie>();
-        try{
+    private static class SearchByActorFullThread implements Runnable{
+
+        @Override
+        public void run(){
             MovieLoader loader = new MovieLoader();
-            Gson gson = new Gson();
-            URL search = new URL(omdbSearch(query, 1));
-            System.out.println(search);
-            HttpURLConnection searchCon = (HttpURLConnection) search.openConnection();
-
-            searchCon.setRequestMethod("GET");
-
-            reader = new BufferedReader(new InputStreamReader(searchCon.getInputStream()));
-            OmdbSearchResults results = gson.fromJson(reader, OmdbSearchResults.class);
-            int pages = results.getTotal_pages();
-            //System.out.println(pages);
-            totalResults = results.getNumberofResults();
-            if(pages>40){
-                // Throw some sort of Exception
-                return null;
-            }
-            else{
-                for(int page = 1; page<=pages; page++){
-                    currentPage = page;
-                    search = new URL(omdbSearch(query,  page));
-                    searchCon = (HttpURLConnection) search.openConnection();
-                    searchCon.setRequestMethod("GET");
-                    reader = new BufferedReader(new InputStreamReader(searchCon.getInputStream()));
-                    results = gson.fromJson(reader, OmdbSearchResults.class);
-                    //System.out.println(results);
-                    ArrayList<Movie> moviesPage = results.getResults();
-                    try{
-                        loader.loadMoviebyTitle(collectTitles(results.getResults()));
-                        for (Movie m : moviesPage){
-                            //System.out.println(m.getTitle());
-                            movieResults.add(loader.LoadedMovies.take());
-                        }
-                    }catch(InterruptedException e){
-                        e.printStackTrace();
-                    }
+            ArrayList<Future<Movie>> futures = loader.loadMovies(toLoad);
+            for(Future<Movie> future : futures){
+                try {
+                    results.add(future.get(3, TimeUnit.SECONDS));
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
-                System.out.println("In Method:" +movieResults.toString());
-                return movieResults.toString();
             }
-        }
-        catch (MalformedURLException e){
-            System.out.println("Title search failed: " + e.getMessage());
-            e.printStackTrace();
-            close();
-            return null;
-        } catch (IOException e) {
-            System.out.println("INVALID URL FORMAT");
-            e.printStackTrace();
-            close();
-            return null;
         }
     }
 
-    public static ArrayList<Movie> searchFull(String title){
-        ArrayList<Movie> results = new ArrayList<Movie>();
-        try{
+    public static void searchFull(String title, ArrayList<Movie> resultsPointer){
             query = title;
+            results = resultsPointer;
             executor.submit(new SearchFullThread());
-            do {
-                results.add(loadedResults.poll(5, TimeUnit.SECONDS));
-            }while(!loadedResults.isEmpty() || running);
-            System.out.println("done");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return results;
     }
 
     private static class SearchFullThread implements Runnable{
@@ -270,36 +203,32 @@ public class MovieSearch {
                 URL search = new URL(omdbSearch(query, 1));
                 System.out.println(search);
                 HttpURLConnection searchCon = (HttpURLConnection) search.openConnection();
-
                 searchCon.setRequestMethod("GET");
-
                 reader = new BufferedReader(new InputStreamReader(searchCon.getInputStream()));
-                OmdbSearchResults results = gson.fromJson(reader, OmdbSearchResults.class);
-                int pages = results.getTotal_pages();
-                //System.out.println(pages);
-                totalResults = results.getNumberofResults();
-                if(pages>40){
-                    // Throw some sort of Exception
+                OmdbSearchResults newResults = gson.fromJson(reader, OmdbSearchResults.class);
+
+                results = newResults.getResults();
+                pages = newResults.getTotal_pages();
+                totalResults = newResults.getNumberofResults();
+
+                if(pages>40)
+                    pages = 40;
+
+                for(int page = 1; page<=pages; page++){
+                    currentPage = page;
+                    search = new URL(omdbSearch(query,  page));
+                    searchCon = (HttpURLConnection) search.openConnection();
+                    searchCon.setRequestMethod("GET");
+                    reader = new BufferedReader(new InputStreamReader(searchCon.getInputStream()));
+                    newResults = gson.fromJson(reader, OmdbSearchResults.class);
+                    toLoad.addAll(newResults.getResults());
                 }
-                else{
-                    for(int page = 1; page<=pages; page++){
-                        currentPage = page;
-                        search = new URL(omdbSearch(query,  page));
-                        searchCon = (HttpURLConnection) search.openConnection();
-                        searchCon.setRequestMethod("GET");
-                        reader = new BufferedReader(new InputStreamReader(searchCon.getInputStream()));
-                        results = gson.fromJson(reader, OmdbSearchResults.class);
-                        //System.out.println(results);
-                        ArrayList<Movie> moviesPage = results.getResults();
-                        try{
-                            loader.loadMoviebyTitle(collectTitles(results.getResults()));
-                            for (Movie m : moviesPage){
-                                //System.out.println(m.getTitle());
-                                loadedResults.add(loader.LoadedMovies.take());
-                            }
-                        }catch(InterruptedException e){
-                            e.printStackTrace();
-                        }
+                ArrayList<Future<Movie>> futures = loader.loadMovies(toLoad);
+                for(Future<Movie> future : futures){
+                    try {
+                        results.add(future.get(3, TimeUnit.SECONDS));
+                    }catch (Exception e){
+                        e.printStackTrace();
                     }
                 }
             }
@@ -311,6 +240,9 @@ public class MovieSearch {
                 System.out.println("INVALID URL FORMAT");
                 e.printStackTrace();
                 close();
+            }
+            finally {
+                running = false;
             }
         }
     }

@@ -34,26 +34,16 @@ public class MovieSuggestions {
     private static BufferedReader reader = null;
     public static Movie currentMovie;
     public static BlockingQueue<Movie> loadedSuggestions = new ArrayBlockingQueue<>(MAXNUMMOVIES);
+    public static ArrayList<Movie> results = new ArrayList<Movie>();
     public int totalResults = 0;
     public int currentPage = 0;
 
 
     // Returns a list of movies
     public static ArrayList<Movie> getSuggestions(Movie movie){
-        ArrayList<Movie> suggestions = new ArrayList<Movie>();
         currentMovie = movie;
-        try {
-            //System.out.println("Loader thread starting");
-            String response = null;
-            executor.submit(new SuggestionsThread());
-            do {
-                suggestions.add(loadedSuggestions.poll(5, TimeUnit.SECONDS));
-            }while(!loadedSuggestions.isEmpty());
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return suggestions;
+        executor.submit(new SuggestionsThread());
+        return results;
     }
 
     private static class SuggestionsThread implements Runnable {
@@ -68,8 +58,8 @@ public class MovieSuggestions {
                 HttpURLConnection con = (HttpURLConnection) obj.openConnection();
                 con.setRequestMethod("GET");
                 reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                SuggestionResults results = gson.fromJson(reader, SuggestionResults.class);
-                loadedSuggestions.addAll(results.getResults());
+                SuggestionResults newResults = gson.fromJson(reader, SuggestionResults.class);
+                results.addAll(newResults.getResults());
             }
             catch (MalformedURLException e){
                 System.out.println("Title search failed: " + e.getMessage());
