@@ -1,3 +1,4 @@
+
 package com.group395.ember;
 
 import org.junit.Before;
@@ -97,3 +98,4 @@ public class MovieSearchTest {
         System.out.println("Test: " +MovieSearch.searchFull("Remember the"));
     }
 }
+

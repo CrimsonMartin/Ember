@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -179,14 +180,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/metascoreDisp" />
 
-    <ImageView
-        android:id="@+id/imageView"
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/imageViewDrawee"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:src="@android:drawable/ic_lock_lock"
         app:layout_constraintBottom_toTopOf="@+id/directorDisp"
         app:layout_constraintEnd_toStartOf="@+id/yearDisp"
         app:layout_constraintStart_toStartOf="parent"

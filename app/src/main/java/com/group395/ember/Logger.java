@@ -1,74 +1,59 @@
 
 package com.group395.ember;
 
+import android.content.Context;
+import android.util.Log;
+
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Logger {
 
+    private static Context context;
+    private static File cache;
     // For general errors and other data
-    private static String fileName = "EmberLog" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dMMMyy")) + ".txt";
+    private static File generalLog = new File(cache, "logfile.txt");
     // For just movie history
-    private static String movieFileName = "MovieLog"
-            + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dMMMyy"))
-            + ".txt";;
+    private static File movieLog = new File(cache, "movies.txt");
 
     /**
-     * Default constructor; uses a default file name: EmberLogDDMMYY
+     * Default constructor; takes context (ctx) to create cache files for logging.
+     * @param ctx is Context to use for logging.
      */
-    protected Logger() throws IOException {
-        // Formatting date
-        LocalDateTime date = LocalDateTime.now();
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dMMMyy");
-        fileName = "EmberLog" + date.format(dateFormat) + ".txt";
-        movieFileName = "MovieLog" + date.format(dateFormat) + ".txt";
+    protected Logger(Context ctx) {
+        context = ctx;
 
-        File generalFile = new File(fileName);
-        generalFile.createNewFile();
+        if (!context.getCacheDir().exists())
+            context.getCacheDir().mkdirs();
 
-        File movieFile = new File(movieFileName);
-        movieFile.createNewFile();
-
+        cache = context.getCacheDir();
     }
 
-    /**
-     * Constructor for a Logger, takes a String for a file name
-     * @param fileName is a file to write logging details to
-     */
-    protected Logger(String fileName) {
-        this.fileName = fileName + ".txt";
-    }
+    protected static File getGeneralLog() { return generalLog; }
 
-    protected static String getFileName() { return fileName; }
+    protected static File getMovieLog() { return movieLog; }
 
-    protected static String getMovieFileName() { return movieFileName; }
+    protected static String[] getFileList() { return context.fileList(); }
 
     /**
-     * Logs an exception related to any of the other classes.
+     * Logs an exception related to any of the other classes. Logs are available using `adb logcat` on phone in dev mode.
      * @param e is the exception to log
      */
-    protected static void logException(Exception e) throws IOException {
-        FileWriter file = new FileWriter(fileName, true);
-        // Writing relevant data pertaining to the Exception
-        file.write(LocalDateTime.now().format(DateTimeFormatter.ofPattern("H:m")));
-        file.write(e.getMessage());
-
-        if (e.getCause() != null)
-            file.write(e.getCause().toString());
-
-        if (e.getStackTrace() != null)
-            file.write(e.getStackTrace().toString() + "\n");
-
-        file.close();
-    }
+    protected static void logException(Exception e) { Log.e("Ember", e.getMessage()); }
 
     /**
-     * Saves a movie to the movie file of the day.
+     * Writes any String to this log
+     * @param s is what to write
+     */
+    protected static void write(String s) { Log.d("Ember", s); }
+
+    /**
+     * Saves a movie to the movie file in the cache.
      * @param movie to save to history
      */
     protected static void saveToHistory(Movie movie) throws IOException {
@@ -76,67 +61,51 @@ public class Logger {
             // TODO: getTitle() -> getImdbID()
 //        if (this.write(movie.getImdbID()))
             // Temp identification
-            write(movie.getTitle(), movieFileName);
-       }catch(Exception e){
+
+            FileOutputStream outputStream = context.openFileOutput(getMovieLog().getName(), Context.MODE_PRIVATE);
+            outputStream.write(movie.getTitle().getBytes());
+            outputStream.close();
+        }catch(Exception e){
             logException(new Exception(movie.getTitle() + " Failed to store write."));
             System.out.println(e.toString());
         }
     }
 
-
     /**
      * Reads the movie history file and turns them into an ArrayList
      * @return ArrayList of Movies
      */
-    protected static ArrayList<Movie> pullAllFromHistory() {
-        ArrayList<String> movieIDs = readByLine(movieFileName);
+    protected static ArrayList<Movie> pullAllFromHistory() throws FileNotFoundException {
+
+        FileInputStream inputStream = context.openFileInput(getMovieLog().getName());
+
+        ArrayList<String> movieIDs = readByLine(inputStream);
         ArrayList<Movie> movies = new ArrayList<>();
         UISearch tempSearch = new UISearch();
 
-        // Gets each movie from the DB again
-        for (String title : movieIDs) {
-            // TODO: getTitle() -> getImdbID()
-            tempSearch.setSearch(title);
-            movies.add(tempSearch.search().get(0));
+        if (movieIDs.size() != 0) {
+            // Gets each movie from the DB again
+            for (String title : movieIDs) {
+                // TODO: getTitle() -> getImdbID()
+                tempSearch.setSearch(title);
+                movies.add(tempSearch.search().get(0));
+            }
         }
 
         return movies;
     }
 
-    /**
-     * Writes any String to this log
-     * @param s is what to write
-     * @return true if write was successful, false if exception thrown
-     */
-    protected static boolean write(String s, String fileName) {
-        if (s != null && !s.isEmpty()) {
-            try {
-                FileWriter file = new FileWriter(fileName, true);
-                file.write(LocalDateTime.now().format(DateTimeFormatter.ofPattern("H:m")));
-                file.write(s + "\n");
-                file.close();
-                return true;
-            } catch (Exception e) {
-                System.out.println("There was an error writing to a file");
-                System.out.println(e.toString());
-                return false;
-            }
-        }
-        else {
-            return false;
-        }
-    }
 
 
     /**
-     * Reads the targeted file line by line and returns an ArrayList of each line as a String
-     * @param fileName is the file to read
+     * Reads the targeted FileInputStream line by line and returns an ArrayList of each line as a String
+     * @param inputStream is the file to read
      * @return ArrayList of Strings
      */
-    protected static ArrayList<String> readByLine(String fileName) {
+    protected static ArrayList<String> readByLine(FileInputStream inputStream) {
         try {
             ArrayList<String> output = new ArrayList<>();
-            Scanner toRead = new Scanner(new File(fileName));
+            Scanner toRead = new Scanner(inputStream);
             while (toRead.hasNextLine()) {
                 output.add(toRead.nextLine());
             }
@@ -144,7 +113,7 @@ public class Logger {
             return output;
         }
         catch (Exception e) {
-            System.out.println("Failed in reading " + fileName);
+            System.out.println("Failed in reading " + inputStream);
             return null;
         }
     }
