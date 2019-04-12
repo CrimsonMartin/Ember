@@ -1,8 +1,6 @@
 package com.group395.ember;
 
 import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
 
 public class MovieSuggestionsTest {
 
@@ -15,6 +13,7 @@ public class MovieSuggestionsTest {
     public void initialize(){
     }
 
+    /*
     @Test
     public void getSuggestions(){
         Movie m = MovieSearch.searchFirstPage("John Wick").get(0);
@@ -24,4 +23,5 @@ public class MovieSuggestionsTest {
        // assertTrue(MovieSearch.search("Titan").getResponse());
       //  assertFalse(MovieSearch.search("the").getResponse());
     }
+    */
 }
