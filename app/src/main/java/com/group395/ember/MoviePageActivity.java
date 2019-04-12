@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-
 import com.facebook.drawee.view.SimpleDraweeView;
 
 public class MoviePageActivity extends AppCompatActivity {
@@ -32,30 +31,34 @@ public class MoviePageActivity extends AppCompatActivity {
         Button tempDisp = findViewById(R.id.titleDisp);
         tempDisp.setText(currentMovie.getTitle());
         tempDisp = findViewById(R.id.yearDisp);
-        tempDisp.setText(currentMovie.getYear().toString());
+        if(currentMovie.getYear() > 0) { tempDisp.setText(currentMovie.getYear().toString()); }
+        else{ tempDisp.setText("No year found"); }
         tempDisp = findViewById(R.id.genreDisp);
-        tempDisp.setText(getApplicationContext().getString(R.string.genre_list, SearchResultsActivity.stripBrackets(currentMovie.getGenre().toString())));
+        if(currentMovie.getGenre().size() > 0){ tempDisp.setText(getApplicationContext().getString(R.string.genre_list, SearchResultsActivity.stripBrackets(currentMovie.getGenre().toString()))); }
+        else{ tempDisp.setText("No genres found");}
         tempDisp = findViewById(R.id.runtimeDisp);
-        tempDisp.setText(getApplicationContext().getString(R.string.runtime, SearchResultsActivity.stripBrackets(currentMovie.getRuntime())));
+        tempDisp.setText(currentMovie.getRuntime());
         tempDisp = findViewById(R.id.actorDisp);
-        tempDisp.setText(getApplicationContext().getString(R.string.actor_list, SearchResultsActivity.stripBrackets(currentMovie.getActors().toString())));
+        if(currentMovie.getActors().size() > 0){ tempDisp.setText(getApplicationContext().getString(R.string.actor_list, SearchResultsActivity.stripBrackets(currentMovie.getActors().toString()))); }
+        else{ tempDisp.setText("No actors found"); }
         tempDisp = findViewById(R.id.writerDisp);
-        tempDisp.setText(getApplicationContext().getString(R.string.writer_list, SearchResultsActivity.stripBrackets(currentMovie.getWriter().toString())));
+        if(currentMovie.getWriter().size() > 0){ tempDisp.setText(getApplicationContext().getString(R.string.writer_list, SearchResultsActivity.stripBrackets(currentMovie.getWriter().toString()))); }
+        else{ tempDisp.setText("No writers found"); }
         tempDisp = findViewById(R.id.directorDisp);
-        tempDisp.setText(getApplicationContext().getString(R.string.director_list, SearchResultsActivity.stripBrackets(currentMovie.getDirector())));
+        tempDisp.setText(getApplicationContext().getString(R.string.director_list, (currentMovie.getDirector())));
         tempDisp = findViewById(R.id.metascoreDisp);
         tempDisp.setText(getApplicationContext().getString(R.string.metascore, currentMovie.getMetascore()));
         tempDisp = findViewById(R.id.imdbRatingDisp);
-        tempDisp.setText(getApplicationContext().getString(R.string.imdb_rating, currentMovie.getImdbRating().toString()));
+        if(currentMovie.getImdbRating() == null){ tempDisp.setText("No IMDb rating found"); }
+        else{ tempDisp.setText(getApplicationContext().getString(R.string.imdb_rating, currentMovie.getImdbRating().toString())); }
         tempDisp = findViewById(R.id.plotDisp);
         tempDisp.setText(currentMovie.getPlot());
         Uri uri = Uri.parse(currentMovie.getPoster());
         SimpleDraweeView draweeView = findViewById(R.id.imageViewDrawee);
         draweeView.setImageURI(uri);
-        System.out.println(uri.toString());
-    }
+        }
 
-    protected void setMovie(Movie input){ currentMovie = input; }
+        protected void setMovie(Movie input){ currentMovie = input; }
 
     public void backOnClick(View v){
         if(fromHistoryActivity){
