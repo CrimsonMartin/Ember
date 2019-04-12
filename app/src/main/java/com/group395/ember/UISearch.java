@@ -169,7 +169,7 @@ public class UISearch {
             if (actorNotTitle) {
                 //MovieSearch.searchByActorFull(input, results);
             } else {
-                MovieSearch.searchFull(input);
+                results = MovieSearch.searchFull(input);
             }
             System.out.println("Finished searchFromButton(" + input + ", " + actorNotTitle + ")");
         }catch(Exception e){
