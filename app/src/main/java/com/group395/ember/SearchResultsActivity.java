@@ -41,6 +41,7 @@ public class SearchResultsActivity extends AppCompatActivity {
      */
     protected static void search(String searchText, boolean actorNotTitle){
         System.out.println("Running search(" + searchText + ", " + actorNotTitle + ")");
+        UISearch myUISearch = new UISearch();
         UISearch.searchFromButton(searchText, actorNotTitle);
         loadedMovies = UISearch.getTwo(pagesSkipped);
         System.out.println("Finished search(" + searchText + ", " + actorNotTitle + ")");
