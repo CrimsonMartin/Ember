@@ -117,6 +117,7 @@ public class HistoryActivity extends AppCompatActivity {
                 }
             }
             recentClicks = tempRecentClicks;
+            firstEmptyArray = recentClicks.length - 1;
         }
         //If the entire array is empty, insert clickedMovie into the first slot.
         if ((firstEmptyArray == 0) && (firstEmptyIndex == 0)) {
