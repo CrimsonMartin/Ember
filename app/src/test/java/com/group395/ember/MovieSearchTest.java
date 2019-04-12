@@ -20,7 +20,7 @@ public class MovieSearchTest {
 
     @Test
     public void searchByActor() throws InterruptedException{
-        String query = "Tom Cruise";
+        String query = "Kevin Spacey";
         System.out.println("**By Actor**");
         long start = System.nanoTime();
         System.out.println(MovieSearch.searchByActor(query));
@@ -51,7 +51,7 @@ public class MovieSearchTest {
       //  assertFalse(MovieSearch.search("the").getResponse());
     }
 
-    @Ignore
+    @Test
     public void testing()throws InterruptedException{
         String query = "Remember the";
         System.out.println("** By Movie **");
