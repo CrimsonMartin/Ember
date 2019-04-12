@@ -16,7 +16,7 @@ import static java.util.Objects.isNull;
 public class Movie {
 
     private String Title;
-    private String Year;
+    private String Year = null;
     private String Released;
     private String Runtime;
     private List<String> Genre;
@@ -303,12 +303,7 @@ public class Movie {
         if (this == o) return true;
         if (!(o instanceof Movie)) return false;
         Movie movie = (Movie) o;
-        return Objects.equals(getTitle(), movie.getTitle()) &&
-                Objects.equals(getYear(), movie.getYear()) &&
-                Objects.equals(getReleased(), movie.getReleased()) &&
-                Objects.equals(getDirector(), movie.getDirector()) &&
-                Objects.equals(getActors(), movie.getActors()) &&
-                Objects.equals(getProduction(), movie.getProduction());
+        return movie.getTitle().toLowerCase().equals(this.getTitle().toLowerCase());
     }
 
     @Override
