@@ -2,12 +2,15 @@ package com.group395.ember;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.await;
@@ -105,5 +108,37 @@ public class MovieLoaderTest {
         Movie returned = ml.LoadedMovies.take();
         assertThat(returned.isInvalid(), is(true));
     }
+
+    @Test
+    public void loadMovieInPlace() throws Exception{
+        Movie m = new Movie("Space Jam");
+        Future<Movie> returned = ml.loadMovie(m);
+        Movie returnedmovie = returned.get();
+        assertThat(returnedmovie.getYear(), is(equalTo(1996)));
+    }
+
+    @Ignore
+    public void testOrderofLoading() throws Exception{
+        List<Movie> m1 = new ArrayList<Movie>(){{
+            add(new Movie("Space Jam"));
+            add(new Movie("Remember the titans"));
+            add(new Movie("Saving private Ryan"));
+            add(new Movie("Silver linings Playbook"));
+        }};
+
+        List<Future<Movie>> returned = ml.loadMovies(m1);
+
+        Movie spacejam = returned.get(0).get();
+        Movie rmember = returned.get(1).get();
+        Movie savingprivate = returned.get(2).get();
+        Movie slp = returned.get(3).get();
+
+        assertThat(spacejam.getYear(), is(equalTo(1996)));
+        assertThat(rmember.getYear(), is(equalTo(2000)));
+        assertThat(savingprivate.getYear(), is(equalTo(1998)));
+        assertThat(slp.getYear(), is(equalTo(2012)));
+
+    }
+
 
 }
