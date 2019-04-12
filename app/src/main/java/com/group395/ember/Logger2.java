@@ -26,7 +26,7 @@ public class Logger2 {
      * @param ctx is Context to use for logging.
      */
     protected Logger2(Context ctx) {
-        context = context;
+        context = ctx;
 
         if (!context.getCacheDir().exists())
             context.getCacheDir().mkdirs();
