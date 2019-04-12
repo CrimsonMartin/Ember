@@ -9,11 +9,12 @@ import android.widget.TextView;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import java.util.ArrayList;
 
-
 public class HistoryActivity extends AppCompatActivity {
 
     //Specifies whether the app has just started
     private boolean startUp = true;
+    public static final boolean searchWorks = false;
+    public static final boolean loadWorks = false;
     private static Movie[][] recentClicks = new Movie[5][8];
     //Specifies how many sets of 8 Movies have been moved past by the "next" button.
     private int pagesSkipped = 0;
@@ -26,7 +27,7 @@ public class HistoryActivity extends AppCompatActivity {
             Fresco.initialize(this);
         }
         try {
-            if (startUp) {
+            if (startUp && loadWorks) {
                 load();
             }
         } catch(Exception e) {
@@ -39,7 +40,6 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     public void searchButtonOnClick(View v){ startActivity(new Intent(HistoryActivity.this, SearchStartActivity.class)); }
-
 
     public void tileALOnClick(View v) { tileOnClick(0); }
     public void tileAROnClick(View v) { tileOnClick(1); }

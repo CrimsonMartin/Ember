@@ -16,7 +16,6 @@ public class SearchResultsActivity extends AppCompatActivity {
     private static Movie[] loadedMovies = new Movie[2];
     //This field specifies how many sets of 2 Movies have been moved past by the "next" button.
     private static int pagesSkipped = 0;
-    private static UISearch mySearch = new UISearch();
 
     public static Movie exampleMovie = Movie.parseFromJson("{\"Title\":\"Space Jam\",\"Year\":\"1996\",\"Rated\":\"PG\",\"Released\":\"15 Nov 1996\",\"Runtime\":\"88 min\",\"Genre\":\"Animation, Adventure, " +
             "Comedy, Family, Fantasy, Sci-Fi, Sport\",\"Director\":\"Joe Pytka\",\"Writer\":\"Leo Benvenuti, Steve Rudnick, Timothy Harris, Herschel Weingrod\",\"Actors\":\"Michael Jordan, Wayne Knight, " +
@@ -26,13 +25,24 @@ public class SearchResultsActivity extends AppCompatActivity {
             "\"59/100\"}],\"Metascore\":\"59\",\"imdbRating\":\"6.4\",\"imdbVotes\":\"138,962\",\"imdbID\":\"tt0117705\",\"Type\":\"movie\",\"DVD\":\"27 Aug 1997\",\"BoxOffice\":\"N/A\",\"Production\":\"Warner " +
             "Home Video\",\"Website\":\"N/A\",\"Response\":\"True\"}"
     );
+    public static Movie exampleMovie1 = null;
+    public static Movie exampleMovie2 = null;
+    public static Movie exampleMovie3 = null;
+    public static Movie exampleMovie4 = null;
+    public static Movie[] examples = {exampleMovie, exampleMovie1, exampleMovie2, exampleMovie3, exampleMovie4};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_results);
+        if(!HistoryActivity.searchWorks){
+            loadedMovies[0] = exampleMovie;
+            loadedMovies[1] = exampleMovie;
+        }
         //TODO: Test boundary cases (large + small movie data sets) once UISearch is up and running
         displayAll();
+
     }
 
     /**
@@ -40,11 +50,15 @@ public class SearchResultsActivity extends AppCompatActivity {
      * @param actorNotTitle True if searching by actor, false if searching by title.
      */
     protected static void search(String searchText, boolean actorNotTitle){
-        System.out.println("Running search(" + searchText + ", " + actorNotTitle + ")");
-        UISearch myUISearch = new UISearch();
-        UISearch.searchFromButton(searchText, actorNotTitle);
-        loadedMovies = UISearch.getTwo(pagesSkipped);
-        System.out.println("Finished search(" + searchText + ", " + actorNotTitle + ")");
+        if(HistoryActivity.searchWorks) {
+            System.out.println("Running search(" + searchText + ", " + actorNotTitle + ")");
+            UISearch.searchFromButton(searchText, actorNotTitle);
+            loadedMovies = UISearch.getTwo(pagesSkipped);
+            System.out.println("Finished search(" + searchText + ", " + actorNotTitle + ")");
+        }else{
+            loadedMovies[0] = examples[0];
+            loadedMovies[1] = examples[1];
+        }
     }
 
     public void searchAgainOnClick(View v){ startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class)); }
@@ -100,18 +114,32 @@ public class SearchResultsActivity extends AppCompatActivity {
     }
 
     public void nextOnClick(View v){
-        Movie[] moviesToLoad = UISearch.getTwo(pagesSkipped + 1);
-        if(moviesToLoad[0] != null){
+        if(HistoryActivity.searchWorks) {
+            Movie[] moviesToLoad = UISearch.getTwo(pagesSkipped + 1);
+            if (moviesToLoad[0] != null) {
+                pagesSkipped++;
+                loadedMovies = moviesToLoad;
+                displayAll();
+            }
+        }else{
             pagesSkipped++;
-            loadedMovies = moviesToLoad;
+            loadedMovies[0] = examples [(2 * pagesSkipped) % 5];
+            loadedMovies[1] = examples [(2 * pagesSkipped + 1) % 5];
             displayAll();
         }
     }
     public void prevOnClick(View v){
         if(pagesSkipped > 0){
-            pagesSkipped--;
-            loadedMovies = UISearch.getTwo(pagesSkipped);
-            displayAll();
+            if(HistoryActivity.searchWorks) {
+                pagesSkipped--;
+                loadedMovies = UISearch.getTwo(pagesSkipped);
+                displayAll();
+            }else{
+                pagesSkipped--;
+                loadedMovies[0] = examples [(2 * pagesSkipped) % 5];
+                loadedMovies[1] = examples [(2 * pagesSkipped + 1) % 5];
+                displayAll();
+            }
         }
     }
     public void backOnClick(View v){ startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class)); }

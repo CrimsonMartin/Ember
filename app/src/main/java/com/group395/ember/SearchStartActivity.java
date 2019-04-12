@@ -16,6 +16,7 @@ public class SearchStartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_start);
+
     }
 
     public void switchOnClick(View v) {
@@ -37,16 +38,23 @@ public class SearchStartActivity extends AppCompatActivity {
     }
 
     public void searchOnClick(View v){
-        EditText nameText = findViewById(R.id.nameText);
-        if(!(nameText.getText().toString().equals(""))) {
-            System.out.println("searchOnClick started");
-            SearchResultsActivity.search(nameText.getText().toString(), actorNotTitle);
-            System.out.println("searchOnClick finished");
+        if(HistoryActivity.searchWorks) {
+            EditText nameText = findViewById(R.id.nameText);
+            if (!(nameText.getText().toString().equals(""))) {
+                System.out.println("searchOnClick started");
+                SearchResultsActivity.search(nameText.getText().toString(), actorNotTitle);
+                System.out.println("searchOnClick finished");
+                startActivity(new Intent(SearchStartActivity.this, SearchResultsActivity.class));
+            }
+        }else{
             startActivity(new Intent(SearchStartActivity.this, SearchResultsActivity.class));
         }
     }
 
     public void backOnClick(View v){ startActivity(new Intent(SearchStartActivity.this, HistoryActivity.class)); }
 
+    private void hackJob(){
+        ((Button) findViewById(R.id.searchButton)).setText("View example");
+    }
 
 }
