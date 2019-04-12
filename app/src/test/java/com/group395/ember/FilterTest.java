@@ -5,11 +5,16 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
+import java.util.concurrent.TimeUnit;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+
 
 public class FilterTest {
-    
+
     private Filter filter = new Filter(FilterType.ACTOR);
     private Filter filter2 = new Filter(FilterType.ACTOR);
     private Movie movie;
@@ -19,14 +24,14 @@ public class FilterTest {
 
     @Test
     public void addTest() {
-        for(int i = 0; i<=999; i++){
+        for (int i = 0; i <= 999; i++) {
             f.add("Test");
         }
         filter.add("Test");
         //Test 1
         assertThat(filter.getKeywords().contains("Test"), is(true));
 
-        for(int i = 1; i<=999; i++){
+        for (int i = 1; i <= 999; i++) {
             filter.add("Test");
         }
         //Test 2
@@ -34,15 +39,18 @@ public class FilterTest {
 
         //Test 3
         filter2.add("");
-        assertThat( filter2.getKeywords().contains(""), is(true));
+        assertThat(filter2.getKeywords().contains(""), is(true));
     }
 
-    /*
-    @Ignore
-    public void fitsFilterTest() throws InterruptedException{
+
+    @Test
+    public void fitsFilterTest() throws InterruptedException {
         //Test 1
-        ArrayList<Movie> m = mov.searchFirstPage("Space Jam");
+        ArrayList<Movie> m = mov.searchFull("Space Jam");
         MovieLoader ml = new MovieLoader();
+
+        TimeUnit.SECONDS.sleep(5);
+
         ml.loadMoviebyTitle(m.stream().findFirst().orElse(null).getTitle());
         Movie result = ml.LoadedMovies.take();
         Filter f1 = new Filter(FilterType.GENRE);
@@ -58,5 +66,5 @@ public class FilterTest {
         assertTrue(f3.fitsFilter(result));
 
     }
-    */
 }
+
