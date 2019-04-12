@@ -43,7 +43,7 @@ public class Filter {
     public Set<String> getKeywords(){
         return filterKeywords;
     }
-    
+
     public void add(Collection<String> input){
         filterKeywords.addAll(input);
     }
@@ -69,14 +69,25 @@ public class Filter {
                 break;
             case DIRECTOR:
                 compareTo = new ArrayList<String>() {{
-                        add(movie.getDirector());
-                    }};
+                    add(movie.getDirector());
+                }};
                 break;
             default:
                 throw new NullPointerException("This Filter has no filter type set");
         }
+        boolean is = false;
 
-        boolean is = compareTo.containsAll(getKeywords());
+        for (String keyword : getKeywords()) {
+            for (String compare : compareTo) {
+                if (!is)
+                    is = keyword.toLowerCase().equals(compare.toLowerCase());
+                System.out.println("keyword=" + keyword + "\t comp=" + compare);
+            }
+        }
+
+
+//        boolean is = compareTo.containsAll(getKeywords());
+        System.out.println(is);
         return is;
 
     }
