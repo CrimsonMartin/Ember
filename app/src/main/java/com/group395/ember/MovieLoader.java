@@ -23,7 +23,6 @@ public class MovieLoader {
 
     public BlockingQueue<Movie> LoadedMovies = new ArrayBlockingQueue<>(MAXNUMMOVIES);
 
-
     private static int MAXNUMMOVIES = 1000;
     private static int MAXNUMTHREADS = 8;
     private BlockingQueue<String> movietitles = new ArrayBlockingQueue<>(MAXNUMMOVIES);
