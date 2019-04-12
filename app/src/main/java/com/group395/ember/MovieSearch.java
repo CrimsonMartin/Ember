@@ -170,8 +170,8 @@ public class MovieSearch {
             //System.out.println("Title getting added: " + movie.getTitle());
             titles.add(movie.getTitle());
         }
-        loader.loadMoviebyTitle(titles);
 
+        loader.loadMoviebyTitle(titles);
         System.out.println("Loading " + movies.size() + " movies");
 
         ArrayList<Movie> returned = new ArrayList<>();
@@ -256,6 +256,7 @@ public class MovieSearch {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        System.out.println(results);
         return results;
     }
 
@@ -276,30 +277,28 @@ public class MovieSearch {
                 reader = new BufferedReader(new InputStreamReader(searchCon.getInputStream()));
                 OmdbSearchResults results = gson.fromJson(reader, OmdbSearchResults.class);
                 int pages = results.getTotal_pages();
-                //System.out.println(pages);
+                System.out.println(pages);
                 totalResults = results.getNumberofResults();
-                if(pages>40){
-                    // Throw some sort of Exception
-                }
-                else{
-                    for(int page = 1; page<=pages; page++){
-                        currentPage = page;
-                        search = new URL(omdbSearch(query,  page));
-                        searchCon = (HttpURLConnection) search.openConnection();
-                        searchCon.setRequestMethod("GET");
-                        reader = new BufferedReader(new InputStreamReader(searchCon.getInputStream()));
-                        results = gson.fromJson(reader, OmdbSearchResults.class);
-                        //System.out.println(results);
-                        ArrayList<Movie> moviesPage = results.getResults();
-                        try{
-                            loader.loadMoviebyTitle(collectTitles(results.getResults()));
-                            for (Movie m : moviesPage){
-                                //System.out.println(m.getTitle());
-                                loadedResults.add(loader.LoadedMovies.take());
-                            }
-                        }catch(InterruptedException e){
-                            e.printStackTrace();
+                if(pages>40)
+                    pages = 40;
+
+                for(int page = 1; page<=pages; page++){
+                    currentPage = page;
+                    search = new URL(omdbSearch(query,  page));
+                    searchCon = (HttpURLConnection) search.openConnection();
+                    searchCon.setRequestMethod("GET");
+                    reader = new BufferedReader(new InputStreamReader(searchCon.getInputStream()));
+                    results = gson.fromJson(reader, OmdbSearchResults.class);
+                    //System.out.println(results);
+                    ArrayList<Movie> moviesPage = results.getResults();
+                    try{
+                        loader.loadMoviebyTitle(collectTitles(results.getResults()));
+                        for (Movie m : moviesPage){
+                            //System.out.println(m.getTitle());
+                            loadedResults.add(loader.LoadedMovies.take());
                         }
+                    }catch(InterruptedException e){
+                        e.printStackTrace();
                     }
                 }
             }
