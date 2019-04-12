@@ -3,6 +3,11 @@ package com.group395.ember;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -12,6 +17,8 @@ public class MovieSearchTest {
     private Movie m2;
     private MovieList ml;
     private MovieSearch m;
+    private ArrayList<Movie> movies = new ArrayList<>();
+    private ArrayList<Movie> movies1 = new ArrayList<>();
 
 
     @Before
@@ -33,6 +40,24 @@ public class MovieSearchTest {
         System.out.println("Full: "+(end-start)/(1000000*1000.0));
     }
 
+
+    @Test
+    public void searchTest(){        assertTrue(MovieSearch.getResponse());
+        assertTrue(MovieSearch.searchFull("Batman").size() > 0);
+        assertEquals(MovieSearch.getResponse(), true);
+        movies = MovieSearch.searchFull("Batman");
+        movies1 = MovieSearch.searchFull("Return of the");
+        for(int i = 0; i<5; i++){
+            assertTrue(movies.get(i).getTitle().contains("Batman"));
+        }
+        assertEquals(MovieSearch.totalResults, movies.size());
+        for(int i = 0; i<5; i++){
+            assertTrue(movies1.get(i).getTitle().contains("Return of the"));
+        }
+
+    }
+
+
     @Ignore
     public void search()throws InterruptedException{
         String query = "Blues Brothers";
@@ -46,9 +71,9 @@ public class MovieSearchTest {
         System.out.println("Number of Results: " + res);
         end = System.nanoTime();
         System.out.println("Full: "+(end-start)/(1000000*1000.0));
-       // assertTrue(MovieSearch.search("Return of the").getResponse());
-       // assertTrue(MovieSearch.search("Titan").getResponse());
-      //  assertFalse(MovieSearch.search("the").getResponse());
+        // assertTrue(MovieSearch.search("Return of the").getResponse());
+        // assertTrue(MovieSearch.search("Titan").getResponse());
+        //  assertFalse(MovieSearch.search("the").getResponse());
     }
 
     @Ignore

@@ -43,12 +43,14 @@ public class MovieSearch {
     public static BlockingQueue<Movie> loadedResults = new ArrayBlockingQueue<>(MAXNUMMOVIES);
     public static int totalResults = 0;
     public static int currentPage = 0;
-
+    public static boolean response;
     private static SearchFirstPageThread firstPage = new SearchFirstPageThread();
 
 
     private static BufferedReader reader = null;
-
+    public static boolean getResponse(){
+        return response;
+    }
     // Returns a list of movies
     public static ArrayList<Movie> searchFirstPage(String title) {
         ArrayList<Movie> results = new ArrayList<Movie>();
