@@ -1,9 +1,8 @@
 package com.group395.ember;
 
-import android.support.annotation.VisibleForTesting;
-
 import com.google.gson.Gson;
 
+import java.io.BufferedReader;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -240,10 +239,15 @@ public class Movie {
      * @param str the Json response from OMDb for the information about this Movie
      * @return Movie the movie that has information loaded
      */
-    @VisibleForTesting
     static Movie parseFromJson(String str){
         Gson gson = new Gson();
         jsonMovie jmv = gson.fromJson(str, jsonMovie.class);
+        return new Movie(jmv);
+    }
+
+    static Movie parseFromReader(BufferedReader reader){
+        Gson gson = new Gson();
+        jsonMovie jmv = gson.fromJson(reader, jsonMovie.class);
         return new Movie(jmv);
     }
 

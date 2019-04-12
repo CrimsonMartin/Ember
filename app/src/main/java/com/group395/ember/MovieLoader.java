@@ -7,7 +7,11 @@ import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -51,13 +55,15 @@ public class MovieLoader {
                     movieTitle = movietitles.take();
                     String url = omdbUrlFromTitle(movieTitle);
 
-                    response = Unirest.get(url).asJson().getBody().toString();
+                   // response = Unirest.get(url).asJson().getBody().toString();
+                    URL obj = new URL(url);
+                    HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                    con.setRequestMethod("GET");
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
-                    if (response != null) {
-                        LoadedMovies.put(Movie.parseFromJson(response));
-                    }
+                    LoadedMovies.put(Movie.parseFromReader(reader));
 
-                } catch (UnirestException | MalformedURLException | InterruptedException e) {
+                } catch (Exception e) {
                     System.out.println("loading failed " + e.getMessage());
                     //pass - grab the next movie and repeat
                     try{

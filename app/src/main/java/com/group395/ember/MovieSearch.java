@@ -7,6 +7,9 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
 import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -38,6 +41,7 @@ public class MovieSearch {
     public static int totalResults = 0;
     public static int pages = 0;
     public static int currentPage = 0;
+    public static boolean running = false;
 
     //private static SearchFirstPageThread firstPage = new SearchFirstPageThread();
 
@@ -139,8 +143,13 @@ public class MovieSearch {
         }
     }
 
-    public static void searchFull(String title) {
+    public static ArrayList<Movie> searchFull(String title) {
         executor.submit(new SearchFullThread(title));
+        while(running){
+            System.out.println("R: "+results);
+        }
+
+        return results;
     }
 
     private static class SearchFullThread implements Runnable {
@@ -153,6 +162,7 @@ public class MovieSearch {
 
         @Override
         public void run() {
+            running = true;
 
             OmdbSearchResults searchResults = null;
             List<Future<Movie>> loaded = new ArrayList<>();
@@ -160,20 +170,35 @@ public class MovieSearch {
             try {
 
                 //TODO rewrite to a single for loop
-                Gson gson = new Gson();
+                /*Gson gson = new Gson();
 
                 String searchurl = omdbSearch(query, 1);
+
                 HttpResponse<JsonNode> response = Unirest.get(searchurl).asJson();
                 String responsebodystring = response.getBody().toString();
                 searchResults = gson.fromJson(responsebodystring, OmdbSearchResults.class);
                 results.addAll(searchResults.getResults());
                 loaded.addAll(loader.loadMovies(searchResults.getResults()));
+                */
 
-            } catch (UnirestException e) {
-                System.out.println("Title search failed: " + e.getMessage());
-                e.printStackTrace();
+                Gson gson = new Gson();
+                URL obj = new URL(omdbSearch(query, 1));
+                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                con.setRequestMethod("GET");
+                reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                /*
+                String line = "";
+                while((line = reader.readLine()) != null){
+                    System.out.println("-"+line);
+                }*/
+                searchResults = gson.fromJson(reader, OmdbSearchResults.class);
+                loaded.addAll(loader.loadMovies(searchResults.getResults()));
+
+            //} catch (UnirestException e) {
+                //System.out.println("Title search failed: " + e.getMessage());
+                //e.printStackTrace();
             } catch (Exception e){
-                //pass
+                e.printStackTrace();
             }
 
             Objects.requireNonNull(searchResults);
@@ -187,31 +212,31 @@ public class MovieSearch {
 
             try {
                 for (int p = 2; p < pages; p++) {
-
-                    searchResults = new Gson()
-                            .fromJson(Unirest.get(omdbSearch(query, p))
-                                            .asJson()
-                                            .getBody()
-                                            .toString(),
-                                    OmdbSearchResults.class);
-
+                    Gson gson = new Gson();
+                    URL obj = new URL(omdbSearch(query, p));
+                    HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                    con.setRequestMethod("GET");
+                    reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    searchResults = gson.fromJson(reader, OmdbSearchResults.class);
+                    loaded.addAll(loader.loadMovies(searchResults.getResults()));             System.out.println("--"+searchResults.toString());
                     loaded.addAll(loader.loadMovies(searchResults.getResults()));
-
+                    System.out.println("-load- "+p+" of "+pages+" "+ loaded);
                 }
-            } catch (UnirestException e) {
+            } catch (Exception e) {
                 System.out.println("Title search failed: " + e.getMessage());
                 e.printStackTrace();
             }
-
-
-            //add all the futures to results
-            try {
-                for (Future<Movie> future : loaded) {
-                    results.add(future.get());
+            for (int i=0; i<loaded.size(); i++) {
+                try {
+                    System.out.println("results: "+results);
+                    results.add(loaded.get(i).get(3, TimeUnit.SECONDS));
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                //pass
             }
+            System.out.println("done");
+
+            running = false;
 
         }
     }
