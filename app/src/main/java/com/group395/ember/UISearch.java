@@ -81,10 +81,10 @@ public class UISearch {
      * @return List of Movies
      */
     public List<Movie> search(int MoviesNeeded) throws InterruptedException{
-        //results = applyFilters(m.searchFirstPage(String.join(" ", getSearch())));
-        //MovieSearch.searchFull(getSearch());
         while(results.size() < MoviesNeeded){
-            results.add(MovieSearch.results.take());
+            Movie m = MovieSearch.results.take();
+            if (fitsFilters(m))
+                results.add(MovieSearch.results.take());
         }
         return results;
     }
@@ -151,6 +151,10 @@ public class UISearch {
             System.out.println("OUT OF RANGE - RETURNING @ 0");
             return null;
         }
+    }
+
+    public boolean fitsFilters(Movie m) {
+        return filters.get(0).fitsFilter(m) && filters.get(1).fitsFilter(m) && filters.get(2).fitsFilter(m);
     }
 
     /** Sorts the Movies by checking if they are applicable to each filter.
