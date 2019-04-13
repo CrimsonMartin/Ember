@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
@@ -103,7 +104,7 @@ public class Logger {
             for (String title : movieIDs) {
                 // TODO: getTitle() -> getImdbID()
                 tempSearch.setSearch(title);
-                ArrayList<Movie> ms = tempSearch.search();
+                List<Movie> ms = tempSearch.search(6);
 
                 TimeUnit.SECONDS.sleep(5);
 
