@@ -19,7 +19,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class MovieLoader {
+class MovieLoader {
 
     private static int MAXNUMTHREADS = 4;
     private ExecutorService executor = Executors.newFixedThreadPool(MAXNUMTHREADS);
@@ -87,7 +87,7 @@ public class MovieLoader {
      * @param m The Movie, with title, to be loaded.
      * @return Future<Movie> the Movie complete with all information</Movie>
      */
-    public Future<Movie> loadMovie(Movie m) {
+    Future<Movie> loadMovie(Movie m) {
         return executor.submit(new MovieLoaderThread(m));
     }
 
@@ -95,7 +95,7 @@ public class MovieLoader {
      * Load a list of movies in place
      * @param movies Replace movies in place in the list
      */
-    public List<Future<Movie>> loadMovies(List<Movie> movies){
+    List<Future<Movie>> loadMovies(List<Movie> movies){
         List<Future<Movie>> ret = new ArrayList<>();
         for(Movie m : movies){
            ret.add (executor.submit(new MovieLoaderThread(m)));
@@ -107,7 +107,7 @@ public class MovieLoader {
      * @param title the string representation of the title of the movie we want to know more about
      * @return the movie object if the loading was successful, and null otherwise
      */
-    public Future<Movie> loadMovieByTitle(String title) {
+    Future<Movie> loadMovieByTitle(String title) {
         return (executor.submit(new MovieLoaderThread(new Movie(title))));
     }
 
@@ -115,7 +115,7 @@ public class MovieLoader {
      * @param titles a list of movie titles to be loaded
      * @return the list of movies that correspond to the titles
      */
-    public List<Future<Movie>> loadMoviesByTitle(List<String> titles) throws InterruptedException{
+    List<Future<Movie>> loadMoviesByTitle(List<String> titles) throws InterruptedException{
         List<Future<Movie>> ret = new ArrayList<>();
         for(String t : titles){
             ret.add (executor.submit(new MovieLoaderThread(new Movie(t))));
@@ -126,7 +126,7 @@ public class MovieLoader {
     /**
      * @param m Movie object to load the available platforms for
      */
-    public void loadPlatforms(Movie m) {
+    void loadPlatforms(Movie m) {
         LoadPlatformsThread lpt = new LoadPlatformsThread(m);
         lpt.run();
     }
