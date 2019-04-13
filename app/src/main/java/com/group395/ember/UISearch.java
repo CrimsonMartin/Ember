@@ -26,7 +26,6 @@ public class UISearch {
         filters.add(new Filter(FilterType.ACTOR));
         filters.add(new Filter(FilterType.GENRE));
         filters.add(new Filter(FilterType.DIRECTOR));
-        System.out.println("Init UISearch");
     }
 
     /**
