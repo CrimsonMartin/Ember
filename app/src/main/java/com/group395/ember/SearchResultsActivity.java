@@ -15,7 +15,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     private Movie[] loadedMovies = new Movie[2];
     //This field specifies how many sets of 2 Movies have been moved past by the "next" button.
     private static int pagesSkipped = 0;
-    private static UISearch uiSearch;
+    private static UISearch uiSearch = new UISearch();
     //private Logger logger = new Logger(getApplicationContext());
 
 
@@ -33,6 +33,7 @@ public class SearchResultsActivity extends AppCompatActivity {
         private Context context;
         private boolean actorNotTitle = getIntent().getBooleanExtra("actorNotTitle", false);
         private String searchInput = getIntent().getStringExtra("searchInput");
+        private boolean newSearch = getIntent().getBooleanExtra("newSearch", false);
 
         public LoadMoviesTask (Context ctx){
             context = ctx;
@@ -63,7 +64,8 @@ public class SearchResultsActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            uiSearch = new UISearch();
+            if(newSearch)
+                uiSearch = new UISearch();
             uiSearch.searchFromButton(searchInput, actorNotTitle);
             loadedMovies = uiSearch.getTwo(pagesSkipped);
 
