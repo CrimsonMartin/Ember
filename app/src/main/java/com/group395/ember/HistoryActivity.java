@@ -12,6 +12,8 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 public class HistoryActivity extends AppCompatActivity {
@@ -100,7 +102,7 @@ public class HistoryActivity extends AppCompatActivity {
         //startActivity(new Intent(HistoryActivity.this, MoviePageActivity.class));
     }
 
-    public void loadHistoryOnClick(View v){
+    public void loadHistoryOnClick(View v) throws ExecutionException {
         Logger.initializeContext(getApplicationContext());
 
         try {
@@ -111,11 +113,11 @@ public class HistoryActivity extends AppCompatActivity {
             ArrayList<String> movieTitles = Logger.readByLine(inputStream);
 
             MovieLoader loader = new MovieLoader();
-            loader.loadMoviebyTitle(movieTitles);
+            loader.loadMoviesByTitle(movieTitles);
 
             // Loop take to buttons
             for (int i = 0; i < Math.min(movieTitles.size(), 8); i ++) {
-                recentClicks[pagesSkipped][i] = loader.LoadedMovies.take();
+                recentClicks[pagesSkipped][i] = loader.loadMovieByTitle(movieTitles.get(i)).get();
             }
             displayAll();
             Logger.trimCache(movieTitles.subList(movieTitles.size() - 8, movieTitles.size()));
