@@ -1,5 +1,6 @@
 package com.group395.ember;
 
+import android.util.Log;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -76,6 +77,11 @@ public class SearchResultsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_results);
+        try {
+            Logger.initializeContext(getApplicationContext());
+        } catch (Exception e) {
+            Log.e("Ember", e.getMessage());
+        }
         //TODO: Test boundary cases (large + small movie data sets) once UISearch is up and running
         new LoadMoviesTask(this).execute();
     }

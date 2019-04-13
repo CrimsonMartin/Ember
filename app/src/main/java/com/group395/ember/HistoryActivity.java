@@ -1,5 +1,6 @@
 package com.group395.ember;
 
+import android.util.Log;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class HistoryActivity extends AppCompatActivity {
 
@@ -26,6 +28,7 @@ public class HistoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
+        Logger.initializeContext(getApplicationContext());
         if(startUp){
             Fresco.initialize(this);
         }
@@ -33,8 +36,11 @@ public class HistoryActivity extends AppCompatActivity {
             if (startUp && loadWorks) {
                 load();
             }
-        } catch(Exception e) {
+        } catch(FileNotFoundException e) {
+            Log.e("Ember", e.getMessage());
             System.out.println("Couldn't load history.");
+        } catch (InterruptedException e) {
+            Log.e("Ember", e.getMessage());
         }
         displayAll();
         TextView pageNumber = findViewById(R.id.pageNumber);
@@ -160,8 +166,14 @@ public class HistoryActivity extends AppCompatActivity {
         display((Button) findViewById(R.id.tileDR), recentClicks[pagesSkipped][7]);
     }
 
-    private void load() throws FileNotFoundException , InterruptedException{
+    private void load() throws FileNotFoundException, InterruptedException {
         ArrayList<Movie> loadList = Logger.pullAllFromHistory();
+
+        System.out.println(loadList.size());
+        for (Movie m : loadList) {
+            System.out.println(m);
+        }
+
         //If there's no data in loadList, use the default size
         if(loadList.size() != 0){
             //How big the 2D array should be
