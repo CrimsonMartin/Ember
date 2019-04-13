@@ -37,16 +37,24 @@ public class SearchStartActivity extends AppCompatActivity {
     }
 
     public void searchOnClick(View v){
+
         EditText nameText = findViewById(R.id.nameText);
-        if(!(nameText.getText().toString().equals(""))) {
-            System.out.println("searchOnClick started");
-            SearchResultsActivity.search(nameText.getText().toString(), actorNotTitle);
-            System.out.println("searchOnClick finished");
-            startActivity(new Intent(SearchStartActivity.this, SearchResultsActivity.class));
+        String searchInput = nameText.getText().toString();
+
+        if(!searchInput.equals("")) {
+
+            Intent intent = new Intent(SearchStartActivity.this, SearchResultsActivity.class);
+            intent.putExtra("searchInput", searchInput);
+            intent.putExtra("actorNotTitle", actorNotTitle);
+            startActivity(intent);
+
         }
     }
 
-    public void backOnClick(View v){ startActivity(new Intent(SearchStartActivity.this, HistoryActivity.class)); }
+    public void backOnClick(View v){
+        startActivity(
+                new Intent(SearchStartActivity.this, HistoryActivity.class));
+    }
 
 
 }

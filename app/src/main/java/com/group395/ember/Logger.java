@@ -75,7 +75,7 @@ public class Logger {
      * Reads the movie history file and turns them into an ArrayList
      * @return ArrayList of Movies
      */
-    protected static ArrayList<Movie> pullAllFromHistory() throws FileNotFoundException {
+    protected static ArrayList<Movie> pullAllFromHistory() throws FileNotFoundException, InterruptedException {
 
         FileInputStream inputStream = context.openFileInput(getMovieLog().getName());
 

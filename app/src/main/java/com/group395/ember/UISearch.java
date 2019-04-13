@@ -2,6 +2,7 @@ package com.group395.ember;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Protocol for accessing the Movie Database from the GUI of the Ember app.
@@ -12,8 +13,10 @@ import java.util.ArrayList;
 public class UISearch {
 
     private ArrayList<Filter> filters = new ArrayList<>(0);  // Filter list to hold all 3 possible filters.
-    private String searchTerms;                                                 // The search terms to access the database with
-    private static ArrayList<Movie> results = new ArrayList<Movie>();                                                // Results from an API call
+    private String searchTerms; // The search terms to access the database with
+    private static List<Movie> results = new ArrayList<>();  // Results from an API call
+    private Integer pageNumMoviesReturned = 6;
+    private Integer FullNumMoviesReturned = 40;
 
     /**
      * Default constructor for a UISearch
@@ -72,29 +75,31 @@ public class UISearch {
      */
     public void setSearch(String newSearch) {
         searchTerms = newSearch;
-        results = search();
     }
 
     /**
      * Default search method to make a Movie api call to get some amount of Movies (stores in results and returns).
      * @return List of Movies
      */
-    public ArrayList<Movie> search() {
-        MovieSearch m = new MovieSearch();
+    public List<Movie> search() throws InterruptedException{
         //results = applyFilters(m.searchFirstPage(String.join(" ", getSearch())));
-        return results;
+        MovieSearch.searchFull(getSearch());
+        while(results.size() < pageNumMoviesReturned){
+            results.add(MovieSearch.results.take());
+        }
+        return applyFilters(results);
     }
 
     /**
      * Extended search method to make an API call. Gets "all" of the related results based on title then filters results.
      * @return List of Movies
      */
-    public ArrayList<Movie> searchFull() {
-        // Calls a full search and converts the keywords (String[]) to a single String separated by spaces/
-        MovieSearch m = new MovieSearch();
-        MovieSearch.searchFull(String.join(" ", getSearch()));
-        results = applyFilters(results);
-        return results;
+    public List<Movie> searchFull() throws InterruptedException{
+        MovieSearch.searchFull(getSearch());
+        while(results.size() < FullNumMoviesReturned){
+            results.add(MovieSearch.results.take());
+        }
+        return applyFilters(results);
     }
 
     /**
@@ -136,7 +141,7 @@ public class UISearch {
      * @param rawList is the unfiltered List of Movies to sort
      * @return a filtered List of Movies.
      */
-    public ArrayList<Movie> applyFilters(ArrayList<Movie> rawList) {
+    public ArrayList<Movie> applyFilters(List<Movie> rawList) {
         ArrayList<Movie> filteredList = new ArrayList<Movie>();
 
         // Loops each filter for each movie to determine if they fit the filters.
@@ -169,7 +174,7 @@ public class UISearch {
             if (actorNotTitle) {
                 //MovieSearch.searchByActorFull(input, results);
             } else {
-                results = MovieSearch.searchFull(input);
+                MovieSearch.searchFull(input);
             }
             System.out.println("Finished searchFromButton(" + input + ", " + actorNotTitle + ")");
         }catch(Exception e){
@@ -177,17 +182,21 @@ public class UISearch {
         }
     }
 
-    protected static Movie[] getTwo(int pagesSkipped){
-        System.out.println("Running getTwo(" + pagesSkipped + ")");
-        Movie[] output = new Movie[2];
-        if(results.size() == 0){
-            output[0] = null;
-            output[1] = null;
-        }else{
-            if(pagesSkipped * 2 < results.size()){ output[0] = results.get(pagesSkipped * 2); }
-            if(pagesSkipped * 2 + 1 < results.size()){ output[1] = results.get(pagesSkipped * 2 + 1); }
-            System.out.println("Finished getTwo(" + pagesSkipped + ")");
+
+    protected Movie[] getTwo(int pagesSkipped) {
+        Movie[] output;
+        try{
+            this.search();
+
+            output = new Movie[2];
+
+            output[0] = results.get(pagesSkipped * 2);
+            output[1] = results.get(pagesSkipped * 2 + 1);
         }
+        catch (IndexOutOfBoundsException | InterruptedException e){
+            output = null;
+        }
+
         return output;
     }
 }
