@@ -213,7 +213,7 @@ public class UISearch {
             output[1] = results.get(pagesSkipped * 2 + 1);
         }
         catch (IndexOutOfBoundsException | InterruptedException e){
-            output = null;
+            output = new Movie[]{null, null};
         }
 
         return output;
