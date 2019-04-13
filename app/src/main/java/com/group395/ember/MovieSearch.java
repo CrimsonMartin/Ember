@@ -237,7 +237,7 @@ public class MovieSearch {
         }
     }
 
-    public class PersonResults {
+    private class PersonResults {
         public class Actor {
             String name;
             Integer id;
@@ -258,7 +258,7 @@ public class MovieSearch {
         }
     }
 
-    public class MoviesByPersonResults {
+    private class MoviesByPersonResults {
         ArrayList<TmdbMovie> cast;
 
         public ArrayList<Movie> getResults() {
@@ -270,12 +270,12 @@ public class MovieSearch {
         }
     }
 
-    public static String omdbSearch(String title, Integer page) {
+    private static String omdbSearch(String title, Integer page) {
         title = title.replaceAll(" ", "+");
         return omdbUrl + "apikey=" + omdbApiKey + "&s=" + title + "&page=" + page;
     }
 
-    public static String tmdbSearch(String title, Integer page) {
+    private static String tmdbSearch(String title, Integer page) {
         title = title.replaceAll(" ", "+");
         if (title.length() > 0)
             return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings + "&page=" + page + "&query=" + title;
@@ -283,12 +283,12 @@ public class MovieSearch {
             return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings + "&page=" + page;
     }
 
-    public static String tmdbSearchPeople(String name) {
+    private static String tmdbSearchPeople(String name) {
         name = name.replaceAll(" ", "+");
         return tmdbUrl + tmdbSearchPeopleUrl + tmdbApiKey + tmdbSettings + "&query=" + name;
     }
 
-    public static String tmdbMoviesByPerson(Integer id) {
+    private static String tmdbMoviesByPerson(Integer id) {
         return tmdbMoviesByPersonUrl + id + tmdbMovieCredits + tmdbApiKey + tmdbSettings;
     }
 }

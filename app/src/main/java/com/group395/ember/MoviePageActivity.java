@@ -56,9 +56,9 @@ public class MoviePageActivity extends AppCompatActivity {
         Uri uri = Uri.parse(currentMovie.getPoster());
         SimpleDraweeView draweeView = findViewById(R.id.imageViewDrawee);
         draweeView.setImageURI(uri);
-        }
+    }
 
-        protected void setMovie(Movie input){ currentMovie = input; }
+    protected void setMovie(Movie input){ currentMovie = input; }
 
     public void backOnClick(View v){
         if(fromHistoryActivity){
@@ -67,8 +67,8 @@ public class MoviePageActivity extends AppCompatActivity {
             startActivity(new Intent(MoviePageActivity.this, SearchResultsActivity.class));
         }
     }
+
     public void searchAgainOnClick(View v){
-        MovieSearch.kill();
         UISearch search = new UISearch();
         search.resetResults();
         startActivity(new Intent(MoviePageActivity.this, SearchStartActivity.class)); }
