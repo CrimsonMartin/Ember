@@ -3,49 +3,52 @@ package com.group395.ember;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MovieSearchTest {
 
     private Movie m1;
     private Movie m2;
     private MovieList ml;
     private MovieSearch m;
+    private int pageNumMoviesReturned;
 
 
     @Before
     public void initialize(){
+        pageNumMoviesReturned = 6;
     }
 
     @Test
     public void searchByActor() throws InterruptedException{
+        ArrayList<Movie> results = new ArrayList<>();
         String query = "Kevin Spacey";
         System.out.println("**By Actor**");
         long start = System.nanoTime();
-        //System.out.println(MovieSearch.searchByActor(query));
+        MovieSearch.searchByActor(query);
+        while(results.size() < pageNumMoviesReturned){
+            results.add(MovieSearch.results.take());
+            System.out.println(results.get(results.size()-1));
+        }
         long end = System.nanoTime();
-        System.out.println("Partial: "+ (end-start)/(1000000*1000.0));
-        start = System.nanoTime();
-        //List<Movie> res = MovieSearch.searchByActorFull(query);
-        //System.out.println("Number of Results: " + res);
-        end = System.nanoTime();
+        System.out.println("Number of Results: " + results);
+
         System.out.println("Full: "+(end-start)/(1000000*1000.0));
     }
 
     @Test
     public void search()throws InterruptedException{
-        String query = "Blues Brothers";
+        ArrayList<Movie> results = new ArrayList<>();
+        String query = "Star";
         System.out.println("** By Movie **");
         long start = System.nanoTime();
-        //System.out.println(MovieSearch.searchFirstPage(query));
+        MovieSearch.searchFull(query);
+        while(results.size() < pageNumMoviesReturned){
+            results.add(MovieSearch.results.take());
+        }
         long end = System.nanoTime();
         System.out.println("First Page: "+ (end-start)/(1000000*1000.0));
-        start = System.nanoTime();
-        //List<Movie> res = MovieSearch.searchFull(query);
-        //System.out.println("Number of Results: " + res);
-        end = System.nanoTime();
-        System.out.println("Full: "+(end-start)/(1000000*1000.0));
-       // assertTrue(MovieSearch.search("Return of the").getResponse());
-       // assertTrue(MovieSearch.search("Titan").getResponse());
-      //  assertFalse(MovieSearch.search("the").getResponse());
     }
 
     @Test

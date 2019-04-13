@@ -103,6 +103,19 @@ public class UISearch {
     }
 
     /**
+     * Extended search method to make an API call. Gets all of the movies an actor/actress has appeared in related results based on title then filters results.
+     * @return List of Movies
+     */
+    public List<Movie> searchByActor() throws InterruptedException{
+        MovieSearch.searchByActor(getSearch());
+        while(results.size() < FullNumMoviesReturned){
+            results.add(MovieSearch.results.take());
+        }
+        return applyFilters(results);
+    }
+
+
+    /**
      * Returns an array of Movies from index start to index end
      * @param start left bound of the array.
      * @param end right right of the array.
@@ -172,7 +185,7 @@ public class UISearch {
         System.out.println("Running searchFromButton(" + input + ", " + actorNotTitle + ")");
         try {
             if (actorNotTitle) {
-                //MovieSearch.searchByActorFull(input, results);
+                MovieSearch.searchByActor(input);
             } else {
                 MovieSearch.searchFull(input);
             }
