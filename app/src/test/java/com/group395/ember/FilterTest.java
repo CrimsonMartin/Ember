@@ -3,30 +3,36 @@ package com.group395.ember;
 
 import org.junit.Test;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+
+import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+
 
 public class FilterTest {
-    
+
     private Filter filter = new Filter(FilterType.ACTOR);
     private Filter filter2 = new Filter(FilterType.ACTOR);
     private Movie movie;
     private ArrayList<String> f = new ArrayList<>();
-    private MovieSearch mov;
+    private MovieSearch mov = new MovieSearch();
 
 
     @Test
     public void addTest() {
-        for(int i = 0; i<=999; i++){
+        for (int i = 0; i <= 999; i++) {
             f.add("Test");
         }
         filter.add("Test");
         //Test 1
         assertThat(filter.getKeywords().contains("Test"), is(true));
 
-        for(int i = 1; i<=999; i++){
+        for (int i = 1; i <= 999; i++) {
             filter.add("Test");
         }
         //Test 2
@@ -34,15 +40,23 @@ public class FilterTest {
 
         //Test 3
         filter2.add("");
-        assertThat( filter2.getKeywords().contains(""), is(true));
+        assertThat(filter2.getKeywords().contains(""), is(true));
     }
 
-    /*
-    @Ignore
-    public void fitsFilterTest() throws InterruptedException{
+
+    @Test
+    public void fitsFilterTest() throws InterruptedException {
         //Test 1
-        ArrayList<Movie> m = mov.searchFirstPage("Space Jam");
+        mov.searchFull("Space Jam");
+        ArrayList<Movie> m = new ArrayList<>();
+
+        while(m.size() < 6){
+            m.add(mov.results.take());
+        }
         MovieLoader ml = new MovieLoader();
+
+        TimeUnit.SECONDS.sleep(5);
+
         ml.loadMoviebyTitle(m.stream().findFirst().orElse(null).getTitle());
         Movie result = ml.LoadedMovies.take();
         Filter f1 = new Filter(FilterType.GENRE);
@@ -58,5 +72,5 @@ public class FilterTest {
         assertTrue(f3.fitsFilter(result));
 
     }
-    */
 }
+

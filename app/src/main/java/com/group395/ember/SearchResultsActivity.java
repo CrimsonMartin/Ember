@@ -1,5 +1,6 @@
 package com.group395.ember;
 
+import android.util.Log;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -12,7 +13,7 @@ import java.io.IOException;
 
 public class SearchResultsActivity extends AppCompatActivity {
 
-    private static Movie[] loadedMovies = new Movie[2];
+    private Movie[] loadedMovies = new Movie[2];
     //This field specifies how many sets of 2 Movies have been moved past by the "next" button.
     private static int pagesSkipped = 0;
     private static UISearch uiSearch = new UISearch();
@@ -33,6 +34,7 @@ public class SearchResultsActivity extends AppCompatActivity {
         private Context context;
         private boolean actorNotTitle = getIntent().getBooleanExtra("actorNotTitle", false);
         private String searchInput = getIntent().getStringExtra("searchInput");
+        private boolean newSearch = getIntent().getBooleanExtra("newSearch", false);
 
         public LoadMoviesTask (Context ctx){
             context = ctx;
@@ -63,8 +65,9 @@ public class SearchResultsActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-
-            UISearch.searchFromButton(searchInput, actorNotTitle);
+            if(newSearch)
+                uiSearch = new UISearch();
+            uiSearch.searchFromButton(searchInput, actorNotTitle);
             loadedMovies = uiSearch.getTwo(pagesSkipped);
 
             return null;
@@ -76,13 +79,17 @@ public class SearchResultsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_results);
+        try {
+            Logger.initializeContext(getApplicationContext());
+        } catch (Exception e) {
+            Log.e("Ember", e.getMessage());
+        }
         //TODO: Test boundary cases (large + small movie data sets) once UISearch is up and running
         new LoadMoviesTask(this).execute();
     }
 
     public void searchAgainOnClick(View v){
-        uiSearch.kill();
-        uiSearch.resetResults();
+        uiSearch = new UISearch();
         startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class));
     }
 
@@ -140,8 +147,7 @@ public class SearchResultsActivity extends AppCompatActivity {
         }
     }
     public void backOnClick(View v){
-        uiSearch.kill();
-        uiSearch.resetResults();
+        uiSearch = new UISearch();
         startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class));
     }
 
