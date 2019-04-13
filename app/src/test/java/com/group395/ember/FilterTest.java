@@ -20,7 +20,7 @@ public class FilterTest {
     private Filter filter2 = new Filter(FilterType.ACTOR);
     private Movie movie;
     private ArrayList<String> f = new ArrayList<>();
-    private MovieSearch mov;
+    private MovieSearch mov = new MovieSearch();
 
 
     @Test
@@ -51,7 +51,7 @@ public class FilterTest {
         ArrayList<Movie> m = new ArrayList<>();
 
         while(m.size() < 6){
-            m.add(MovieSearch.results.take());
+            m.add(mov.results.take());
         }
         MovieLoader ml = new MovieLoader();
 

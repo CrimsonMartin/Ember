@@ -34,7 +34,7 @@ public class MovieSearch {
 
     public static String query = "";
     private static Integer MAXNUMMOVIES = 100;
-    public static BlockingQueue<Movie> results = new ArrayBlockingQueue<>(MAXNUMMOVIES);
+    public BlockingQueue<Movie> results = new ArrayBlockingQueue<>(MAXNUMMOVIES);
     public static ArrayList<Movie> toLoad;
     //public static BlockingQueue<Movie> loadedResults = new ArrayBlockingQueue<>(MAXNUMMOVIES);
     public static int totalResults = 0;
@@ -47,11 +47,11 @@ public class MovieSearch {
 
     private static BufferedReader reader = null;
 
-    public static void searchByActor(String actor) {
+    public void searchByActor(String actor) {
         executor.submit(new SearchByActorThread(actor));
     }
 
-    private static class SearchByActorThread implements Runnable {
+    private class SearchByActorThread implements Runnable {
         private String query;
 
         public SearchByActorThread(String actor){
@@ -97,12 +97,11 @@ public class MovieSearch {
         }
     }
 
-    public static void searchFull(String title) {
+    public void searchFull(String title) {
         executor.submit(new SearchFullThread(title));
-        //while(running){
     }
 
-    private static class SearchFullThread implements Runnable {
+    private class SearchFullThread implements Runnable {
 
         private String query;
 
@@ -168,14 +167,6 @@ public class MovieSearch {
 
         }
     }
-
-    public static void kill(){
-        executor.shutdownNow();
-        executor = Executors.newSingleThreadExecutor();
-        results.clear();
-    }
-
-
 
     private static List<String> collectTitles(List<Movie> results) {
         List<String> titles = new ArrayList<>();
