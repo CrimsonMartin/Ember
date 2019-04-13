@@ -91,7 +91,6 @@ public class SearchResultsActivity extends AppCompatActivity {
         Logger.saveToHistory(loadedMovies[0]);
         startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
     }
-
     public void resultButtonBOnClick(View v) throws NullPointerException, IOException{
         HistoryActivity.addClick(loadedMovies[1]);
         MoviePageActivity.setCurrentMovie(loadedMovies[1]);
@@ -105,7 +104,8 @@ public class SearchResultsActivity extends AppCompatActivity {
 
     private void display(Movie inputMovie, TextView title, TextView actors, TextView director, TextView plot){
         if(inputMovie != null) {
-            title.setText(getApplicationContext().getString(R.string.title_with_year, inputMovie.getTitle(), inputMovie.getYear().toString()));
+            if(inputMovie.getYear() > 0) { title.setText(getApplicationContext().getString(R.string.title_with_year, inputMovie.getTitle(), inputMovie.getYear().toString())); }
+            else{ title.setText(inputMovie.getTitle()); }
             actors.setText(getApplicationContext().getString(R.string.starring, stripBrackets(inputMovie.getActors().toString())));
             director.setText(getApplicationContext().getString(R.string.directed_by, inputMovie.getDirector()));
             plot.setText(inputMovie.getPlot());
