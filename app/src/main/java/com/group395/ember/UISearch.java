@@ -15,7 +15,7 @@ public class UISearch {
     private ArrayList<Filter> filters = new ArrayList<>(0);  // Filter list to hold all 3 possible filters.
     private String searchTerms; // The search terms to access the database with
     private List<Movie> results = new ArrayList<>();  // Results from an API call
-    private Integer pageNumMoviesReturned = 6;
+    private MovieSearch currentSearch;
     private Integer FullNumMoviesReturned = 40;
 
     /**
@@ -84,13 +84,9 @@ public class UISearch {
         while(results.size() < MoviesNeeded){
             Movie m = MovieSearch.results.take();
             if (fitsFilters(m))
-                results.add(MovieSearch.results.take());
+                results.add(m);
         }
         return results;
-    }
-
-    public void kill(){
-        MovieSearch.kill();
     }
 
     /**
@@ -98,9 +94,9 @@ public class UISearch {
      * @return List of Movies
      */
     public List<Movie> searchFull() throws InterruptedException{
-        MovieSearch.searchFull(getSearch());
+        currentSearch.searchFull(getSearch());
         while(results.size() < FullNumMoviesReturned){
-            results.add(MovieSearch.results.take());
+            results.add(currentSearch.results.take());
         }
         return applyFilters(results);
     }
@@ -110,9 +106,9 @@ public class UISearch {
      * @return List of Movies
      */
     public List<Movie> searchByActor() throws InterruptedException{
-        MovieSearch.searchByActor(getSearch());
+        currentSearch.searchByActor(getSearch());
         while(results.size() < FullNumMoviesReturned){
-            results.add(MovieSearch.results.take());
+            results.add(currentSearch.results.take());
         }
         return applyFilters(results);
     }
@@ -188,17 +184,16 @@ public class UISearch {
         return filteredList;
     }
 
-    protected static void searchFromButton(String input, boolean actorNotTitle) {
-        System.out.println("Running searchFromButton(" + input + ", " + actorNotTitle + ")");
+    protected void searchFromButton(String input, boolean actorNotTitle) {
+        currentSearch = new MovieSearch();
         try {
             if (actorNotTitle) {
-                MovieSearch.searchByActor(input);
+                currentSearch.searchByActor(input);
             } else {
-                MovieSearch.searchFull(input);
+                currentSearch.searchFull(input);
             }
-            System.out.println("Finished searchFromButton(" + input + ", " + actorNotTitle + ")");
         }catch(Exception e){
-            System.out.println("Caught exception: " + e.toString());
+            e.printStackTrace();
         }
     }
 
