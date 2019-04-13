@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class SearchResultsActivity extends AppCompatActivity {
 
-    private static Movie[] loadedMovies = new Movie[2];
+    private Movie[] loadedMovies = new Movie[2];
     //This field specifies how many sets of 2 Movies have been moved past by the "next" button.
     private static int pagesSkipped = 0;
     private static UISearch uiSearch = new UISearch();
@@ -65,7 +65,7 @@ public class SearchResultsActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
 
-            UISearch.searchFromButton(searchInput, actorNotTitle);
+            uiSearch.searchFromButton(searchInput, actorNotTitle);
             loadedMovies = uiSearch.getTwo(pagesSkipped);
 
             return null;
@@ -87,8 +87,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     }
 
     public void searchAgainOnClick(View v){
-        uiSearch.kill();
-        uiSearch.resetResults();
+        uiSearch = new UISearch();
         startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class));
     }
 
@@ -146,8 +145,7 @@ public class SearchResultsActivity extends AppCompatActivity {
         }
     }
     public void backOnClick(View v){
-        uiSearch.kill();
-        uiSearch.resetResults();
+        uiSearch = new UISearch();
         startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class));
     }
 
