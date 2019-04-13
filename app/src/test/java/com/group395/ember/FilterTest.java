@@ -3,6 +3,7 @@ package com.group395.ember;
 
 import org.junit.Test;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import java.util.concurrent.TimeUnit;
@@ -46,7 +47,12 @@ public class FilterTest {
     @Test
     public void fitsFilterTest() throws InterruptedException {
         //Test 1
-        ArrayList<Movie> m = mov.searchFull("Space Jam");
+        mov.searchFull("Space Jam");
+        ArrayList<Movie> m = new ArrayList<>();
+
+        while(m.size() < 6){
+            m.add(MovieSearch.results.take());
+        }
         MovieLoader ml = new MovieLoader();
 
         TimeUnit.SECONDS.sleep(5);

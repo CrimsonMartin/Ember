@@ -9,8 +9,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 public class Logger {
 
@@ -34,6 +37,15 @@ public class Logger {
         cache = context.getCacheDir();
     }
 
+    protected static void initializeContext(Context ctx) {
+        context = ctx;
+
+        if (!context.getCacheDir().exists())
+            context.getCacheDir().mkdirs();
+
+        cache = context.getCacheDir();
+    }
+
     protected static File getGeneralLog() { return generalLog; }
 
     protected static File getMovieLog() { return movieLog; }
@@ -44,7 +56,10 @@ public class Logger {
      * Logs an exception related to any of the other classes. Logs are available using `adb logcat` on phone in dev mode.
      * @param e is the exception to log
      */
-    protected static void logException(Exception e) { Log.e("Ember", e.getMessage()); }
+    protected static void logException(Exception e) {
+        Log.e("Ember", e.getMessage());
+        e.printStackTrace();
+    }
 
     /**
      * Writes any String to this log
@@ -62,10 +77,11 @@ public class Logger {
 //        if (this.write(movie.getImdbID()))
             // Temp identification
 
-            FileOutputStream outputStream = context.openFileOutput(getMovieLog().getName(), Context.MODE_PRIVATE);
-            outputStream.write(movie.getTitle().getBytes());
+            FileOutputStream outputStream = context.openFileOutput(getMovieLog().getName(), Context.MODE_PRIVATE | Context.MODE_APPEND);
+            outputStream.write((movie.getTitle() + "\n").getBytes());
             outputStream.close();
         }catch(Exception e){
+            Log.e("Ember", e.getMessage());
             logException(new Exception(movie.getTitle() + " Failed to store write."));
             System.out.println(e.toString());
         }
@@ -88,7 +104,12 @@ public class Logger {
             for (String title : movieIDs) {
                 // TODO: getTitle() -> getImdbID()
                 tempSearch.setSearch(title);
-                movies.add(tempSearch.search(6).get(0));
+                List<Movie> ms = tempSearch.search(6);
+
+                TimeUnit.SECONDS.sleep(5);
+
+                movies.add(ms.get(0));
+//                movies.add(tempSearch.search(6).get(0));
             }
         }
 
@@ -106,6 +127,7 @@ public class Logger {
         try {
             ArrayList<String> output = new ArrayList<>();
             Scanner toRead = new Scanner(inputStream);
+            toRead.useDelimiter("\n");
             while (toRead.hasNextLine()) {
                 output.add(toRead.nextLine());
             }
