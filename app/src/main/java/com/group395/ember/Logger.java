@@ -115,6 +115,8 @@ public class Logger {
     }
 
 
+
+
     /**
      * Reads the targeted FileInputStream line by line and returns an ArrayList of each line as a String
      * @param inputStream is the file to read
@@ -136,6 +138,8 @@ public class Logger {
             return null;
         }
     }
+
+
 
 
 }

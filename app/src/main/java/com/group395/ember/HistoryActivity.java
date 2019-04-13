@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import com.facebook.drawee.backends.pipeline.Fresco;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -105,6 +106,9 @@ public class HistoryActivity extends AppCompatActivity {
 
         try {
             ArrayList<Movie> movies = Logger.pullAllFromHistory();
+            // Movie titles only:
+            FileInputStream inputStream = getApplicationContext().openFileInput(Logger.getMovieLog().getName());
+            ArrayList<String> movieTitles = Logger.readByLine(inputStream);
 
             for (Movie m : movies) {
                 ;
