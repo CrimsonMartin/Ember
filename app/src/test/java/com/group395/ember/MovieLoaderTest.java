@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -17,9 +18,7 @@ import static org.awaitility.Awaitility.await;
 import static org.awaitility.Awaitility.fieldIn;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 
@@ -41,31 +40,30 @@ public class MovieLoaderTest {
     }
 
     @Test
-    public void testLoadingMovie() throws InterruptedException{
-        ml.loadMoviebyTitle("Space Jam");
-        assertEquals(goalSpaceJam, ml.LoadedMovies.take());
+    public void testLoadingMovie() throws InterruptedException, ExecutionException{
+        Future<Movie> future = ml.loadMovieByTitle("Space Jam");
+        Movie returned = future.get();
+        assertThat(returned, is(equalTo(goalSpaceJam)));
 
     }
 
     @Test
-    public void testLoadingManyMovies() throws InterruptedException{
-        ml.loadMoviebyTitle(new ArrayList<String>(){{
+    public void testLoadingManyMovies() {
+        List<String> titles = new ArrayList<String>(){{
             add("Space Jam");
-            add("Remember the titans");
-            add("Saving private Ryan");
-            add("Silver linings Playbook");
-        }});
+            add("Remember the Titans");
+            add("Saving Private Ryan");
+            add("Silver Linings Playbook");
+        }};
+
         try {
-            Set<String> returned = new LinkedHashSet<String>();
-            returned.add(ml.LoadedMovies.take().getTitle());
-            returned.add(ml.LoadedMovies.take().getTitle());
-            returned.add(ml.LoadedMovies.take().getTitle());
-            returned.add(ml.LoadedMovies.take().getTitle());
-            assertTrue(returned.contains("Space Jam"));
-            assertTrue(returned.contains("Remember the Titans"));
-            assertTrue(returned.contains("Saving Private Ryan"));
-            assertTrue(returned.contains("Silver Linings Playbook"));
-        }catch(InterruptedException e){
+            List<Future<Movie>> futures = ml.loadMoviesByTitle(titles);
+
+            for (Future<Movie> f : futures){
+                Movie m = f.get();
+                assertThat(titles.contains(m.getTitle()), is(true));
+            }
+        }catch(ExecutionException | InterruptedException e){
             fail();
         }
 
@@ -94,27 +92,27 @@ public class MovieLoaderTest {
     }
 
     @Test
-    public void loadSchindlersList() throws InterruptedException{
+    public void loadSchindlersList() throws InterruptedException, ExecutionException{
         String title = "Schindler's List";
-        ml.loadMoviebyTitle(title);
-        Movie returned = ml.LoadedMovies.take();
+        Future<Movie> future = ml.loadMovieByTitle(title);
+        Movie returned = future.get();
         assertThat(returned.getTitle(), equalTo(title));
     }
 
     @Test
-    public void loadGiberish() throws InterruptedException{
+    public void loadGiberish() throws InterruptedException, ExecutionException{
         String title = "ASDFASDFAVNFERKGJDFNGSDKF";
-        ml.loadMoviebyTitle(title);
-        Movie returned = ml.LoadedMovies.take();
+        Future<Movie> future = ml.loadMovieByTitle(title);
+        Movie returned = future.get();
         assertThat(returned.isInvalid(), is(true));
     }
 
     @Test
     public void loadMovieInPlace() throws Exception{
         Movie m = new Movie("Space Jam");
-        Future<Movie> returned = ml.loadMovie(m);
-        Movie returnedmovie = returned.get();
-        assertThat(returnedmovie.getYear(), is(equalTo(1996)));
+        Future<Movie> future = ml.loadMovie(m);
+        Movie returned = future.get();
+        assertThat(returned.getYear(), is(equalTo(1996)));
     }
 
     @Ignore

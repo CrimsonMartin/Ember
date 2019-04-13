@@ -1,5 +1,6 @@
 package com.group395.ember;
 
+import android.util.Log;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,8 +9,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import com.facebook.drawee.backends.pipeline.Fresco;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class HistoryActivity extends AppCompatActivity {
 
@@ -20,12 +25,14 @@ public class HistoryActivity extends AppCompatActivity {
     private static Movie[][] recentClicks = new Movie[5][8];
     //Specifies how many sets of 8 Movies have been moved past by the "next" button.
     private int pagesSkipped = 0;
+    private static UISearch uiSearch = new UISearch();
    // private Logger logger = new Logger(getApplicationContext());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
+        Logger.initializeContext(getApplicationContext());
         if(startUp){
             Fresco.initialize(this);
         }
@@ -33,8 +40,11 @@ public class HistoryActivity extends AppCompatActivity {
             if (startUp && loadWorks) {
                 load();
             }
-        } catch(Exception e) {
+        } catch(FileNotFoundException e) {
+            Log.e("Ember", e.getMessage());
             System.out.println("Couldn't load history.");
+        } catch (InterruptedException e) {
+            Log.e("Ember", e.getMessage());
         }
         displayAll();
         TextView pageNumber = findViewById(R.id.pageNumber);
@@ -92,8 +102,33 @@ public class HistoryActivity extends AppCompatActivity {
         //startActivity(new Intent(HistoryActivity.this, MoviePageActivity.class));
     }
 
-    public void loadHistoryOnClick(View v){
+    public void loadHistoryOnClick(View v) throws ExecutionException {
+        Logger.initializeContext(getApplicationContext());
 
+        try {
+
+            // Movie titles only:
+            FileInputStream inputStream = getApplicationContext().openFileInput(Logger.getMovieLog().getName());
+
+            ArrayList<String> movieTitles = Logger.readByLine(inputStream);
+
+            MovieLoader loader = new MovieLoader();
+            loader.loadMoviesByTitle(movieTitles);
+
+            // Loop take to buttons
+            for (int i = 0; i < Math.min(movieTitles.size(), 8); i ++) {
+                recentClicks[pagesSkipped][i] = loader.loadMovieByTitle(movieTitles.get(i)).get();
+            }
+            displayAll();
+            Logger.trimCache(movieTitles.subList(movieTitles.size() - 8, movieTitles.size()));
+
+        } catch (FileNotFoundException e) {
+            Log.e("Ember", "File not found in loadhistory while pulling.");
+            e.printStackTrace();
+        } //catch (InterruptedException e) {
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     protected static void addClick(Movie clickedMovie) {
@@ -160,8 +195,14 @@ public class HistoryActivity extends AppCompatActivity {
         display((Button) findViewById(R.id.tileDR), recentClicks[pagesSkipped][7]);
     }
 
-    private void load() throws FileNotFoundException , InterruptedException{
+    private void load() throws FileNotFoundException, InterruptedException {
         ArrayList<Movie> loadList = Logger.pullAllFromHistory();
+
+        System.out.println(loadList.size());
+        for (Movie m : loadList) {
+            System.out.println(m);
+        }
+
         //If there's no data in loadList, use the default size
         if(loadList.size() != 0){
             //How big the 2D array should be
