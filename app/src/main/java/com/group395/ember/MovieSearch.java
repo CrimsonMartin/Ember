@@ -157,19 +157,24 @@ public class MovieSearch {
             }
             for (int i=0; i<loaded.size(); i++) {
                 try {
-                    System.out.println("loaded: "+loaded);
-                    System.out.println("results: "+results);
                     results.add(loaded.get(i).get(5, TimeUnit.SECONDS));
                 } catch (Exception e) {
+                    System.out.println("Current Movie: "+i);
                     e.printStackTrace();
                 }
             }
-            System.out.println("done");
 
             running = false;
 
         }
     }
+
+    public static void kill(){
+        executor.shutdownNow();
+        executor = Executors.newSingleThreadExecutor();
+        results.clear();
+    }
+
 
 
     private static List<String> collectTitles(List<Movie> results) {

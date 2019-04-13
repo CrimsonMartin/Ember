@@ -83,11 +83,15 @@ public class UISearch {
      */
     public List<Movie> search() throws InterruptedException{
         //results = applyFilters(m.searchFirstPage(String.join(" ", getSearch())));
-        MovieSearch.searchFull(getSearch());
+        //MovieSearch.searchFull(getSearch());
         while(results.size() < pageNumMoviesReturned){
             results.add(MovieSearch.results.take());
         }
         return applyFilters(results);
+    }
+
+    public void kill(){
+        MovieSearch.kill();
     }
 
     /**
@@ -211,5 +215,9 @@ public class UISearch {
         }
 
         return output;
+    }
+
+    protected void resetResults(){
+        results.clear();
     }
 }

@@ -81,6 +81,8 @@ public class SearchResultsActivity extends AppCompatActivity {
     }
 
     public void searchAgainOnClick(View v){
+        uiSearch.kill();
+        uiSearch.resetResults();
         startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class));
     }
 
@@ -137,7 +139,11 @@ public class SearchResultsActivity extends AppCompatActivity {
             displayAll();
         }
     }
-    public void backOnClick(View v){ startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class)); }
+    public void backOnClick(View v){
+        uiSearch.kill();
+        uiSearch.resetResults();
+        startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class));
+    }
 
     protected static String stripBrackets(String input){ return input.substring(1, input.length() - 1); }
 }
