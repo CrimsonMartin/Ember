@@ -160,7 +160,7 @@ public class HistoryActivity extends AppCompatActivity {
         display((Button) findViewById(R.id.tileDR), recentClicks[pagesSkipped][7]);
     }
 
-    private void load() throws FileNotFoundException {
+    private void load() throws FileNotFoundException , InterruptedException{
         ArrayList<Movie> loadList = Logger.pullAllFromHistory();
         //If there's no data in loadList, use the default size
         if(loadList.size() != 0){

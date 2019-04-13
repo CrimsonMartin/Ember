@@ -1,6 +1,8 @@
 package com.group395.ember;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -13,8 +15,9 @@ public class SearchResultsActivity extends AppCompatActivity {
     private static Movie[] loadedMovies = new Movie[2];
     //This field specifies how many sets of 2 Movies have been moved past by the "next" button.
     private static int pagesSkipped = 0;
-    private static UISearch mySearch = new UISearch();
+    private static UISearch uiSearch = new UISearch();
     //private Logger logger = new Logger(getApplicationContext());
+
 
     public static Movie exampleMovie = Movie.parseFromJson("{\"Title\":\"Space Jam\",\"Year\":\"1996\",\"Rated\":\"PG\",\"Released\":\"15 Nov 1996\",\"Runtime\":\"88 min\",\"Genre\":\"Animation, Adventure, " +
             "Comedy, Family, Fantasy, Sci-Fi, Sport\",\"Director\":\"Joe Pytka\",\"Writer\":\"Leo Benvenuti, Steve Rudnick, Timothy Harris, Herschel Weingrod\",\"Actors\":\"Michael Jordan, Wayne Knight, " +
@@ -24,84 +27,77 @@ public class SearchResultsActivity extends AppCompatActivity {
             "\"59/100\"}],\"Metascore\":\"59\",\"imdbRating\":\"6.4\",\"imdbVotes\":\"138,962\",\"imdbID\":\"tt0117705\",\"Type\":\"movie\",\"DVD\":\"27 Aug 1997\",\"BoxOffice\":\"N/A\",\"Production\":\"Warner " +
             "Home Video\",\"Website\":\"N/A\",\"Response\":\"True\"}"
     );
-    public static Movie exampleMovie1 = Movie.parseFromJson("{\"Title\":\"Star Wars: Episode IV - A New Hope\",\"Year\":\"1977\",\"Rated\":\"PG\",\"Released\":\"25 May 1977\",\"Runtime\":\"121 min\",\"Genre\":\"" +
-            "Action, Adventure, Fantasy, Sci-Fi\",\"Director\":\"George Lucas\",\"Writer\":\"George Lucas\",\"Actors\":\"Mark Hamill, Harrison Ford, Carrie Fisher, Peter Cushing\",\"Plot\":\"The Imperial Forces," +
-            " under orders from cruel Darth Vader, hold Princess Leia hostage in their efforts to quell the rebellion against the Galactic Empire. Luke Skywalker and Han Solo, captain of the Millennium Falcon, work " +
-            "together with the companionable droid duo R2-D2 and C-3PO to rescue the beautiful princess, help the Rebel Alliance and restore freedom and justice to the Galaxy.\",\"Language\":\"English\",\"Country\":\"USA\"" +
-            ",\"Awards\":\"Won 6 Oscars. Another 50 wins & 28 nominations.\",\"Poster\":\"https://m.media-amazon.com/images/M/MV5BNzVlY2MwMjktM2E4OS00Y2Y3LWE3ZjctYzhkZGM3YzA1ZWM2XkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_SX300.jpg\"" +
-            ",\"Ratings\":[{\"Source\":\"Internet Movie Database\",\"Value\":\"8.6/10\"},{\"Source\":\"Rotten Tomatoes\",\"Value\":\"93%\"},{\"Source\":\"Metacritic\",\"Value\":\"90/100\"}],\"Metascore\":\"90\",\"imdbRating\":" +
-            "\"8.6\",\"imdbVotes\":\"1,109,357\",\"imdbID\":\"tt0076759\",\"Type\":\"movie\",\"DVD\":\"21 Sep 2004\",\"BoxOffice\":\"N/A\",\"Production\":\"20th Century Fox\",\"Website\":\"http://www.starwars.com/episode-iv/\",\"" +
-            "Response\":\"True\"}"
-    );
-    public static Movie exampleMovie2 = Movie.parseFromJson("{\"Title\":\"Remember the Titans\",\"Year\":\"2000\",\"Rated\":\"PG\",\"Released\":\"29 Sep 2000\",\"Runtime\":\"113 min\",\"Genre\":\"Biography, Drama, Sport\",\"" +
-            "Director\":\"Boaz Yakin\",\"Writer\":\"Gregory Allen Howard\",\"Actors\":\"Denzel Washington, Will Patton, Wood Harris, Ryan Hurst\",\"Plot\":\"Suburban Virginia schools have been segregated for generations." +
-            " One Black and one White high school are closed and the students sent to T.C. Williams High School under federal mandate to integrate. The year is seen through the eyes of the football team where the man hired to" +
-            " coach the Black school is made head coach over the highly successful white coach. Based on the actual events of 1971, the team becomes the unifying symbol for the community as the boys and the adults learn to depend " +
-            "on and trust each other.\",\"Language\":\"English\",\"Country\":\"USA\",\"Awards\":\"8 wins & 17 nominations.\",\"Poster\":\"https://m.media-amazon.com/images/M/MV5BYThkMzgxNjEtMzFiOC00MTI0LWI5MDItNDVmYjA4NzY5MDQ2L2ltYW" +
-            "dlL2ltYWdlXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg\",\"Ratings\":[{\"Source\":\"Internet Movie Database\",\"Value\":\"7.8/10\"},{\"Source\":\"Rotten Tomatoes\",\"Value\":\"73%\"},{\"Source\":\"Metacritic\",\"Value\":\"48/" +
-            "100\"}],\"Metascore\":\"48\",\"imdbRating\":\"7.8\",\"imdbVotes\":\"183,192\",\"imdbID\":\"tt0210945\",\"Type\":\"movie\",\"DVD\":\"20 Mar 2001\",\"BoxOffice\":\"$114,297,071\",\"Production\":\"Walt Disney Pictures\",\"Website" +
-            "\":\"http://disney.go.com/disneypictures/rememberthetitans/index.html\",\"Response\":\"True\"}"
-    );
-    public static Movie[] examples = {exampleMovie, exampleMovie1, exampleMovie2};
+
+    private class LoadMoviesTask extends AsyncTask<Void, Void, Void> {
+
+        private Context context;
+        private boolean actorNotTitle = getIntent().getBooleanExtra("actorNotTitle", false);
+        private String searchInput = getIntent().getStringExtra("searchInput");
+
+        public LoadMoviesTask (Context ctx){
+            context = ctx;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            findViewById(R.id.loadingProgressBar1).setVisibility(View.VISIBLE);
+            findViewById(R.id.loadingProgressBar1).bringToFront();
+            findViewById(R.id.loadingProgressBar2).setVisibility(View.VISIBLE);
+            findViewById(R.id.loadingProgressBar2).bringToFront();
+            findViewById(R.id.resultButtonA).setVisibility(View.INVISIBLE);
+            findViewById(R.id.resultButtonB).setVisibility(View.INVISIBLE);
+        }
+
+        @Override //Set the visibility back from the loading bars
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            findViewById(R.id.loadingProgressBar1).setVisibility(View.INVISIBLE);
+            findViewById(R.id.loadingProgressBar2).setVisibility(View.INVISIBLE);
+            findViewById(R.id.resultButtonA).setVisibility(View.VISIBLE);
+            findViewById(R.id.resultButtonA).bringToFront();
+            findViewById(R.id.resultButtonB).setVisibility(View.VISIBLE);
+            findViewById(R.id.resultButtonB).bringToFront();
+            displayAll();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            UISearch.searchFromButton(searchInput, actorNotTitle);
+            loadedMovies = uiSearch.getTwo(pagesSkipped);
+
+            return null;
+        }
+    }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_results);
-        if(!HistoryActivity.searchWorks){
-            loadedMovies[0] = examples[0];
-            loadedMovies[1] = examples[1];
-        }
         //TODO: Test boundary cases (large + small movie data sets) once UISearch is up and running
-        displayAll();
+        new LoadMoviesTask(this).execute();
     }
 
-    /**
-     * @param searchText The name of the movie being searched.
-     * @param actorNotTitle True if searching by actor, false if searching by title.
-     */
-    protected static void search(String searchText, boolean actorNotTitle){
-        if(HistoryActivity.searchWorks) {
-            System.out.println("Running search(" + searchText + ", " + actorNotTitle + ")");
-            UISearch.searchFromButton(searchText, actorNotTitle);
-            loadedMovies = UISearch.getTwo(pagesSkipped);
-            System.out.println("Finished search(" + searchText + ", " + actorNotTitle + ")");
-        }else{
-            loadedMovies[0] = examples[0];
-            loadedMovies[1] = examples[1];
-        }
+    public void searchAgainOnClick(View v){
+        startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class));
     }
 
-    public void searchAgainOnClick(View v){ startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class)); }
-
-    public void resultButtonAOnClick(View v) {
-        try {
-            if(loadedMovies[0] != null) {
-                HistoryActivity.addClick(loadedMovies[0]);
-                MoviePageActivity.setCurrentMovie(loadedMovies[0]);
-                MoviePageActivity.setFromHistoryActivity(false);
-                Logger.saveToHistory(loadedMovies[0]);
-                startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
-            }
-        } catch(IOException io) {
-            System.out.println(io.toString());
-        }
+    public void resultButtonAOnClick(View v) throws NullPointerException, IOException{
+        HistoryActivity.addClick(loadedMovies[0]);
+        MoviePageActivity.setCurrentMovie(loadedMovies[0]);
+        MoviePageActivity.setFromHistoryActivity(false);
+        Logger.saveToHistory(loadedMovies[0]);
+        startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
     }
 
-    public void resultButtonBOnClick(View v){
-        try {
-            if(loadedMovies[1] != null) {
-                HistoryActivity.addClick(loadedMovies[1]);
-                MoviePageActivity.setCurrentMovie(loadedMovies[1]);
-                MoviePageActivity.setFromHistoryActivity(false);
-                Logger.saveToHistory(loadedMovies[1]);
-                startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
-            }
-        } catch(IOException io) {
-            System.out.println(io.toString());
-        }
-
+    public void resultButtonBOnClick(View v) throws NullPointerException, IOException{
+        HistoryActivity.addClick(loadedMovies[1]);
+        MoviePageActivity.setCurrentMovie(loadedMovies[1]);
+        MoviePageActivity.setFromHistoryActivity(false);
+        Logger.saveToHistory(loadedMovies[1]);
+        startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
     }
 
     public void filtersOnClick(View v){ startActivity(new Intent(SearchResultsActivity.this, SearchOptionsActivity.class)); }
@@ -127,32 +123,18 @@ public class SearchResultsActivity extends AppCompatActivity {
     }
 
     public void nextOnClick(View v){
-        if(HistoryActivity.searchWorks) {
-            Movie[] moviesToLoad = UISearch.getTwo(pagesSkipped + 1);
-            if (moviesToLoad[0] != null) {
-                pagesSkipped++;
-                loadedMovies = moviesToLoad;
-                displayAll();
-            }
-        }else{
+        Movie[] moviesToLoad = uiSearch.getTwo(pagesSkipped + 1);
+        if(moviesToLoad[0] != null){
             pagesSkipped++;
-            loadedMovies[0] = examples [(2 * pagesSkipped) % 3];
-            loadedMovies[1] = examples [(2 * pagesSkipped + 1) % 3];
+            loadedMovies = moviesToLoad;
             displayAll();
         }
     }
     public void prevOnClick(View v){
         if(pagesSkipped > 0){
-            if(HistoryActivity.searchWorks) {
-                pagesSkipped--;
-                loadedMovies = UISearch.getTwo(pagesSkipped);
-                displayAll();
-            }else{
-                pagesSkipped--;
-                loadedMovies[0] = examples [(2 * pagesSkipped) % 3];
-                loadedMovies[1] = examples [(2 * pagesSkipped + 1) % 3];
-                displayAll();
-            }
+            pagesSkipped--;
+            loadedMovies = uiSearch.getTwo(pagesSkipped);
+            displayAll();
         }
     }
     public void backOnClick(View v){ startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class)); }

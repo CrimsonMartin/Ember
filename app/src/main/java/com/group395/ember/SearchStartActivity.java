@@ -16,7 +16,6 @@ public class SearchStartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_start);
-        if(!HistoryActivity.searchWorks){ ((Button) findViewById(R.id.searchButton)).setText("View example"); }
     }
 
     public void switchOnClick(View v) {
@@ -38,19 +37,24 @@ public class SearchStartActivity extends AppCompatActivity {
     }
 
     public void searchOnClick(View v){
-        if(HistoryActivity.searchWorks) {
-            EditText nameText = findViewById(R.id.nameText);
-            if (!(nameText.getText().toString().equals(""))) {
-                System.out.println("searchOnClick started");
-                SearchResultsActivity.search(nameText.getText().toString(), actorNotTitle);
-                System.out.println("searchOnClick finished");
-                startActivity(new Intent(SearchStartActivity.this, SearchResultsActivity.class));
-            }
-        }else{
-            startActivity(new Intent(SearchStartActivity.this, SearchResultsActivity.class));
+
+        EditText nameText = findViewById(R.id.nameText);
+        String searchInput = nameText.getText().toString();
+
+        if(!searchInput.equals("")) {
+
+            Intent intent = new Intent(SearchStartActivity.this, SearchResultsActivity.class);
+            intent.putExtra("searchInput", searchInput);
+            intent.putExtra("actorNotTitle", actorNotTitle);
+            startActivity(intent);
+
         }
     }
 
-    public void backOnClick(View v){ startActivity(new Intent(SearchStartActivity.this, HistoryActivity.class)); }
+    public void backOnClick(View v){
+        startActivity(
+                new Intent(SearchStartActivity.this, HistoryActivity.class));
+    }
+
 
 }
