@@ -23,6 +23,7 @@ public class HistoryActivity extends AppCompatActivity {
     private static Movie[][] recentClicks = new Movie[5][8];
     //Specifies how many sets of 8 Movies have been moved past by the "next" button.
     private int pagesSkipped = 0;
+    private static UISearch uiSearch = new UISearch();
    // private Logger logger = new Logger(getApplicationContext());
 
     @Override
@@ -102,24 +103,42 @@ public class HistoryActivity extends AppCompatActivity {
     // TODO for working history on click:
     // load the movies on click...-> @Zach?
     public void loadHistoryOnClick(View v){
+        Log.e("Ember", "YOU'RE AT THE HISTORY LOAD ON CLICK");
         Logger.initializeContext(getApplicationContext());
 
         try {
-            ArrayList<Movie> movies = Logger.pullAllFromHistory();
+
+            Log.e("Ember", "Success 1");
+//            ArrayList<Movie> movies = Logger.pullAllFromHistory();
+            Log.e("Ember", "Success 1.1");
+
             // Movie titles only:
             FileInputStream inputStream = getApplicationContext().openFileInput(Logger.getMovieLog().getName());
-            ArrayList<String> movieTitles = Logger.readByLine(inputStream);
 
-            for (Movie m : movies) {
-                ;
-                // Add to tiles...
+            ArrayList<String> movieTitles = Logger.readByLine(inputStream);
+            Log.e("Ember", "Success 2");
+
+            for (String m : movieTitles) {
+                Log.e("EmberHISTORY", m.toString());
             }
+
+            MovieLoader loader = new MovieLoader();
+            loader.loadMoviebyTitle(movieTitles);
+
+            // Loop take to buttons
+            for (int i = 0; i < Math.min(movieTitles.size(), 8); i ++) {
+                recentClicks[pagesSkipped][i] = loader.LoadedMovies.take();
+            }
+            displayAll();
+
+//            display((Button) findViewById(R.id.tileAL), loader.LoadedMovies.take());
+//            display((Button) findViewById(R.id.tileAR), loader.LoadedMovies.take());
 
         } catch (FileNotFoundException e) {
             Log.e("Ember", "File not found in loadhistory while pulling.");
             e.printStackTrace();
-        } catch (InterruptedException e) {
-            Log.e("Ember", "Interrupt e in loadhistory while pulling.");
+        } //catch (InterruptedException e) {
+        catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

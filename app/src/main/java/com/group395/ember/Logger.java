@@ -101,13 +101,13 @@ public class Logger {
         if (movieIDs.size() != 0) {
             // Gets each movie from the DB again
             for (String title : movieIDs) {
+                Log.e("Ember", "Success  for @hist");
                 // TODO: getTitle() -> getImdbID()
                 tempSearch.setSearch(title);
                 List<Movie> ms = tempSearch.search(6);
 
-//                TimeUnit.SECONDS.sleep(5);
-
                 movies.add(ms.get(0));
+                Log.e("Ember", ms.get(0).getTitle());
             }
         }
 
