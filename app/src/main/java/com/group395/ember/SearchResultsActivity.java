@@ -115,9 +115,12 @@ public class SearchResultsActivity extends AppCompatActivity {
         if(inputMovie != null) {
             if(inputMovie.getYear() > 0) { title.setText(getApplicationContext().getString(R.string.title_with_year, inputMovie.getTitle(), inputMovie.getYear().toString())); }
             else{ title.setText(inputMovie.getTitle()); }
-            actors.setText(getApplicationContext().getString(R.string.starring, stripBrackets(inputMovie.getActors().toString())));
-            director.setText(getApplicationContext().getString(R.string.directed_by, inputMovie.getDirector()));
-            plot.setText(inputMovie.getPlot());
+            if(inputMovie.getActors() != null){ actors.setText(getApplicationContext().getString(R.string.starring, stripBrackets(inputMovie.getActors().toString()))); }
+            else{ actors.setText("No actors found"); }
+            if(inputMovie.getDirector() != null){ director.setText(getApplicationContext().getString(R.string.directed_by, inputMovie.getDirector())); }
+            else{ director.setText("No directors found"); }
+            if(inputMovie.getPlot() != null){ plot.setText(inputMovie.getPlot()); }
+            else{ plot.setText("No plot found"); }
             title.bringToFront();
             actors.bringToFront();
             director.bringToFront();
