@@ -1,10 +1,6 @@
 package com.group395.ember;
 
 import com.google.gson.Gson;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -13,6 +9,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -35,7 +33,8 @@ public class MovieSearch {
     private static ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public static String query = "";
-    public static ArrayList<Movie> results = new ArrayList<>();
+    private static Integer MAXNUMMOVIES = 40;
+    public static BlockingQueue<Movie> results = new ArrayBlockingQueue<>(MAXNUMMOVIES);
     public static ArrayList<Movie> toLoad;
     //public static BlockingQueue<Movie> loadedResults = new ArrayBlockingQueue<>(MAXNUMMOVIES);
     public static int totalResults = 0;
@@ -143,13 +142,9 @@ public class MovieSearch {
         }
     }
 
-    public static ArrayList<Movie> searchFull(String title) {
+    public static void searchFull(String title) {
         executor.submit(new SearchFullThread(title));
-        while(running){
-            System.out.println("R: "+results);
-        }
-
-        return results;
+        //while(running){
     }
 
     private static class SearchFullThread implements Runnable {
@@ -193,7 +188,7 @@ public class MovieSearch {
                 }*/
                 searchResults = gson.fromJson(reader, OmdbSearchResults.class);
                 loaded.addAll(loader.loadMovies(searchResults.getResults()));
-
+                reader.close();
             //} catch (UnirestException e) {
                 //System.out.println("Title search failed: " + e.getMessage());
                 //e.printStackTrace();
@@ -206,7 +201,7 @@ public class MovieSearch {
             pages = searchResults.getTotal_pages();
             totalResults = searchResults.getNumberofResults();
 
-            pages = pages > 40 ? 40 : pages;
+            pages = pages > 10 ? 10 : pages;
 
             List<Future<Movie>> loaded2;
 

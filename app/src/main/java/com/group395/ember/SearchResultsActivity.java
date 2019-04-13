@@ -1,7 +1,8 @@
 package com.group395.ember;
 
-import android.util.Log;
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -14,8 +15,9 @@ public class SearchResultsActivity extends AppCompatActivity {
     private static Movie[] loadedMovies = new Movie[2];
     //This field specifies how many sets of 2 Movies have been moved past by the "next" button.
     private static int pagesSkipped = 0;
-    private static UISearch mySearch = new UISearch();
+    private static UISearch uiSearch = new UISearch();
     //private Logger logger = new Logger(getApplicationContext());
+
 
     public static Movie exampleMovie = Movie.parseFromJson("{\"Title\":\"Space Jam\",\"Year\":\"1996\",\"Rated\":\"PG\",\"Released\":\"15 Nov 1996\",\"Runtime\":\"88 min\",\"Genre\":\"Animation, Adventure, " +
             "Comedy, Family, Fantasy, Sci-Fi, Sport\",\"Director\":\"Joe Pytka\",\"Writer\":\"Leo Benvenuti, Steve Rudnick, Timothy Harris, Herschel Weingrod\",\"Actors\":\"Michael Jordan, Wayne Knight, " +
@@ -26,60 +28,76 @@ public class SearchResultsActivity extends AppCompatActivity {
             "Home Video\",\"Website\":\"N/A\",\"Response\":\"True\"}"
     );
 
+    private class LoadMoviesTask extends AsyncTask<Void, Void, Void> {
+
+        private Context context;
+        private boolean actorNotTitle = getIntent().getBooleanExtra("actorNotTitle", false);
+        private String searchInput = getIntent().getStringExtra("searchInput");
+
+        public LoadMoviesTask (Context ctx){
+            context = ctx;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            findViewById(R.id.loadingProgressBar1).setVisibility(View.VISIBLE);
+            findViewById(R.id.loadingProgressBar1).bringToFront();
+            findViewById(R.id.loadingProgressBar2).setVisibility(View.VISIBLE);
+            findViewById(R.id.loadingProgressBar2).bringToFront();
+            findViewById(R.id.resultButtonA).setVisibility(View.INVISIBLE);
+            findViewById(R.id.resultButtonB).setVisibility(View.INVISIBLE);
+        }
+
+        @Override //Set the visibility back from the loading bars
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            findViewById(R.id.loadingProgressBar1).setVisibility(View.INVISIBLE);
+            findViewById(R.id.loadingProgressBar2).setVisibility(View.INVISIBLE);
+            findViewById(R.id.resultButtonA).setVisibility(View.VISIBLE);
+            findViewById(R.id.resultButtonA).bringToFront();
+            findViewById(R.id.resultButtonB).setVisibility(View.VISIBLE);
+            findViewById(R.id.resultButtonB).bringToFront();
+            displayAll();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            UISearch.searchFromButton(searchInput, actorNotTitle);
+            loadedMovies = uiSearch.getTwo(pagesSkipped);
+
+            return null;
+        }
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_results);
-        try {
-            Logger.initializeContext(getApplicationContext());
-        } catch (Exception e) {
-            Log.e("Ember", e.getMessage());
-        }
         //TODO: Test boundary cases (large + small movie data sets) once UISearch is up and running
-        displayAll();
+        new LoadMoviesTask(this).execute();
     }
 
-    /**
-     * @param searchText The name of the movie being searched.
-     * @param actorNotTitle True if searching by actor, false if searching by title.
-     */
-    protected static void search(String searchText, boolean actorNotTitle){
-        System.out.println("Running search(" + searchText + ", " + actorNotTitle + ")");
-        UISearch myUISearch = new UISearch();
-        UISearch.searchFromButton(searchText, actorNotTitle);
-        loadedMovies = UISearch.getTwo(pagesSkipped);
-        System.out.println("Finished search(" + searchText + ", " + actorNotTitle + ")");
+    public void searchAgainOnClick(View v){
+        startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class));
     }
 
-    public void searchAgainOnClick(View v){ startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class)); }
-
-    public void resultButtonAOnClick(View v) {
-        try {
-            if(loadedMovies[0] != null) {
-                HistoryActivity.addClick(loadedMovies[0]);
-                MoviePageActivity.setCurrentMovie(loadedMovies[0]);
-                MoviePageActivity.setFromHistoryActivity(false);
-                Logger.saveToHistory(loadedMovies[0]);
-                startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
-            }
-        } catch(IOException io) {
-            System.out.println(io.toString());
-        }
+    public void resultButtonAOnClick(View v) throws NullPointerException, IOException{
+        HistoryActivity.addClick(loadedMovies[0]);
+        MoviePageActivity.setCurrentMovie(loadedMovies[0]);
+        MoviePageActivity.setFromHistoryActivity(false);
+        Logger.saveToHistory(loadedMovies[0]);
+        startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
     }
 
-    public void resultButtonBOnClick(View v){
-        try {
-            if(loadedMovies[1] != null) {
-                HistoryActivity.addClick(loadedMovies[1]);
-                MoviePageActivity.setCurrentMovie(loadedMovies[1]);
-                MoviePageActivity.setFromHistoryActivity(false);
-                Logger.saveToHistory(loadedMovies[1]);
-                startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
-            }
-        } catch(IOException io) {
-            System.out.println(io.toString());
-        }
-
+    public void resultButtonBOnClick(View v) throws NullPointerException, IOException{
+        HistoryActivity.addClick(loadedMovies[1]);
+        MoviePageActivity.setCurrentMovie(loadedMovies[1]);
+        MoviePageActivity.setFromHistoryActivity(false);
+        Logger.saveToHistory(loadedMovies[1]);
+        startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
     }
 
     public void filtersOnClick(View v){ startActivity(new Intent(SearchResultsActivity.this, SearchOptionsActivity.class)); }
@@ -105,7 +123,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     }
 
     public void nextOnClick(View v){
-        Movie[] moviesToLoad = UISearch.getTwo(pagesSkipped + 1);
+        Movie[] moviesToLoad = uiSearch.getTwo(pagesSkipped + 1);
         if(moviesToLoad[0] != null){
             pagesSkipped++;
             loadedMovies = moviesToLoad;
@@ -115,7 +133,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     public void prevOnClick(View v){
         if(pagesSkipped > 0){
             pagesSkipped--;
-            loadedMovies = UISearch.getTwo(pagesSkipped);
+            loadedMovies = uiSearch.getTwo(pagesSkipped);
             displayAll();
         }
     }
