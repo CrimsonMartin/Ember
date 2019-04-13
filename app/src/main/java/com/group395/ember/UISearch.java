@@ -81,13 +81,14 @@ public class UISearch {
      * Default search method to make a Movie api call to get some amount of Movies (stores in results and returns).
      * @return List of Movies
      */
-    public List<Movie> search() throws InterruptedException{
+    public List<Movie> search(int MoviesNeeded) throws InterruptedException{
         //results = applyFilters(m.searchFirstPage(String.join(" ", getSearch())));
         //MovieSearch.searchFull(getSearch());
-        while(results.size() < pageNumMoviesReturned){
+        while(results.size() < MoviesNeeded){
             results.add(MovieSearch.results.take());
         }
-        return applyFilters(results);
+        results = applyFilters(results);
+        return results;
     }
 
     public void kill(){
@@ -203,10 +204,9 @@ public class UISearch {
     protected Movie[] getTwo(int pagesSkipped) {
         Movie[] output;
         try{
-            this.search();
-
+            int moviesNeeded = pagesSkipped * 2 + 2;
+            this.search(moviesNeeded);
             output = new Movie[2];
-
             output[0] = results.get(pagesSkipped * 2);
             output[1] = results.get(pagesSkipped * 2 + 1);
         }

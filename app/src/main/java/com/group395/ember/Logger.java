@@ -88,7 +88,7 @@ public class Logger {
             for (String title : movieIDs) {
                 // TODO: getTitle() -> getImdbID()
                 tempSearch.setSearch(title);
-                movies.add(tempSearch.search().get(0));
+                movies.add(tempSearch.search(6).get(0));
             }
         }
 
