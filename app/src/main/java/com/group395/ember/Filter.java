@@ -82,7 +82,6 @@ public class Filter {
                 for (String compare : compareTo) {
                     if (!is)
                         is = keyword.toLowerCase().equals(compare.toLowerCase());
-                    System.out.println("keyword=" + keyword + "\t comp=" + compare);
                 }
             }
         } else {
