@@ -3,7 +3,6 @@ package com.group395.ember;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Protocol for accessing the Movie Database from the GUI of the Ember app.
@@ -16,7 +15,7 @@ public class UISearch {
     private ArrayList<Filter> filters = new ArrayList<>(0);  // Filter list to hold all 3 possible filters.
     private String searchTerms; // The search terms to access the database with
     private List<Movie> results = new ArrayList<>();  // Results from an API call
-    private MovieSearch currentSearch;
+    private Integer pageNumMoviesReturned = 6;
     private Integer FullNumMoviesReturned = 40;
 
     /**
@@ -27,7 +26,6 @@ public class UISearch {
         filters.add(new Filter(FilterType.ACTOR));
         filters.add(new Filter(FilterType.GENRE));
         filters.add(new Filter(FilterType.DIRECTOR));
-        System.out.println("Init UISearch");
     }
 
     /**
@@ -83,12 +81,16 @@ public class UISearch {
      * @return List of Movies
      */
     public List<Movie> search(int MoviesNeeded) throws InterruptedException{
-        while(results.size() < MoviesNeeded && currentSearch.totalResults != 0){
-            Movie current = currentSearch.results.poll(2, TimeUnit.SECONDS);
-            if(current != null)
-                results.add(current);
+        while(results.size() < MoviesNeeded){
+            Movie m = MovieSearch.results.take();
+            if (fitsFilters(m))
+                results.add(m);
         }
         return results;
+    }
+
+    public void kill(){
+        MovieSearch.kill();
     }
 
     /**
@@ -96,9 +98,9 @@ public class UISearch {
      * @return List of Movies
      */
     public List<Movie> searchFull() throws InterruptedException{
-        currentSearch.searchFull(getSearch());
+        MovieSearch.searchFull(getSearch());
         while(results.size() < FullNumMoviesReturned){
-            results.add(currentSearch.results.take());
+            results.add(MovieSearch.results.take());
         }
         return applyFilters(results);
     }
@@ -108,9 +110,9 @@ public class UISearch {
      * @return List of Movies
      */
     public List<Movie> searchByActor() throws InterruptedException{
-        currentSearch.searchByActor(getSearch());
+        MovieSearch.searchByActor(getSearch());
         while(results.size() < FullNumMoviesReturned){
-            results.add(currentSearch.results.take());
+            results.add(MovieSearch.results.take());
         }
         return applyFilters(results);
     }
@@ -151,6 +153,10 @@ public class UISearch {
         }
     }
 
+    public boolean fitsFilters(Movie m) {
+        return filters.get(0).fitsFilter(m) && filters.get(1).fitsFilter(m) && filters.get(2).fitsFilter(m);
+    }
+
     /** Sorts the Movies by checking if they are applicable to each filter.
      * @param rawList is the unfiltered List of Movies to sort
      * @return a filtered List of Movies.
@@ -182,16 +188,17 @@ public class UISearch {
         return filteredList;
     }
 
-    protected void searchFromButton(String input, boolean actorNotTitle) {
-        currentSearch = new MovieSearch();
+    protected static void searchFromButton(String input, boolean actorNotTitle) {
+        System.out.println("Running searchFromButton(" + input + ", " + actorNotTitle + ")");
         try {
             if (actorNotTitle) {
-                currentSearch.searchByActor(input);
+                MovieSearch.searchByActor(input);
             } else {
-                currentSearch.searchFull(input);
+                MovieSearch.searchFull(input);
             }
+            System.out.println("Finished searchFromButton(" + input + ", " + actorNotTitle + ")");
         }catch(Exception e){
-            e.printStackTrace();
+            System.out.println("Caught exception: " + e.toString());
         }
     }
 

@@ -103,24 +103,14 @@ public class HistoryActivity extends AppCompatActivity {
     // TODO for working history on click:
     // load the movies on click...-> @Zach?
     public void loadHistoryOnClick(View v){
-        Log.e("Ember", "YOU'RE AT THE HISTORY LOAD ON CLICK");
         Logger.initializeContext(getApplicationContext());
 
         try {
-
-            Log.e("Ember", "Success 1");
-//            ArrayList<Movie> movies = Logger.pullAllFromHistory();
-            Log.e("Ember", "Success 1.1");
 
             // Movie titles only:
             FileInputStream inputStream = getApplicationContext().openFileInput(Logger.getMovieLog().getName());
 
             ArrayList<String> movieTitles = Logger.readByLine(inputStream);
-            Log.e("Ember", "Success 2");
-
-            for (String m : movieTitles) {
-                Log.e("EmberHISTORY", m.toString());
-            }
 
             MovieLoader loader = new MovieLoader();
             loader.loadMoviebyTitle(movieTitles);
@@ -130,9 +120,7 @@ public class HistoryActivity extends AppCompatActivity {
                 recentClicks[pagesSkipped][i] = loader.LoadedMovies.take();
             }
             displayAll();
-
-//            display((Button) findViewById(R.id.tileAL), loader.LoadedMovies.take());
-//            display((Button) findViewById(R.id.tileAR), loader.LoadedMovies.take());
+            Logger.trimCache(movieTitles.subList(movieTitles.size() - 8, movieTitles.size()));
 
         } catch (FileNotFoundException e) {
             Log.e("Ember", "File not found in loadhistory while pulling.");
