@@ -31,18 +31,10 @@ public class MovieSearch {
 
     private static MovieLoader loader = new MovieLoader();
     private static ExecutorService executor = Executors.newSingleThreadExecutor();
-
-    public static String query = "";
     private static Integer MAXNUMMOVIES = 100;
     public BlockingQueue<Movie> results = new ArrayBlockingQueue<>(MAXNUMMOVIES);
-    public static ArrayList<Movie> toLoad;
-    //public static BlockingQueue<Movie> loadedResults = new ArrayBlockingQueue<>(MAXNUMMOVIES);
-    public static int totalResults = 0;
-    public static int pages = 0;
-    public static int currentPage = 0;
-    public static boolean running = false;
-
-    //private static SearchFirstPageThread firstPage = new SearchFirstPageThread();
+    public int totalResults = -1;
+    public int pages = -1;
 
 
     private static BufferedReader reader = null;
@@ -60,8 +52,6 @@ public class MovieSearch {
 
         @Override
         public void run() {
-            running = true;
-
             PersonResults personResults = null;
             MoviesByPersonResults movies = null;
             List<Future<Movie>> loaded = new ArrayList<>();
@@ -110,9 +100,7 @@ public class MovieSearch {
         }
 
         @Override
-        public void run() {
-            running = true;
-
+        public void run(){
             OmdbSearchResults searchResults = null;
             List<Future<Movie>> loaded = new ArrayList<>();
 
@@ -125,21 +113,20 @@ public class MovieSearch {
                 con.setRequestMethod("GET");
                 reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
                 searchResults = gson.fromJson(reader, OmdbSearchResults.class);
-                loaded.addAll(loader.loadMovies(searchResults.getResults()));
                 reader.close();
             } catch (Exception e){
                 e.printStackTrace();
             }
-
-            Objects.requireNonNull(searchResults);
-
-            pages = searchResults.getTotal_pages();
-            totalResults = searchResults.getNumberofResults();
-
+            if(searchResults.getNumberofResults()>0) {
+                loaded.addAll(loader.loadMovies(searchResults.getResults()));
+                pages = searchResults.getTotal_pages();
+                totalResults = searchResults.getNumberofResults();
+            }
+            else{
+                pages = 1;
+                totalResults = 0;
+            }
             pages = pages > 10 ? 10 : pages;
-
-            List<Future<Movie>> loaded2;
-
             try {
                 for (int p = 2; p < pages; p++) {
                     Gson gson = new Gson();
@@ -162,9 +149,6 @@ public class MovieSearch {
                     e.printStackTrace();
                 }
             }
-
-            running = false;
-
         }
     }
 
@@ -281,6 +265,13 @@ public class MovieSearch {
 
     public static String tmdbMoviesByPerson(Integer id) {
         return tmdbMoviesByPersonUrl + id + tmdbMovieCredits + tmdbApiKey + tmdbSettings;
+    }
+
+    public class NoResultsException extends Exception{
+        public NoResultsException()
+        {
+            super("No Search results returned");
+        }
     }
 }
 

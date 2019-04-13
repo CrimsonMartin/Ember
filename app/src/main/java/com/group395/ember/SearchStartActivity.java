@@ -46,6 +46,7 @@ public class SearchStartActivity extends AppCompatActivity {
             Intent intent = new Intent(SearchStartActivity.this, SearchResultsActivity.class);
             intent.putExtra("searchInput", searchInput);
             intent.putExtra("actorNotTitle", actorNotTitle);
+            intent.putExtra("newSearch", true);
             startActivity(intent);
 
         }
