@@ -67,5 +67,9 @@ public class MoviePageActivity extends AppCompatActivity {
             startActivity(new Intent(MoviePageActivity.this, SearchResultsActivity.class));
         }
     }
-    public void searchAgainOnClick(View v){ startActivity(new Intent(MoviePageActivity.this, SearchStartActivity.class)); }
+    public void searchAgainOnClick(View v){
+        MovieSearch.kill();
+        UISearch search = new UISearch();
+        search.resetResults();
+        startActivity(new Intent(MoviePageActivity.this, SearchStartActivity.class)); }
 }
