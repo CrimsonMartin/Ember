@@ -9,7 +9,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -106,16 +105,14 @@ public class Logger {
                 tempSearch.setSearch(title);
                 List<Movie> ms = tempSearch.search(6);
 
-                TimeUnit.SECONDS.sleep(5);
+//                TimeUnit.SECONDS.sleep(5);
 
                 movies.add(ms.get(0));
-//                movies.add(tempSearch.search(6).get(0));
             }
         }
 
         return movies;
     }
-
 
 
     /**

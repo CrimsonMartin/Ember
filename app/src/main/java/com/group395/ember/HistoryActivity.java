@@ -98,8 +98,26 @@ public class HistoryActivity extends AppCompatActivity {
         //startActivity(new Intent(HistoryActivity.this, MoviePageActivity.class));
     }
 
+    // TODO for working history on click:
+    // load the movies on click...-> @Zach?
     public void loadHistoryOnClick(View v){
+        Logger.initializeContext(getApplicationContext());
 
+        try {
+            ArrayList<Movie> movies = Logger.pullAllFromHistory();
+
+            for (Movie m : movies) {
+                ;
+                // Add to tiles...
+            }
+
+        } catch (FileNotFoundException e) {
+            Log.e("Ember", "File not found in loadhistory while pulling.");
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            Log.e("Ember", "Interrupt e in loadhistory while pulling.");
+            e.printStackTrace();
+        }
     }
 
     protected static void addClick(Movie clickedMovie) {
