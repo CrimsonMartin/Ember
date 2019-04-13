@@ -39,8 +39,8 @@ public class MovieSearchTest {
 
     @Test
     public void search()throws InterruptedException{
-        ArrayList<Movie> results = new ArrayList<>();
-        String query = "Star";
+        List<Movie> results = new ArrayList<>();
+        String query = "star";
         System.out.println("** By Movie **");
         long start = System.nanoTime();
         MovieSearch.searchFull(query);
