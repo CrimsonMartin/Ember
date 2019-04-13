@@ -108,7 +108,7 @@ public class Logger {
                 TimeUnit.SECONDS.sleep(5);
 
                 movies.add(ms.get(0));
-//                movies.add(tempSearch.search().get(0));
+//                movies.add(tempSearch.search(6).get(0));
             }
         }
 

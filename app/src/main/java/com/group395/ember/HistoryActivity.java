@@ -13,11 +13,12 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-
 public class HistoryActivity extends AppCompatActivity {
 
     //Specifies whether the app has just started
     private boolean startUp = true;
+    public static final boolean searchWorks = true;
+    public static final boolean loadWorks = false;
     private static Movie[][] recentClicks = new Movie[5][8];
     //Specifies how many sets of 8 Movies have been moved past by the "next" button.
     private int pagesSkipped = 0;
@@ -32,14 +33,8 @@ public class HistoryActivity extends AppCompatActivity {
             Fresco.initialize(this);
         }
         try {
-            if (startUp) {
-//                load();
-                ArrayList<Movie> loadList = Logger.pullAllFromHistory();
-                TimeUnit.SECONDS.sleep(10);
-                System.out.println(loadList.size());
-                for (Movie m : loadList) {
-                    System.out.println(m);
-                }
+            if (startUp && loadWorks) {
+                load();
             }
         } catch(FileNotFoundException e) {
             Log.e("Ember", e.getMessage());
@@ -54,7 +49,6 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     public void searchButtonOnClick(View v){ startActivity(new Intent(HistoryActivity.this, SearchStartActivity.class)); }
-
 
     public void tileALOnClick(View v) { tileOnClick(0); }
     public void tileAROnClick(View v) { tileOnClick(1); }
@@ -84,22 +78,26 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     private void tileOnClick(int whichButton){
-        MoviePageActivity.setCurrentMovie(recentClicks[pagesSkipped][whichButton]);
-        MoviePageActivity.setFromHistoryActivity(true);
-        startActivity(new Intent(HistoryActivity.this, MoviePageActivity.class));
+        if(recentClicks[pagesSkipped][whichButton] != null) {
+            MoviePageActivity.setCurrentMovie(recentClicks[pagesSkipped][whichButton]);
+            MoviePageActivity.setFromHistoryActivity(true);
+            startActivity(new Intent(HistoryActivity.this, MoviePageActivity.class));
+        }
     }
 
     public void testJamOnClick(View v){
         HistoryActivity.addClick(SearchResultsActivity.exampleMovie);
         MoviePageActivity.setCurrentMovie(SearchResultsActivity.exampleMovie);
-        MoviePageActivity.setFromHistoryActivity(false);
+        MoviePageActivity.setFromHistoryActivity(true);
         try {
             //logger.saveToHistory(SearchResultsActivity.exampleMovie);
         }catch(Exception e){
             System.out.println(e.toString());
         }
-        startActivity(new Intent(HistoryActivity.this, MoviePageActivity.class));
+        displayAll();
+        //startActivity(new Intent(HistoryActivity.this, MoviePageActivity.class));
     }
+
     public void loadHistoryOnClick(View v){
 
     }
@@ -125,6 +123,7 @@ public class HistoryActivity extends AppCompatActivity {
                 }
             }
             recentClicks = tempRecentClicks;
+            firstEmptyArray = recentClicks.length - 1;
         }
         //If the entire array is empty, insert clickedMovie into the first slot.
         if ((firstEmptyArray == 0) && (firstEmptyIndex == 0)) {
@@ -135,14 +134,15 @@ public class HistoryActivity extends AppCompatActivity {
             //If all subarrays are either full or empty, copy the last entry in the last row to a new row before proceeding.
             if (firstEmptyIndex == 0) {
                 recentClicks[firstEmptyArray][firstEmptyIndex] = recentClicks[firstEmptyArray - 1][7];
-            }
-            for (int j = 7; j > 0; j--) {
-                recentClicks[i][j] = recentClicks[i][j - 1];
-            }
-            if (i > 0) {
-                recentClicks[i][0] = recentClicks[i - 1][7];
-            } else {
-                recentClicks[0][0] = clickedMovie;
+            }else {
+                for (int j = 7; j > 0; j--) {
+                    recentClicks[i][j] = recentClicks[i][j - 1];
+                }
+                if (i > 0) {
+                    recentClicks[i][0] = recentClicks[i - 1][7];
+                } else {
+                    recentClicks[0][0] = clickedMovie;
+                }
             }
         }
     }

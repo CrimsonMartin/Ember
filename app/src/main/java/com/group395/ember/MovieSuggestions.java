@@ -1,5 +1,7 @@
 package com.group395.ember;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -9,72 +11,99 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class MovieSuggestions {
 
     private static String tmdbApiKey = "2798eab352dd4b7d99e4a0f825802ff5";
-    private static String tmdbUrl = "https://api.themoviedb.org/3/movie/";
+    private static String tmdbUrl = "https://api.themoviedb.org/3/";
+    private static String tmdbSearchUrl = "search/movie?api_key=";
     private static String tmdbSuggestionUrl = "recommendations?api_key=";
     private static String tmdbSettings = "&language=en-US&include_adult=false&page=1";
 
     private static int MAXNUMMOVIES = 1000;
     private static int MAXNUMTHREADS = 8;
+    private static MovieLoader loader = new MovieLoader();
     private static BlockingQueue<String> movietitles = new ArrayBlockingQueue<>(MAXNUMMOVIES);
     private static ExecutorService executor = Executors.newFixedThreadPool(MAXNUMTHREADS);
-    private static ThreadPoolExecutor pool = (ThreadPoolExecutor) executor;
-    private static boolean running = false;
-    private static String exception = "";
-
     private static BufferedReader reader = null;
     public static Movie currentMovie;
-    public static BlockingQueue<Movie> loadedSuggestions = new ArrayBlockingQueue<>(MAXNUMMOVIES);
-    public static ArrayList<Movie> results = new ArrayList<Movie>();
+    public static BlockingQueue<Movie> results = new ArrayBlockingQueue<>(MAXNUMMOVIES);
     public int totalResults = 0;
     public int currentPage = 0;
 
 
     // Returns a list of movies
-    public static ArrayList<Movie> getSuggestions(Movie movie){
+    public static void getSuggestions(Movie movie){
         currentMovie = movie;
-        executor.submit(new SuggestionsThread());
-        return results;
+        List<Future<Movie>> loaded = new ArrayList<>();
+        try {
+            Integer id = getTmdbId(currentMovie.getTitle());
+            Gson gson = new Gson();
+            URL obj = new URL(tmdbSuggestions(id));
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            con.setRequestMethod("GET");
+            reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            SuggestionResults newResults = gson.fromJson(reader, SuggestionResults.class);
+            loaded.addAll(loader.loadMovies(newResults.getResults()));
+        }
+        catch (MalformedURLException e){
+            System.out.println("Title search failed: " + e.getMessage());
+            e.printStackTrace();
+            close();
+        } catch (IOException e) {
+            System.out.println("INVALID URL FORMAT");
+            e.printStackTrace();
+            close();
+        }
+        for (int i=0; i<loaded.size(); i++) {
+            try {
+                results.add(loaded.get(i).get(5, TimeUnit.SECONDS));
+            } catch (Exception e) {
+                System.out.println("Current Movie: "+i);
+                e.printStackTrace();
+            }
+        }
     }
 
-    private static class SuggestionsThread implements Runnable {
+    public static void clear(){
+        results.clear();
+    }
 
-        @Override
-        public void run(){
-            running = true;
-            try {
-                Integer id = currentMovie.getTmdbID();
-                Gson gson = new Gson();
-                URL obj = new URL(tmdbSuggestions(id));
-                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-                con.setRequestMethod("GET");
-                reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                SuggestionResults newResults = gson.fromJson(reader, SuggestionResults.class);
-                results.addAll(newResults.getResults());
+    //This is the class Gson parses to return the search results
+    private class TmdbSearchResults {
+        Integer page;
+        Integer total_results;
+        Integer total_pages;
+        ArrayList<TmdbMovie> results;
+
+        public String toString() {
+            return "Page: " + page + "Total Results: " + total_results + ", Results: " + results.get(0).toString();
+        }
+
+        public Integer getTotal_pages() {
+            return total_pages;
+        }
+
+        public Integer getNumberofResults() {
+            return total_results;
+        }
+
+        public ArrayList<Movie> getResults() {
+            ArrayList<Movie> searchResults = new ArrayList<Movie>();
+            for (TmdbMovie movie : results) {
+                searchResults.add(movie.toMovie());
             }
-            catch (MalformedURLException e){
-                System.out.println("Title search failed: " + e.getMessage());
-                e.printStackTrace();
-                exception = e.toString();
-                close();
-            } catch (IOException e) {
-                System.out.println("INVALID URL FORMAT");
-                e.printStackTrace();
-                exception = e.toString();
-                close();
-            }
-            finally {
-                running = false;
-            }
+            return searchResults;
         }
     }
 
@@ -95,8 +124,31 @@ public class MovieSuggestions {
         }
     }
 
+    public static Integer getTmdbId(String title){
+        try {
+            Gson gson = new Gson();
+            URL obj = new URL(tmdbSearch(title, 1));
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            con.setRequestMethod("GET");
+            reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            TmdbSearchResults newResults = gson.fromJson(reader, TmdbSearchResults.class);
+            return newResults.getResults().get(0).getTmdbID();
+        }catch(Exception e){
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    public static String tmdbSearch(String title, Integer page) {
+        title = title.replaceAll(" ", "+");
+        if (title.length() > 0)
+            return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings + "&page=" + page + "&query=" + title;
+        else
+            return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings + "&page=" + page;
+    }
+
     public static String tmdbSuggestions(Integer id){
-        return tmdbUrl + id +"/" + tmdbSuggestionUrl + tmdbApiKey + tmdbSettings;
+        return tmdbUrl + "movie/"+ id +"/" + tmdbSuggestionUrl + tmdbApiKey + tmdbSettings;
     }
 
     static boolean close(){
