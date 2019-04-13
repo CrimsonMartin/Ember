@@ -100,8 +100,6 @@ public class HistoryActivity extends AppCompatActivity {
         //startActivity(new Intent(HistoryActivity.this, MoviePageActivity.class));
     }
 
-    // TODO for working history on click:
-    // load the movies on click...-> @Zach?
     public void loadHistoryOnClick(View v){
         Logger.initializeContext(getApplicationContext());
 
