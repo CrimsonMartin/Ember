@@ -152,7 +152,8 @@ public class Logger {
     }
 
     /**
-     *
+     * Trims the cache to only contain the List of Strings provided.
+     * @param lastReading is the List to keep.
      */
     protected static void trimCache(List<String> lastReading) {
         context.deleteFile(getMovieLog().getName());
