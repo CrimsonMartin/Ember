@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import com.facebook.drawee.backends.pipeline.Fresco;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -22,6 +23,7 @@ public class HistoryActivity extends AppCompatActivity {
     private static Movie[][] recentClicks = new Movie[5][8];
     //Specifies how many sets of 8 Movies have been moved past by the "next" button.
     private int pagesSkipped = 0;
+    private static UISearch uiSearch = new UISearch();
    // private Logger logger = new Logger(getApplicationContext());
 
     @Override
@@ -99,7 +101,32 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     public void loadHistoryOnClick(View v){
+        Logger.initializeContext(getApplicationContext());
 
+        try {
+
+            // Movie titles only:
+            FileInputStream inputStream = getApplicationContext().openFileInput(Logger.getMovieLog().getName());
+
+            ArrayList<String> movieTitles = Logger.readByLine(inputStream);
+
+            MovieLoader loader = new MovieLoader();
+            loader.loadMoviebyTitle(movieTitles);
+
+            // Loop take to buttons
+            for (int i = 0; i < Math.min(movieTitles.size(), 8); i ++) {
+                recentClicks[pagesSkipped][i] = loader.LoadedMovies.take();
+            }
+            displayAll();
+            Logger.trimCache(movieTitles.subList(movieTitles.size() - 8, movieTitles.size()));
+
+        } catch (FileNotFoundException e) {
+            Log.e("Ember", "File not found in loadhistory while pulling.");
+            e.printStackTrace();
+        } //catch (InterruptedException e) {
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     protected static void addClick(Movie clickedMovie) {

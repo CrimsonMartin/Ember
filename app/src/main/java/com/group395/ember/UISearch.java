@@ -26,7 +26,6 @@ public class UISearch {
         filters.add(new Filter(FilterType.ACTOR));
         filters.add(new Filter(FilterType.GENRE));
         filters.add(new Filter(FilterType.DIRECTOR));
-        System.out.println("Init UISearch");
     }
 
     /**
@@ -83,8 +82,9 @@ public class UISearch {
      */
     public List<Movie> search(int MoviesNeeded) throws InterruptedException{
         while(results.size() < MoviesNeeded){
-            results.add(currentSearch.results.take());
-
+            Movie m = MovieSearch.results.take();
+            if (fitsFilters(m))
+                results.add(m);
         }
         return results;
     }
@@ -147,6 +147,10 @@ public class UISearch {
             System.out.println("OUT OF RANGE - RETURNING @ 0");
             return null;
         }
+    }
+
+    public boolean fitsFilters(Movie m) {
+        return filters.get(0).fitsFilter(m) && filters.get(1).fitsFilter(m) && filters.get(2).fitsFilter(m);
     }
 
     /** Sorts the Movies by checking if they are applicable to each filter.

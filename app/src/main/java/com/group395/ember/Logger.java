@@ -9,7 +9,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -50,6 +49,8 @@ public class Logger {
 
     protected static File getMovieLog() { return movieLog; }
 
+    protected static void setMovieLog(File newLog) { movieLog = newLog; }
+
     protected static String[] getFileList() { return context.fileList(); }
 
     /**
@@ -71,7 +72,7 @@ public class Logger {
      * Saves a movie to the movie file in the cache.
      * @param movie to save to history
      */
-    protected static void saveToHistory(Movie movie) throws IOException {
+    protected static void saveToHistory(Movie movie) {
         try {
             // TODO: getTitle() -> getImdbID()
 //        if (this.write(movie.getImdbID()))
@@ -80,9 +81,21 @@ public class Logger {
             FileOutputStream outputStream = context.openFileOutput(getMovieLog().getName(), Context.MODE_PRIVATE | Context.MODE_APPEND);
             outputStream.write((movie.getTitle() + "\n").getBytes());
             outputStream.close();
-        }catch(Exception e){
+        } catch (Exception e) {
             Log.e("Ember", e.getMessage());
             logException(new Exception(movie.getTitle() + " Failed to store write."));
+            System.out.println(e.toString());
+        }
+    }
+
+    protected static void saveToHistory(String title) {
+        try {
+            FileOutputStream outputStream = context.openFileOutput(getMovieLog().getName(), Context.MODE_PRIVATE | Context.MODE_APPEND);
+            outputStream.write((title + "\n").getBytes());
+            outputStream.close();
+        } catch(Exception e) {
+            Log.e("Ember", e.getMessage());
+            logException(new Exception(title + " Failed to store write."));
             System.out.println(e.toString());
         }
     }
@@ -102,20 +115,18 @@ public class Logger {
         if (movieIDs.size() != 0) {
             // Gets each movie from the DB again
             for (String title : movieIDs) {
+                Log.e("Ember", "Success  for @hist");
                 // TODO: getTitle() -> getImdbID()
                 tempSearch.setSearch(title);
                 List<Movie> ms = tempSearch.search(6);
 
-                TimeUnit.SECONDS.sleep(5);
-
                 movies.add(ms.get(0));
-//                movies.add(tempSearch.search(6).get(0));
+                Log.e("Ember", ms.get(0).getTitle());
             }
         }
 
         return movies;
     }
-
 
 
     /**
@@ -139,6 +150,21 @@ public class Logger {
             return null;
         }
     }
+
+    /**
+     * Trims the cache to only contain the List of Strings provided.
+     * @param lastReading is the List to keep.
+     */
+    protected static void trimCache(List<String> lastReading) {
+        context.deleteFile(getMovieLog().getName());
+        setMovieLog(new File(cache, "movies.txt"));
+        // If the size of the last reading is greater than the limit, clean up the cache by trimming the list.
+        for (int i = lastReading.size(); i > 0; i--) {
+            // Need to delete it first...
+            saveToHistory(lastReading.get(lastReading.size() - i));
+        }
+    }
+
 
 
 }
