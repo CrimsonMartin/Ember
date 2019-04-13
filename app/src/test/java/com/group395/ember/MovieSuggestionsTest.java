@@ -6,7 +6,6 @@ public class MovieSuggestionsTest {
 
     private Movie m1;
     private Movie m2;
-    private MovieList ml;
 
 
     @Before
