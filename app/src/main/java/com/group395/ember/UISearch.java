@@ -84,7 +84,7 @@ public class UISearch {
         while(results.size() < MoviesNeeded){
             Movie m = MovieSearch.results.take();
             if (fitsFilters(m))
-                results.add(MovieSearch.results.take());
+                results.add(m);
         }
         return results;
     }
