@@ -27,7 +27,6 @@ public class UISearch {
         filters.add(new Filter(FilterType.ACTOR));
         filters.add(new Filter(FilterType.GENRE));
         filters.add(new Filter(FilterType.DIRECTOR));
-        System.out.println("Init UISearch");
     }
 
     /**
@@ -86,6 +85,8 @@ public class UISearch {
         while(results.size() < MoviesNeeded && currentSearch.totalResults != 0){
             Movie current = currentSearch.results.poll(2, TimeUnit.SECONDS);
             if(current != null)
+                results.add(current);
+            if (fitsFilters(current))
                 results.add(current);
         }
         return results;
@@ -149,6 +150,10 @@ public class UISearch {
             System.out.println("OUT OF RANGE - RETURNING @ 0");
             return null;
         }
+    }
+
+    public boolean fitsFilters(Movie m) {
+        return filters.get(0).fitsFilter(m) && filters.get(1).fitsFilter(m) && filters.get(2).fitsFilter(m);
     }
 
     /** Sorts the Movies by checking if they are applicable to each filter.

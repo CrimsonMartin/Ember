@@ -77,12 +77,15 @@ public class Filter {
         }
         boolean is = false;
 
-        for (String keyword : getKeywords()) {
-            for (String compare : compareTo) {
-                if (!is)
-                    is = keyword.toLowerCase().equals(compare.toLowerCase());
-                System.out.println("keyword=" + keyword + "\t comp=" + compare);
+        if (getKeywords().size() > 0) {
+            for (String keyword : getKeywords()) {
+                for (String compare : compareTo) {
+                    if (!is)
+                        is = keyword.toLowerCase().equals(compare.toLowerCase());
+                }
             }
+        } else {
+            is = true;
         }
 
 
