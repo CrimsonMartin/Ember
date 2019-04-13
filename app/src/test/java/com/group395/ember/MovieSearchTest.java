@@ -10,8 +10,7 @@ public class MovieSearchTest {
 
     private Movie m1;
     private Movie m2;
-    private MovieList ml;
-    private MovieSearch m = new MovieSearch();
+    private MovieSearch m;
     private int pageNumMoviesReturned;
 
 

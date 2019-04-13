@@ -16,6 +16,7 @@ public class UISearch {
     private ArrayList<Filter> filters = new ArrayList<>(0);  // Filter list to hold all 3 possible filters.
     private String searchTerms; // The search terms to access the database with
     private List<Movie> results = new ArrayList<>();  // Results from an API call
+    private Integer pageNumMoviesReturned = 6;
     private MovieSearch currentSearch;
     private Integer FullNumMoviesReturned = 40;
 
