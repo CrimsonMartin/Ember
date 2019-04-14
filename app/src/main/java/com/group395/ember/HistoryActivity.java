@@ -12,8 +12,6 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 public class HistoryActivity extends AppCompatActivity {
@@ -22,7 +20,7 @@ public class HistoryActivity extends AppCompatActivity {
     private boolean startUp = true;
     public static final boolean searchWorks = true;
     public static final boolean loadWorks = false;
-    private static Movie[][] recentClicks = new Movie[5][8];
+    private static String[][] recentClicks = new String[5][8];
     //Specifies how many sets of 8 Movies have been moved past by the "next" button.
     private int pagesSkipped = 0;
     private static UISearch uiSearch = new UISearch();
@@ -81,15 +79,32 @@ public class HistoryActivity extends AppCompatActivity {
         pageNumber.setText(getApplicationContext().getString(R.string.page_number, pagesSkipped + 1));
     }
 
+    //TODO rewrite into this to just take the button that was pressed
     private void tileOnClick(int whichButton){
         if(recentClicks[pagesSkipped][whichButton] != null) {
+            Intent i = new Intent(HistoryActivity.this, MoviePageActivity.class);
+            i.putExtra("currentMovie", )
+
             MoviePageActivity.setCurrentMovie(recentClicks[pagesSkipped][whichButton]);
             MoviePageActivity.setFromHistoryActivity(true);
             startActivity(new Intent(HistoryActivity.this, MoviePageActivity.class));
         }
     }
 
-    public void loadHistoryOnClick(View v) throws ExecutionException {
+    public void testJamOnClick(View v){
+        HistoryActivity.addClick(SearchResultsActivity.exampleMovie);
+        MoviePageActivity.setCurrentMovie(SearchResultsActivity.exampleMovie);
+        MoviePageActivity.setFromHistoryActivity(true);
+        try {
+            //logger.saveToHistory(SearchResultsActivity.exampleMovie);
+        }catch(Exception e){
+            System.out.println(e.toString());
+        }
+        displayAll();
+        //startActivity(new Intent(HistoryActivity.this, MoviePageActivity.class));
+    }
+
+    public void loadHistoryOnClick(View v){
         Logger.initializeContext(getApplicationContext());
 
         try {
@@ -99,12 +114,13 @@ public class HistoryActivity extends AppCompatActivity {
 
             ArrayList<String> movieTitles = Logger.readByLine(inputStream);
 
-            MovieLoader loader = new MovieLoader();
-            loader.loadMoviesByTitle(movieTitles);
+            //Disabling this because we don't want to actually load the movies behind the scenes of the buttons
+            //MovieLoader loader = new MovieLoader();
+            //loader.loadMoviesByTitle(movieTitles);
 
             // Loop take to buttons
             for (int i = 0; i < Math.min(movieTitles.size(), 8); i ++) {
-                recentClicks[pagesSkipped][i] = loader.loadMovieByTitle(movieTitles.get(i)).get();
+                recentClicks[pagesSkipped][i] = movieTitles.get(i);
             }
             displayAll();
             Logger.trimCache(movieTitles.subList(movieTitles.size() - 8, movieTitles.size()));
@@ -112,12 +128,10 @@ public class HistoryActivity extends AppCompatActivity {
         } catch (FileNotFoundException e) {
             Log.e("Ember", "File not found in loadhistory while pulling.");
             e.printStackTrace();
-        } //catch (InterruptedException e) {
-        catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 
+    //rewrite to a list and just append
     protected static void addClick(Movie clickedMovie) {
         int firstEmptyArray = -1;
         int firstEmptyIndex = -1;

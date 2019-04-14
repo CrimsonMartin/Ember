@@ -2,11 +2,14 @@ package com.group395.ember;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+
 import com.facebook.drawee.view.SimpleDraweeView;
+
+import java.util.concurrent.Future;
 
 public class MoviePageActivity extends AppCompatActivity {
 
@@ -23,9 +26,21 @@ public class MoviePageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Future<Movie> currentMovieFuture = null;
+
+        if (currentMovie.isInvalid()){
+            MovieLoader ml = new MovieLoader();
+            currentMovieFuture = ml.loadMovie(currentMovie);
+            currentMovie = currentMovieFuture.get();
+        }
+
         setContentView(R.layout.activity_movie_page);
         displayAll();
     }
+
+    //TODO async activity that loads the movie and turns on the display when it's loaded
+
+
 
     private void displayAll(){
         Button tempDisp = findViewById(R.id.titleDisp);
