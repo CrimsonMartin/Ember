@@ -89,19 +89,6 @@ public class HistoryActivity extends AppCompatActivity {
         }
     }
 
-    public void testJamOnClick(View v){
-        HistoryActivity.addClick(SearchResultsActivity.exampleMovie);
-        MoviePageActivity.setCurrentMovie(SearchResultsActivity.exampleMovie);
-        MoviePageActivity.setFromHistoryActivity(true);
-        try {
-            //logger.saveToHistory(SearchResultsActivity.exampleMovie);
-        }catch(Exception e){
-            System.out.println(e.toString());
-        }
-        displayAll();
-        //startActivity(new Intent(HistoryActivity.this, MoviePageActivity.class));
-    }
-
     public void loadHistoryOnClick(View v) throws ExecutionException {
         Logger.initializeContext(getApplicationContext());
 
