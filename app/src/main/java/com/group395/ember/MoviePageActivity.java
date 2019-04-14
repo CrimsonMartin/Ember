@@ -66,5 +66,9 @@ public class MoviePageActivity extends AppCompatActivity {
         else{ startActivity(new Intent(MoviePageActivity.this, SearchResultsActivity.class)); }
     }
 
-    public void suggestionsOnClick(View v){ startActivity(new Intent(MoviePageActivity.this, SuggestionsActivity.class)); }
+    public void suggestionsOnClick(View v){
+        Intent suggestionsIntent = new Intent(MoviePageActivity.this, SuggestionsActivity.class);
+        suggestionsIntent.putExtra("title", currentMovie.getTitle());
+        startActivity(suggestionsIntent);
+    }
 }

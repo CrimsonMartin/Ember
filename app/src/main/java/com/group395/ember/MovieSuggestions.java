@@ -31,23 +31,16 @@ public class MovieSuggestions {
     private static String tmdbSettings = "&language=en-US&include_adult=false&page=1";
 
     private static int MAXNUMMOVIES = 1000;
-    private static int MAXNUMTHREADS = 8;
     private static MovieLoader loader = new MovieLoader();
-    private static BlockingQueue<String> movietitles = new ArrayBlockingQueue<>(MAXNUMMOVIES);
-    private static ExecutorService executor = Executors.newFixedThreadPool(MAXNUMTHREADS);
     private static BufferedReader reader = null;
-    public static Movie currentMovie;
     public static BlockingQueue<Movie> results = new ArrayBlockingQueue<>(MAXNUMMOVIES);
-    public int totalResults = 0;
-    public int currentPage = 0;
 
 
     // Returns a list of movies
-    public static void setSuggestions(Movie movie){
-        currentMovie = movie;
+    public static void setSuggestions(String title){
         List<Future<Movie>> loaded = new ArrayList<>();
         try {
-            Integer id = getTmdbId(currentMovie.getTitle());
+            Integer id = getTmdbId(title);
             Gson gson = new Gson();
             URL obj = new URL(tmdbSuggestions(id));
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
