@@ -80,12 +80,13 @@ public class UISearch {
 
     /**
      * Default search method to make a Movie api call to get some amount of Movies (stores in results and returns).
+     * @param MoviesNeeded is the number of Movies Needed to operate
      * @return List of Movies
      */
     public List<Movie> search(int MoviesNeeded) throws InterruptedException{
         while(results.size() < MoviesNeeded && currentSearch.totalResults != 0 && !currentSearch.isExhausted()){
             Movie current = currentSearch.results.poll(2, TimeUnit.SECONDS);
-            if(current != null)
+            if(current != null && fitsFilters(current))
                 results.add(current);
         }
         return results;
@@ -150,13 +151,14 @@ public class UISearch {
         return results;
     }
 
+    // Needs to be redone to actually use the filters.
     protected void searchFromButton(String input, boolean actorNotTitle) {
         currentSearch = new MovieSearch();
         try {
             if (actorNotTitle) {
-                currentSearch.searchByActor(input);
+                currentSearch.searchByActor(searchTerms);
             } else {
-                currentSearch.searchFull(input);
+                currentSearch.searchFull(searchTerms);
             }
         }catch(Exception e){
             e.printStackTrace();
