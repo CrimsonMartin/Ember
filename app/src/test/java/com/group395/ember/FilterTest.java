@@ -57,8 +57,8 @@ public class FilterTest {
 
         TimeUnit.SECONDS.sleep(5);
 
-        ml.loadMoviebyTitle(m.stream().findFirst().orElse(null).getTitle());
-        Movie result = ml.LoadedMovies.take();
+//        ml.loadMoviebyTitle(m.stream().findFirst().orElse(null).getTitle());
+//        Movie result = ml.LoadedMovies.take();
         Filter f1 = new Filter(FilterType.GENRE);
         f1.add("Comedy");
         assertThat(f1.fitsFilter(result), is(true));
