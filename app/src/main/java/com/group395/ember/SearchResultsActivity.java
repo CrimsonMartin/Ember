@@ -132,7 +132,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     private void displayAll(){
         display(loadedMovies[0], (TextView) findViewById(R.id.resultTitleA), (TextView) findViewById(R.id.resultActorsA), (TextView) findViewById(R.id.resultDirectorA), (TextView) findViewById(R.id.resultPlotA));
         display(loadedMovies[1], (TextView) findViewById(R.id.resultTitleB), (TextView) findViewById(R.id.resultActorsB), (TextView) findViewById(R.id.resultDirectorB), (TextView) findViewById(R.id.resultPlotB));
-        TextView pageNumber = findViewById(R.id.pageNumber);
+        TextView pageNumber = findViewById(R.id.pageNumberSRA);
         pageNumber.setText(getApplicationContext().getString(R.string.page_number, pagesSkipped + 1));
     }
 

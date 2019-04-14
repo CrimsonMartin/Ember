@@ -47,20 +47,21 @@ public class MoviePageActivity extends AppCompatActivity {
         tempDisp.setText(currentMovie.getTitle());
         tempDisp = findViewById(R.id.yearDisp);
         if(currentMovie.getYear() > 0) { tempDisp.setText(currentMovie.getYear().toString()); }
-        else{ tempDisp.setText("No year found"); }
+        else{ tempDisp.setText(R.string.no_year); }
         tempDisp = findViewById(R.id.genreDisp);
         if(currentMovie.getGenre().size() > 0){ tempDisp.setText(getApplicationContext().getString(R.string.genre_list, SearchResultsActivity.stripBrackets(currentMovie.getGenre().toString()))); }
-        else{ tempDisp.setText("No genres found");}
+        else{ tempDisp.setText(R.string.no_genres);}
         tempDisp = findViewById(R.id.runtimeDisp);
         tempDisp.setText(currentMovie.getRuntime());
         tempDisp = findViewById(R.id.actorDisp);
         if(currentMovie.getActors().size() > 0){ tempDisp.setText(getApplicationContext().getString(R.string.actor_list, SearchResultsActivity.stripBrackets(currentMovie.getActors().toString()))); }
-        else{ tempDisp.setText("No actors found"); }
+        else{ tempDisp.setText(R.string.no_actors); }
         tempDisp = findViewById(R.id.writerDisp);
         if(currentMovie.getWriter().size() > 0){ tempDisp.setText(getApplicationContext().getString(R.string.writer_list, SearchResultsActivity.stripBrackets(currentMovie.getWriter().toString()))); }
-        else{ tempDisp.setText("No writers found"); }
+        else{ tempDisp.setText(R.string.no_writers); }
         tempDisp = findViewById(R.id.directorDisp);
-        tempDisp.setText(getApplicationContext().getString(R.string.director_list, (currentMovie.getDirector())));
+        if(currentMovie.getDirector() != null){ tempDisp.setText(getApplicationContext().getString(R.string.director_list, (currentMovie.getDirector()))); }
+        else{ tempDisp.setText(R.string.no_director); }
         tempDisp = findViewById(R.id.metascoreDisp);
         tempDisp.setText(getApplicationContext().getString(R.string.metascore, currentMovie.getMetascore()));
         tempDisp = findViewById(R.id.imdbRatingDisp);
@@ -76,15 +77,13 @@ public class MoviePageActivity extends AppCompatActivity {
     protected void setMovie(Movie input){ currentMovie = input; }
 
     public void backOnClick(View v){
-        if(fromHistoryActivity){
-            startActivity(new Intent(MoviePageActivity.this, HistoryActivity.class));
-        }else{
-            startActivity(new Intent(MoviePageActivity.this, SearchResultsActivity.class));
-        }
+        if(fromHistoryActivity){ startActivity(new Intent(MoviePageActivity.this, HistoryActivity.class)); }
+        else{ startActivity(new Intent(MoviePageActivity.this, SearchResultsActivity.class)); }
     }
 
-    public void searchAgainOnClick(View v){
-        UISearch search = new UISearch();
-        search.resetResults();
-        startActivity(new Intent(MoviePageActivity.this, SearchStartActivity.class)); }
+    public void suggestionsOnClick(View v){
+        Intent suggestionsIntent = new Intent(MoviePageActivity.this, SuggestionsActivity.class);
+        suggestionsIntent.putExtra("title", currentMovie.getTitle());
+        startActivity(suggestionsIntent);
+    }
 }

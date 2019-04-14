@@ -44,7 +44,7 @@ public class FilterTest {
     }
 
 
-    @Test
+    /*
     public void fitsFilterTest() throws InterruptedException {
         //Test 1
         mov.searchFull("Space Jam");
@@ -72,5 +72,6 @@ public class FilterTest {
         assertTrue(f3.fitsFilter(result));
 
     }
+    */
 }
 
