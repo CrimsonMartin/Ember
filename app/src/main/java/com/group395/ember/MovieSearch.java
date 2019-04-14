@@ -119,37 +119,39 @@ public class MovieSearch {
             } catch (Exception e){
                 e.printStackTrace();
             }
-            if(searchResults.getNumberofResults()>0) {
+            if(searchResults.getResponse()) {
                 loaded.addAll(loader.loadMovies(searchResults.getResults()));
                 pages = searchResults.getTotal_pages();
                 totalResults = searchResults.getNumberofResults();
-            }
-            else{
-                pages = 1;
-                totalResults = 0;
-            }
-            pages = pages > 10 ? 10 : pages;
-            try {
-                for (int p = 2; p < pages; p++) {
-                    Gson gson = new Gson();
-                    URL obj = new URL(omdbSearch(query, p));
-                    HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-                    con.setRequestMethod("GET");
-                    reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                    searchResults = gson.fromJson(reader, OmdbSearchResults.class);
-                    loaded.addAll(loader.loadMovies(searchResults.getResults()));
-                }
-            } catch (Exception e) {
-                System.out.println("Title search failed: " + e.getMessage());
-                e.printStackTrace();
-            }
-            for (int i=0; i<loaded.size(); i++) {
+
+                pages = pages > 10 ? 10 : pages;
                 try {
-                    results.add(loaded.get(i).get(5, TimeUnit.SECONDS));
+                    for (int p = 2; p < pages; p++) {
+                        Gson gson = new Gson();
+                        URL obj = new URL(omdbSearch(query, p));
+                        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                        con.setRequestMethod("GET");
+                        reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                        searchResults = gson.fromJson(reader, OmdbSearchResults.class);
+                        loaded.addAll(loader.loadMovies(searchResults.getResults()));
+                    }
                 } catch (Exception e) {
-                    System.out.println("Current Movie: "+i);
+                    System.out.println("Title search failed: " + e.getMessage());
                     e.printStackTrace();
                 }
+                for (int i=0; i<loaded.size(); i++) {
+                    try {
+                        results.add(loaded.get(i).get(5, TimeUnit.SECONDS));
+                    } catch (Exception e) {
+                        System.out.println("Current Movie: "+i);
+                        e.printStackTrace();
+                    }
+                }
+            }
+            else{
+                results.add(new Movie("No results found containing: " +query));
+                results.add(new Movie(" "));
+                totalResults = 0;
             }
             searchComplete = true;
         }
@@ -220,6 +222,8 @@ public class MovieSearch {
         public ArrayList<Movie> getResults() {
             return Search;
         }
+
+        public boolean getResponse(){return Response; }
     }
 
     private class PersonResults {
