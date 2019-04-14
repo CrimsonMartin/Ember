@@ -83,40 +83,13 @@ public class UISearch {
      * @return List of Movies
      */
     public List<Movie> search(int MoviesNeeded) throws InterruptedException{
-        while(results.size() < MoviesNeeded && currentSearch.totalResults != 0){
+        while(results.size() < MoviesNeeded && currentSearch.totalResults != 0 && !currentSearch.isExhausted()){
             Movie current = currentSearch.results.poll(2, TimeUnit.SECONDS);
             if(current != null)
-                results.add(current);
-            if (fitsFilters(current))
                 results.add(current);
         }
         return results;
     }
-
-    /**
-     * Extended search method to make an API call. Gets "all" of the related results based on title then filters results.
-     * @return List of Movies
-     */
-    public List<Movie> searchFull() throws InterruptedException{
-        currentSearch.searchFull(getSearch());
-        while(results.size() < FullNumMoviesReturned){
-            results.add(currentSearch.results.take());
-        }
-        return applyFilters(results);
-    }
-
-    /**
-     * Extended search method to make an API call. Gets all of the movies an actor/actress has appeared in related results based on title then filters results.
-     * @return List of Movies
-     */
-    public List<Movie> searchByActor() throws InterruptedException{
-        currentSearch.searchByActor(getSearch());
-        while(results.size() < FullNumMoviesReturned){
-            results.add(currentSearch.results.take());
-        }
-        return applyFilters(results);
-    }
-
 
     /**
      * Returns an array of Movies from index start to index end
@@ -158,34 +131,23 @@ public class UISearch {
     }
 
     /** Sorts the Movies by checking if they are applicable to each filter.
-     * @param rawList is the unfiltered List of Movies to sort
      * @return a filtered List of Movies.
      */
-    public ArrayList<Movie> applyFilters(List<Movie> rawList) {
-        ArrayList<Movie> filteredList = new ArrayList<Movie>();
-
-        // Loops each filter for each movie to determine if they fit the filters.
-        for (Filter filter : getFilters()) {
-
-            if (filteredList.size() == 0) {
-                for (Movie movie : rawList) {
-                    if (filter.fitsFilter(movie))
-                        filteredList.add(movie);
-                }
-            }
-
-            // Narrowing in on remaining movies with the rest of the filters.
-            else {
-                for (Movie movie : filteredList) {
+    public List<Movie> applyFilters(Integer moviesNeeded) throws InterruptedException {
+        int additionalMovies = 0;
+        do{
+            if(additionalMovies>0)
+                search(moviesNeeded+additionalMovies);
+            for (Filter filter : getFilters()) {
+                for (Movie movie : results) {
                     // If it does not fit the next filter, remove it.
                     if (!filter.fitsFilter(movie))
-                        filteredList.remove(movie);
+                        results.remove(movie);
                 }
             }
-
-        }
-
-        return filteredList;
+            additionalMovies = additionalMovies + 2;
+        }while(results.size() < moviesNeeded);
+        return results;
     }
 
     protected void searchFromButton(String input, boolean actorNotTitle) {
@@ -207,6 +169,7 @@ public class UISearch {
         try{
             int moviesNeeded = pagesSkipped * 2 + 2;
             this.search(moviesNeeded);
+            //this.applyFilters(moviesNeeded);
             output = new Movie[2];
             output[0] = results.get(pagesSkipped * 2);
             output[1] = results.get(pagesSkipped * 2 + 1);
