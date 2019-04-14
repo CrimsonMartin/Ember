@@ -45,7 +45,6 @@ public class UISearch {
         }
     }
 
-
     /**
      * Returns the current filter being used for searching
      * @return Filter type representing current Filter

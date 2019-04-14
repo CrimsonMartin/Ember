@@ -42,4 +42,10 @@
     <string name="plot">Plot: </string>
     <string name="search_by_title">Search by title</string>
     <string name="search_by_actor">Search by actor</string>
+    <string name="view_suggestions">View suggested movies</string>
+    <string name="no_year">No year found</string>
+    <string name="no_genres">No genres found</string>
+    <string name="no_actors">No actors found</string>
+    <string name="no_writers">No writers found</string>
+    <string name="no_director">No directors found</string>
 </resources>
