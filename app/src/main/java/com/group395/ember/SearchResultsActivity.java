@@ -16,7 +16,6 @@ public class SearchResultsActivity extends AppCompatActivity {
     //This field specifies how many sets of 2 Movies have been moved past by the "next" button.
     private static int pagesSkipped = 0;
     public static UISearch uiSearch = new UISearch();
-    //private Logger logger = new Logger(getApplicationContext());
 
 
     public static Movie exampleMovie = Movie.parseFromJson("{\"Title\":\"Space Jam\",\"Year\":\"1996\",\"Rated\":\"PG\",\"Released\":\"15 Nov 1996\",\"Runtime\":\"88 min\",\"Genre\":\"Animation, Adventure, " +
