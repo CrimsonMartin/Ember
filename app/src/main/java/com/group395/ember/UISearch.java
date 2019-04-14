@@ -3,6 +3,7 @@ package com.group395.ember;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Protocol for accessing the Movie Database from the GUI of the Ember app.
@@ -16,6 +17,7 @@ public class UISearch {
     private String searchTerms; // The search terms to access the database with
     private List<Movie> results = new ArrayList<>();  // Results from an API call
     private Integer pageNumMoviesReturned = 6;
+    private MovieSearch currentSearch;
     private Integer FullNumMoviesReturned = 40;
 
     /**
@@ -81,42 +83,13 @@ public class UISearch {
      * @return List of Movies
      */
     public List<Movie> search(int MoviesNeeded) throws InterruptedException{
-        while(results.size() < MoviesNeeded){
-            Movie m = MovieSearch.results.take();
-            if (fitsFilters(m))
-                results.add(m);
+        while(results.size() < MoviesNeeded && currentSearch.totalResults != 0){
+            Movie current = currentSearch.results.poll(2, TimeUnit.SECONDS);
+            if(current != null)
+                results.add(current);
         }
         return results;
     }
-
-    public void kill(){
-        MovieSearch.kill();
-    }
-
-    /**
-     * Extended search method to make an API call. Gets "all" of the related results based on title then filters results.
-     * @return List of Movies
-     */
-    public List<Movie> searchFull() throws InterruptedException{
-        MovieSearch.searchFull(getSearch());
-        while(results.size() < FullNumMoviesReturned){
-            results.add(MovieSearch.results.take());
-        }
-        return applyFilters(results);
-    }
-
-    /**
-     * Extended search method to make an API call. Gets all of the movies an actor/actress has appeared in related results based on title then filters results.
-     * @return List of Movies
-     */
-    public List<Movie> searchByActor() throws InterruptedException{
-        MovieSearch.searchByActor(getSearch());
-        while(results.size() < FullNumMoviesReturned){
-            results.add(MovieSearch.results.take());
-        }
-        return applyFilters(results);
-    }
-
 
     /**
      * Returns an array of Movies from index start to index end
@@ -158,47 +131,35 @@ public class UISearch {
     }
 
     /** Sorts the Movies by checking if they are applicable to each filter.
-     * @param rawList is the unfiltered List of Movies to sort
      * @return a filtered List of Movies.
      */
-    public ArrayList<Movie> applyFilters(List<Movie> rawList) {
-        ArrayList<Movie> filteredList = new ArrayList<Movie>();
-
-        // Loops each filter for each movie to determine if they fit the filters.
-        for (Filter filter : getFilters()) {
-
-            if (filteredList.size() == 0) {
-                for (Movie movie : rawList) {
-                    if (filter.fitsFilter(movie))
-                        filteredList.add(movie);
-                }
-            }
-
-            // Narrowing in on remaining movies with the rest of the filters.
-            else {
-                for (Movie movie : filteredList) {
+    public List<Movie> applyFilters(Integer moviesNeeded) throws InterruptedException {
+        int additionalMovies = 0;
+        do{
+            if(additionalMovies>0)
+                search(moviesNeeded+additionalMovies);
+            for (Filter filter : getFilters()) {
+                for (Movie movie : results) {
                     // If it does not fit the next filter, remove it.
                     if (!filter.fitsFilter(movie))
-                        filteredList.remove(movie);
+                        results.remove(movie);
                 }
             }
-
-        }
-
-        return filteredList;
+            additionalMovies = additionalMovies + 2;
+        }while(results.size() < moviesNeeded);
+        return results;
     }
 
-    protected static void searchFromButton(String input, boolean actorNotTitle) {
-        System.out.println("Running searchFromButton(" + input + ", " + actorNotTitle + ")");
+    protected void searchFromButton(String input, boolean actorNotTitle) {
+        currentSearch = new MovieSearch();
         try {
             if (actorNotTitle) {
-                MovieSearch.searchByActor(input);
+                currentSearch.searchByActor(input);
             } else {
-                MovieSearch.searchFull(input);
+                currentSearch.searchFull(input);
             }
-            System.out.println("Finished searchFromButton(" + input + ", " + actorNotTitle + ")");
         }catch(Exception e){
-            System.out.println("Caught exception: " + e.toString());
+            e.printStackTrace();
         }
     }
 
@@ -208,6 +169,7 @@ public class UISearch {
         try{
             int moviesNeeded = pagesSkipped * 2 + 2;
             this.search(moviesNeeded);
+            //this.applyFilters(moviesNeeded);
             output = new Movie[2];
             output[0] = results.get(pagesSkipped * 2);
             output[1] = results.get(pagesSkipped * 2 + 1);
