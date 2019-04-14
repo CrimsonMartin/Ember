@@ -3,6 +3,7 @@ package com.group395.ember;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,20 +18,9 @@ import static com.group395.ember.FilterType.GENRE;
 public class SearchOptionsActivity extends AppCompatActivity {
 
     private int currentNumFilters = 0;
-    private FilterHolder[] myFiltersLinear = new FilterHolder[5];
+    private Filter[] myFiltersLinear = new Filter[5];
     private FilterType selected = null;
     private enum RadioFive{ RADIO_A, RADIO_B, RADIO_C, RADIO_D, RADIO_E }
-    private class FilterHolder{
-        private String text;
-        private FilterType type;
-        public FilterHolder(String inputText, FilterType inputType){
-            text = inputText;
-            type = inputType;
-        }
-        public String getText() { return text; }
-        public FilterType getType(){ return type; }
-        public String toString(){ return text; }
-    }
     private RadioFive selectedRadio = null;
 
     @Override
@@ -39,16 +29,28 @@ public class SearchOptionsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search_options);
     }
 
+    /**
+     * Linked to 'GENRE' radio button on Filters page.
+     * @param v
+     */
     public void genreOnClick(View v){
         EditText editText = findViewById(R.id.filterText);
         editText.setHint(R.string.edit_text_on_genre_click);
         selected = GENRE;
     }
+    /**
+     * Linked to 'ACTOR' radio button on Filters page.
+     * @param v
+     */
     public void actorOnClick(View v){
         EditText editText = findViewById(R.id.filterText);
         editText.setHint(R.string.edit_text_on_actor_click);
         selected = ACTOR;
     }
+    /**
+     * Linked to 'DIRECTOR' radio button on Filters page.
+     * @param v
+     */
     public void directorOnClick(View v){
         EditText editText = findViewById(R.id.filterText);
         editText.setHint(R.string.edit_text_on_director_click);
@@ -68,6 +70,10 @@ public class SearchOptionsActivity extends AppCompatActivity {
         display.setText(message);
     }
 
+    /**
+     * Linked to 'ADD FILTER' button on Filters page.
+     * @param v
+     */
     //TODO: Filters are not added once a filter is deleted.
     public void submitOnClick(View v){
         //If no FilterType has been selected, do nothing.
@@ -79,7 +85,12 @@ public class SearchOptionsActivity extends AppCompatActivity {
         //If the input box is empty, do nothing.
         if(inputString.equals("")){ return; }
         int firstEmptyLinear = findFirstEmpty(myFiltersLinear);
-        myFiltersLinear[firstEmptyLinear] = new FilterHolder(inputString, selected);
+
+        myFiltersLinear[firstEmptyLinear] = new Filter(selected);
+        myFiltersLinear[firstEmptyLinear].add(inputString);
+
+        Log.e("Ember", selected.toString());
+
         //add filter to display of filters
         RadioButton displayRadio = findViewById(R.id.filterDisplayA);
         switch(currentNumFilters){
@@ -98,8 +109,12 @@ public class SearchOptionsActivity extends AppCompatActivity {
         currentNumFilters++;
     }
 
+    /**
+     * Linked to the "RESET" button on the filters page.
+     * @param v
+     */
     public void resetOnClick(View v){
-        myFiltersLinear = new FilterHolder[5];
+        myFiltersLinear = new Filter[5];
         selected = null;
         EditText editText = findViewById(R.id.filterText);
         editText.setHint(R.string.choose_filter);
@@ -120,12 +135,36 @@ public class SearchOptionsActivity extends AppCompatActivity {
         currentNumFilters = 0;
     }
 
+
+    /**
+     * Linked to the "ACCEPT FILTERS" button on the filters page.
+     * @param v
+     */
     public void acceptOnClick(View v){
         EditText editText = findViewById(R.id.filterText);
-        SearchResultsActivity.addFilters();
-        startActivity(new Intent(SearchOptionsActivity.this, SearchResultsActivity.class));
+
+        // Literally none of uisearch is used in any part of the app except when calling a static method. So this won't work.
+        String lastSearch = SearchResultsActivity.uiSearch.getSearch();
+        SearchResultsActivity.uiSearch = new UISearch();
+        SearchResultsActivity.uiSearch.setSearch(lastSearch);
+
+        // Assuming that it's an array of length 3 (3 unique filters)...
+        for (int i = 0; i < myFiltersLinear.length; i++) {
+            if (myFiltersLinear[i] != null)
+                SearchResultsActivity.uiSearch.addFilter(myFiltersLinear[i]);
+        }
+
+        Intent intent = new Intent(SearchOptionsActivity.this, SearchResultsActivity.class);
+        intent.putExtra("searchInput", lastSearch);
+        intent.putExtra("actorNotTitle", false); //TODO: some way to retain actorNotTitle post-search...
+        intent.putExtra("newSearch", false);
+        startActivity(intent);
     }
 
+    /**
+     * Linked to the "Delete" button on the filters page. Removes the current Filter from the selected radio button
+     * @param v
+     */
     public void deleteOnClick(View v){
         if(selectedRadio != null) {
             if (!checkRadioEmpty()) {

@@ -36,6 +36,7 @@ public class MovieSearch {
     public int totalResults = -1;
     public int pages = -1;
     public boolean searchComplete = false;
+    public boolean searchSuccessful = true;
 
 
     private static BufferedReader reader = null;
@@ -56,34 +57,34 @@ public class MovieSearch {
             PersonResults personResults = null;
             MoviesByPersonResults movies = null;
             List<Future<Movie>> loaded = new ArrayList<>();
-            try {
 
                 //Getting the list of movies to load
+            try {
                 Gson gson = new Gson();
                 URL person = new URL(tmdbSearchPeople(query));
                 HttpURLConnection con = (HttpURLConnection) person.openConnection();
                 con.setRequestMethod("GET");
                 reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
                 personResults = gson.fromJson(reader, PersonResults.class);
-                System.out.println(personResults);
-                URL movieCredits = new URL(tmdbMoviesByPerson(personResults.getId()));
-                HttpURLConnection con2 = (HttpURLConnection) movieCredits.openConnection();
-                con2.setRequestMethod("GET");
-                reader = new BufferedReader(new InputStreamReader(con2.getInputStream()));
-                movies = gson.fromJson(reader, MoviesByPersonResults.class);
-                loaded.addAll(loader.loadMovies(movies.getResults()));
                 reader.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            for (int i=0; i<loaded.size(); i++) {
-                try {
-                    System.out.println("results: "+results);
-                    results.add(loaded.get(i).get(3, TimeUnit.SECONDS));
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (personResults.getTotal_results() > 0) {
+                    URL movieCredits = new URL(tmdbMoviesByPerson(personResults.getId()));
+                    HttpURLConnection con2 = (HttpURLConnection) movieCredits.openConnection();
+                    con2.setRequestMethod("GET");
+                    reader = new BufferedReader(new InputStreamReader(con2.getInputStream()));
+                    movies = gson.fromJson(reader, MoviesByPersonResults.class);
+                    loaded.addAll(loader.loadMovies(movies.getResults()));
+                    for (int i = 0; i < loaded.size(); i++) {
+                        results.add(loaded.get(i).get(3, TimeUnit.SECONDS));
+                    }
+                } else {
+                    searchSuccessful = false;
+                    results.add(new Movie("No results found containing: " + query));
+                    results.add(new Movie(" "));
+                    totalResults = 0;
                 }
+            }catch(Exception e){
+                e.printStackTrace();
             }
             searchComplete = true;
         }
@@ -149,6 +150,7 @@ public class MovieSearch {
                 }
             }
             else{
+                searchSuccessful = false;
                 results.add(new Movie("No results found containing: " +query));
                 results.add(new Movie(" "));
                 totalResults = 0;
@@ -227,6 +229,7 @@ public class MovieSearch {
     }
 
     private class PersonResults {
+        Integer total_results;
         public class Actor {
             String name;
             Integer id;
@@ -244,6 +247,10 @@ public class MovieSearch {
 
         public Integer getId() {
             return results.get(0).getId();
+        }
+
+        public Integer getTotal_results(){
+            return total_results;
         }
     }
 

@@ -1,5 +1,7 @@
 package com.group395.ember;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -90,7 +92,7 @@ public class Filter {
 
 
 //        boolean is = compareTo.containsAll(getKeywords());
-        System.out.println(is);
+        Log.e("Ember", String.valueOf(is));
         return is;
 
     }
