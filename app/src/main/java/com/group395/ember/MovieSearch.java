@@ -36,6 +36,7 @@ public class MovieSearch {
     public int totalResults = -1;
     public int pages = -1;
     public boolean searchComplete = false;
+    public boolean searchSuccessful = true;
 
 
     private static BufferedReader reader = null;
@@ -77,6 +78,7 @@ public class MovieSearch {
                         results.add(loaded.get(i).get(3, TimeUnit.SECONDS));
                     }
                 } else {
+                    searchSuccessful = false;
                     results.add(new Movie("No results found containing: " + query));
                     results.add(new Movie(" "));
                     totalResults = 0;
@@ -148,6 +150,7 @@ public class MovieSearch {
                 }
             }
             else{
+                searchSuccessful = false;
                 results.add(new Movie("No results found containing: " +query));
                 results.add(new Movie(" "));
                 totalResults = 0;
