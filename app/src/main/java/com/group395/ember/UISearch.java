@@ -83,7 +83,7 @@ public class UISearch {
      * @return List of Movies
      */
     public List<Movie> search(int MoviesNeeded) throws InterruptedException{
-        while(results.size() < MoviesNeeded && currentSearch.totalResults != 0){
+        while(results.size() < MoviesNeeded && currentSearch.totalResults != 0 && !currentSearch.isExhausted()){
             Movie current = currentSearch.results.poll(2, TimeUnit.SECONDS);
             if(current != null)
                 results.add(current);
