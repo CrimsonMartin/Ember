@@ -43,7 +43,7 @@ public class MovieSuggestions {
 
 
     // Returns a list of movies
-    public static void getSuggestions(Movie movie){
+    public static void setSuggestions(Movie movie){
         currentMovie = movie;
         List<Future<Movie>> loaded = new ArrayList<>();
         try {
