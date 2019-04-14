@@ -35,6 +35,7 @@ public class MovieSearch {
     public BlockingQueue<Movie> results = new ArrayBlockingQueue<>(MAXNUMMOVIES);
     public int totalResults = -1;
     public int pages = -1;
+    public boolean searchComplete = false;
 
 
     private static BufferedReader reader = null;
@@ -84,6 +85,7 @@ public class MovieSearch {
                     e.printStackTrace();
                 }
             }
+            searchComplete = true;
         }
     }
 
@@ -149,7 +151,15 @@ public class MovieSearch {
                     e.printStackTrace();
                 }
             }
+            searchComplete = true;
         }
+    }
+
+    public boolean isExhausted(){
+        if(searchComplete && results.size() == 0)
+            return true;
+        else
+            return false;
     }
 
     private static List<String> collectTitles(List<Movie> results) {
