@@ -21,7 +21,7 @@ import java.util.concurrent.Future;
 
 class MovieLoader {
 
-    private static int MAXNUMTHREADS = 4;
+    private static int MAXNUMTHREADS =2;
     private ExecutorService executor = Executors.newFixedThreadPool(MAXNUMTHREADS);
 
     private class MovieLoaderThread implements Callable<Movie> {
@@ -115,7 +115,7 @@ class MovieLoader {
      * @param titles a list of movie titles to be loaded
      * @return the list of movies that correspond to the titles
      */
-    List<Future<Movie>> loadMoviesByTitle(List<String> titles) throws InterruptedException{
+    List<Future<Movie>> loadMoviesByTitle(List<String> titles){
         List<Future<Movie>> ret = new ArrayList<>();
         for(String t : titles){
             ret.add (executor.submit(new MovieLoaderThread(new Movie(t))));

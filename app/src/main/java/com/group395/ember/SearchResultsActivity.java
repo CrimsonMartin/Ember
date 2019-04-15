@@ -1,15 +1,13 @@
 package com.group395.ember;
 
-import android.util.Log;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-
-import java.io.IOException;
 
 public class SearchResultsActivity extends AppCompatActivity {
 
@@ -95,22 +93,25 @@ public class SearchResultsActivity extends AppCompatActivity {
         startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class));
     }
 
-    public void resultButtonAOnClick(View v) throws NullPointerException, IOException{
-        HistoryActivity.addClick(loadedMovies[0]);
-        MoviePageActivity.setCurrentMovie(loadedMovies[0]);
-        MoviePageActivity.setFromHistoryActivity(false);
-        Logger.saveToHistory(loadedMovies[0]);
-        startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
+    public void resultButtonAOnClick(View v) {
+        launchSearchResultsActivity(loadedMovies[0]);
     }
-    public void resultButtonBOnClick(View v) throws NullPointerException, IOException{
-        HistoryActivity.addClick(loadedMovies[1]);
-        MoviePageActivity.setCurrentMovie(loadedMovies[1]);
-        MoviePageActivity.setFromHistoryActivity(false);
-        Logger.saveToHistory(loadedMovies[1]);
-        startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
+
+    public void resultButtonBOnClick(View v){
+        launchSearchResultsActivity(loadedMovies[1]);
+    }
+
+    private void launchSearchResultsActivity(Movie currentMovie){
+        Intent nextPage  = new Intent(SearchResultsActivity.this, MoviePageActivity.class);
+        HistoryActivity.addClick(currentMovie);
+        nextPage.putExtra("title", currentMovie.getTitle());
+        nextPage.putExtra("fromHistoryActivity", false);
+        Logger.saveToHistory(currentMovie);
+        startActivity(nextPage);
     }
 
     public void filtersOnClick(View v){ startActivity(new Intent(SearchResultsActivity.this, SearchOptionsActivity.class)); }
+
     public static void addFilters(){ }
 
     private void display(Movie inputMovie, TextView title, TextView actors, TextView director, TextView plot){
