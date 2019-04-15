@@ -90,6 +90,7 @@ public class MovieSuggestions {
             for(TmdbMovie movie : results){
                 Movie current = movie.toMovie();
                 String imdbId = getImdbIdFromTmdb(current.getTmdbID());
+                current.setImdbID(imdbId);
                 suggestionResults.add(current);
             }
             return suggestionResults;
