@@ -1,5 +1,7 @@
 package com.group395.ember;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -77,7 +79,11 @@ public class SuggestionsActivity extends AppCompatActivity {
 
             setAllSuggestionsTo(View.VISIBLE);
 
-            updateMoviesByPageNumber();
+            try{
+                updateMoviesByPageNumber();
+            } catch (IndexOutOfBoundsException e){
+                createNoMoviesAlertDialog();
+            }
 
             findViewById(R.id.nextButtonSA).setClickable(true);
             findViewById(R.id.previousButtonSA).setClickable(true);
@@ -107,6 +113,19 @@ public class SuggestionsActivity extends AppCompatActivity {
             return null;
         }
 
+    }
+
+    private void createNoMoviesAlertDialog() {
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle("Alert");
+        alertDialog.setMessage("No suggested movies could be found");
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
     }
 
     public void suggestionOnClick(View v){
