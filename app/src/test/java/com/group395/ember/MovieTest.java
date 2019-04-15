@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class MovieTest {
 
@@ -35,6 +36,16 @@ public class MovieTest {
     @Test
     public void testmovieParseFromJson(){
         assertEquals(goalSpaceJam, spaceJamMovie);
+    }
+
+    @Test
+    public  void testNullEquals(){
+        assertEquals(spaceJamMovie, goalSpaceJam);
+        goalSpaceJam.setImdbID(null);
+        assertNotEquals(spaceJamMovie, goalSpaceJam);
+        spaceJamMovie.setImdbID(null);
+        assertEquals(spaceJamMovie, goalSpaceJam);
+
     }
 
     @Test
