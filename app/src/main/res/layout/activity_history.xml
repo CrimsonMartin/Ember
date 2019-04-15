@@ -24,7 +24,7 @@
     <Button
         android:id="@+id/tileAL"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
@@ -33,12 +33,13 @@
         app:layout_constraintBottom_toTopOf="@+id/tileBL"
         app:layout_constraintEnd_toStartOf="@+id/tileAR"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchOptionsButton" />
+        app:layout_constraintTop_toBottomOf="@+id/searchOptionsButton"
+        android:ellipsize="end" />
 
     <Button
         android:id="@+id/tileAR"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
@@ -47,12 +48,13 @@
         app:layout_constraintBottom_toTopOf="@+id/tileBR"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tileAL"
-        app:layout_constraintTop_toBottomOf="@+id/searchOptionsButton" />
+        app:layout_constraintTop_toBottomOf="@+id/searchOptionsButton"
+        android:ellipsize="end"/>
 
     <Button
         android:id="@+id/tileBL"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="32dp"
@@ -60,12 +62,13 @@
         app:layout_constraintBottom_toTopOf="@+id/tileCL"
         app:layout_constraintEnd_toStartOf="@+id/tileBR"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tileAL" />
+        app:layout_constraintTop_toBottomOf="@+id/tileAL"
+        android:ellipsize="end"/>
 
     <Button
         android:id="@+id/tileBR"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="32dp"
@@ -73,43 +76,47 @@
         app:layout_constraintBottom_toTopOf="@+id/tileCR"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tileBL"
-        app:layout_constraintTop_toBottomOf="@+id/tileAR" />
+        app:layout_constraintTop_toBottomOf="@+id/tileAR"
+        android:ellipsize="end"/>
 
     <Button
         android:id="@+id/tileCL"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:onClick="tileCLOnClick"
         app:layout_constraintEnd_toStartOf="@+id/tileCR"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tileBL" />
+        app:layout_constraintTop_toBottomOf="@+id/tileBL"
+        android:ellipsize="end"/>
 
     <Button
         android:id="@+id/tileCR"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:onClick="tileCROnClick"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tileCL"
-        app:layout_constraintTop_toBottomOf="@+id/tileBR" />
+        app:layout_constraintTop_toBottomOf="@+id/tileBR"
+        android:ellipsize="end"/>
 
     <Button
         android:id="@+id/tileDL"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:onClick="tileDLOnClick"
         app:layout_constraintEnd_toStartOf="@+id/tileDR"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tileCL" />
+        app:layout_constraintTop_toBottomOf="@+id/tileCL"
+        android:ellipsize="end"/>
 
     <Button
         android:id="@+id/previousButton"
@@ -127,7 +134,7 @@
     <Button
         android:id="@+id/tileDR"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
