@@ -18,6 +18,9 @@ public class SearchResultsActivity extends AppCompatActivity {
     //This field specifies how many sets of 2 Movies have been moved past by the "next" button.
     private static int pagesSkipped = 0;
     public static UISearch uiSearch = new UISearch();
+    private boolean actorNotTitle;
+
+    private LoadMoviesTask loadMoviesTask;
 
 
     public static Movie exampleMovie = Movie.parseFromJson("{\"Title\":\"Space Jam\",\"Year\":\"1996\",\"Rated\":\"PG\",\"Released\":\"15 Nov 1996\",\"Runtime\":\"88 min\",\"Genre\":\"Animation, Adventure, " +
@@ -31,18 +34,14 @@ public class SearchResultsActivity extends AppCompatActivity {
 
     private class LoadMoviesTask extends AsyncTask<Void, Void, Void> {
 
-        private Context context;
-        private boolean actorNotTitle = getIntent().getBooleanExtra("actorNotTitle", false);
+
         private String searchInput = getIntent().getStringExtra("searchInput");
         private boolean newSearch = getIntent().getBooleanExtra("newSearch", false);
-
-        public LoadMoviesTask (Context ctx){
-            context = ctx;
-        }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            actorNotTitle = getIntent().getBooleanExtra("actorNotTitle", false);
             findViewById(R.id.loadingProgressBar1).setVisibility(View.VISIBLE);
             findViewById(R.id.loadingProgressBar2).setVisibility(View.VISIBLE);
             findViewById(R.id.resultButtonA).setVisibility(View.INVISIBLE);
@@ -89,6 +88,11 @@ public class SearchResultsActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        loadMoviesTask.cancel(true);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,14 +104,20 @@ public class SearchResultsActivity extends AppCompatActivity {
             Log.e("Ember", e.getMessage());
         }
         //TODO: Test boundary cases (large + small movie data sets) once UISearch is up and running
-        new LoadMoviesTask(this).execute();
+        loadMoviesTask = new LoadMoviesTask();
+        loadMoviesTask.execute();
     }
 
 
     private void createNoMoviesAlertDialog() {
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.setTitle("Alert");
-        alertDialog.setMessage("No movies could be found with the given title, please search for a different title");
+        if(actorNotTitle){
+            alertDialog.setMessage("No movies could be found for the given Actor, please search for a different name");
+        } else{
+            alertDialog.setMessage("No movies could be found with the given title, please search for a different title");
+        }
+
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
