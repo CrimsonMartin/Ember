@@ -177,8 +177,6 @@ public class SuggestionsActivity extends AppCompatActivity {
         v.setClickable(false);
     }
 
-
-
     private void updateMoviesByPageNumber(){
 
         int numMoviesToDisplay = suggestionButtons.size();
@@ -203,6 +201,17 @@ public class SuggestionsActivity extends AppCompatActivity {
         currentPage -= 1;
         updateMoviesByPageNumber();
         updatePageNumber();
+    }
+
+    public void backOnClick(View v){
+       Intent i = new Intent(SuggestionsActivity.this, MoviePageActivity.class);
+       i.putExtra("title", title);
+       i.putExtra("fromHistoryActivity", false);
+       startActivity(i);
+    }
+
+    public void searchForNewMovieOnClick(View v){
+        startActivity(new Intent(SuggestionsActivity.this, SearchStartActivity.class));
     }
 
 
