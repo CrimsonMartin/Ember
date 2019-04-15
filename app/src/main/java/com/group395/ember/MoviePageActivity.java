@@ -22,7 +22,6 @@ public class MoviePageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Future<Movie> currentMovieFuture = null;
 
         currentMovie = new Movie(getIntent().getStringExtra("title"));
         currentMovie.setImdbID(getIntent().getStringExtra("id"));
@@ -33,8 +32,11 @@ public class MoviePageActivity extends AppCompatActivity {
             //TODO this needs to be an async activity that loads the movie and turns on the display when it's loaded
 
             MovieLoader ml = new MovieLoader();
-            currentMovieFuture = ml.loadMovie(currentMovie);
+            Future<Movie> currentMovieFuture = ml.loadMovie(currentMovie);
             currentMovie = currentMovieFuture.get();
+            Future<Movie> movieWithPlatforms = ml.loadPlatforms(currentMovie);
+            currentMovie = movieWithPlatforms.get();
+
         }catch(InterruptedException | ExecutionException e){
             //pass
         }
@@ -42,6 +44,7 @@ public class MoviePageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_page);
         displayAll();
     }
+
 
     private void displayAll(){
         if(currentMovie != null) {

@@ -2,7 +2,6 @@ package com.group395.ember;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -19,6 +18,7 @@ import static org.awaitility.Awaitility.await;
 import static org.awaitility.Awaitility.fieldIn;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -163,11 +163,12 @@ public class MovieLoaderTest {
 
     }
 
-    @Ignore
+    @Test
     public void testPlatformCachingSpeed() throws Exception{
-        ml.loadPlatforms(goalSpaceJam);
-        Thread.sleep(2000);
-        System.out.println(goalSpaceJam.getPlatforms());
+        Future<Movie> movieWithPlatforms = ml.loadPlatforms(goalSpaceJam);
+        goalSpaceJam = movieWithPlatforms.get();
+        assertEquals(goalSpaceJam.getPlatforms().toString(),
+                "[Rakuten TV, TalkTalk TV Store, Sky Family HD (United Kingdom), Sky Cinema Family, iTunes, Amazon Prime, Now TV]");
 
     }
 
