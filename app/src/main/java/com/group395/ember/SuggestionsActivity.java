@@ -136,7 +136,9 @@ public class SuggestionsActivity extends AppCompatActivity {
     private List<Movie> getMovies(int start, int end) throws IndexOutOfBoundsException{
         List<Movie> ret = new ArrayList<>();
         for(int i = start; i<end; i++) {
-            ret.add(movies.get(i));
+            Movie current = movies.get(i);
+            if(current != null && current.getTitle() != null )
+                ret.add(current);
         }
         return ret;
     }
@@ -171,7 +173,7 @@ public class SuggestionsActivity extends AppCompatActivity {
         int numMoviesToDisplay = suggestionButtons.size();
 
         List<Movie> moviesToDisplay = getMovies(
-                currentPage - 1,
+                (currentPage - 1)*numMoviesToDisplay,
                 numMoviesToDisplay * (currentPage));
 
         setSuggestionButtons(moviesToDisplay);
