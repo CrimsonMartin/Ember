@@ -1,7 +1,5 @@
 package com.group395.ember;
 
-import android.support.annotation.NonNull;
-
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -11,16 +9,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 public class MovieSuggestions {
 
@@ -30,14 +20,11 @@ public class MovieSuggestions {
     private static String tmdbSuggestionUrl = "recommendations?api_key=";
     private static String tmdbSettings = "&language=en-US&include_adult=false&page=1";
 
-    private static int MAXNUMMOVIES = 1000;
-    private static MovieLoader loader = new MovieLoader();
-    private static BufferedReader reader = null;
-    public static BlockingQueue<Movie> results = new ArrayBlockingQueue<>(MAXNUMMOVIES);
-
+    private MovieLoader loader = new MovieLoader();
+    private BufferedReader reader = null;
 
     // Returns a list of movies
-    public static void setSuggestions(String title){
+    List<Future<Movie>> setSuggestions(String title){
         List<Future<Movie>> loaded = new ArrayList<>();
         try {
             Integer id = getTmdbId(title);
@@ -58,18 +45,7 @@ public class MovieSuggestions {
             e.printStackTrace();
             close();
         }
-        for (int i=0; i<loaded.size(); i++) {
-            try {
-                results.add(loaded.get(i).get(5, TimeUnit.SECONDS));
-            } catch (Exception e) {
-                System.out.println("Current Movie: "+i);
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public static void clear(){
-        results.clear();
+        return loaded;
     }
 
     //This is the class Gson parses to return the search results
@@ -117,7 +93,7 @@ public class MovieSuggestions {
         }
     }
 
-    public static Integer getTmdbId(String title){
+    private Integer getTmdbId(String title){
         try {
             Gson gson = new Gson();
             URL obj = new URL(tmdbSearch(title, 1));
@@ -132,7 +108,7 @@ public class MovieSuggestions {
         }
     }
 
-    public static String tmdbSearch(String title, Integer page) {
+    private String tmdbSearch(String title, Integer page) {
         title = title.replaceAll(" ", "+");
         if (title.length() > 0)
             return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings + "&page=" + page + "&query=" + title;
@@ -140,11 +116,11 @@ public class MovieSuggestions {
             return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings + "&page=" + page;
     }
 
-    public static String tmdbSuggestions(Integer id){
+    private String tmdbSuggestions(Integer id){
         return tmdbUrl + "movie/"+ id +"/" + tmdbSuggestionUrl + tmdbApiKey + tmdbSettings;
     }
 
-    static boolean close(){
+    boolean close(){
         try{
             reader.close();
             return true;

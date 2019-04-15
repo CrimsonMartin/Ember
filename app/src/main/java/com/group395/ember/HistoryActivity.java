@@ -1,20 +1,19 @@
 package com.group395.ember;
 
-import android.util.Log;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
 import com.facebook.drawee.backends.pipeline.Fresco;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 public class HistoryActivity extends AppCompatActivity {
 
@@ -83,8 +82,9 @@ public class HistoryActivity extends AppCompatActivity {
 
     private void tileOnClick(int whichButton){
         if(recentClicks[pagesSkipped][whichButton] != null) {
-            MoviePageActivity.setCurrentMovie(recentClicks[pagesSkipped][whichButton]);
-            MoviePageActivity.setFromHistoryActivity(true);
+            Intent i = new Intent(HistoryActivity.this, MoviePageActivity.class);
+            i.putExtra("title", recentClicks[pagesSkipped][whichButton].getTitle());
+            i.putExtra("fromHistoryActivity", true);
             startActivity(new Intent(HistoryActivity.this, MoviePageActivity.class));
         }
     }

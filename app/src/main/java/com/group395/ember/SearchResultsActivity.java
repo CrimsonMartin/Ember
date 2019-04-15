@@ -1,12 +1,13 @@
 package com.group395.ember;
 
-import android.util.Log;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -97,10 +98,13 @@ public class SearchResultsActivity extends AppCompatActivity {
 
     public void resultButtonAOnClick(View v) throws NullPointerException, IOException{
         HistoryActivity.addClick(loadedMovies[0]);
-        MoviePageActivity.setCurrentMovie(loadedMovies[0]);
-        MoviePageActivity.setFromHistoryActivity(false);
         Logger.saveToHistory(loadedMovies[0]);
-        startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
+
+        Intent searchResultsIntent = new Intent(SearchResultsActivity.this, MoviePageActivity.class);
+        searchResultsIntent.putExtra("title", (loadedMovies[0].getTitle()));
+        searchResultsIntent.putExtra("fromHistoryView", false);
+
+        startActivity(searchResultsIntent);
     }
     public void resultButtonBOnClick(View v) throws NullPointerException, IOException{
         HistoryActivity.addClick(loadedMovies[1]);
@@ -109,6 +113,10 @@ public class SearchResultsActivity extends AppCompatActivity {
         Logger.saveToHistory(loadedMovies[1]);
         startActivity(new Intent(SearchResultsActivity.this, MoviePageActivity.class));
     }
+
+
+    private
+
 
     public void filtersOnClick(View v){ startActivity(new Intent(SearchResultsActivity.this, SearchOptionsActivity.class)); }
     public static void addFilters(){ }

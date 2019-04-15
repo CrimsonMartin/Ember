@@ -9,29 +9,32 @@ import android.widget.Button;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class MoviePageActivity extends AppCompatActivity {
 
-    private static Movie currentMovie = null;
+    private Movie currentMovie = null;
     //This field specifies where the user was directed from, and thus where the back button takes them.
     //If true, it takes them to HistoryActivity. If false, it takes them to
-    private static boolean fromHistoryActivity = false;
-
-    public static void setCurrentMovie(Movie input){
-        currentMovie = input;
-    }
-    public static void setFromHistoryActivity(boolean input){ fromHistoryActivity = input; }
+    private boolean fromHistoryActivity = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Future<Movie> currentMovieFuture = null;
 
-        if (currentMovie.isInvalid()){
-            MovieLoader ml = new MovieLoader();
-            currentMovieFuture = ml.loadMovie(currentMovie);
-            currentMovie = currentMovieFuture.get();
+        currentMovie = new Movie(getIntent().getStringExtra("title"));
+        fromHistoryActivity = getIntent().getBooleanExtra("fromHistoryActivity", false);
+
+        try{
+            if (currentMovie.isInvalid()){
+                MovieLoader ml = new MovieLoader();
+                currentMovieFuture = ml.loadMovie(currentMovie);
+                currentMovie = currentMovieFuture.get();
+            }
+        }catch(InterruptedException | ExecutionException e){
+            //pass
         }
 
         setContentView(R.layout.activity_movie_page);
@@ -39,8 +42,6 @@ public class MoviePageActivity extends AppCompatActivity {
     }
 
     //TODO async activity that loads the movie and turns on the display when it's loaded
-
-
 
     private void displayAll(){
         Button tempDisp = findViewById(R.id.titleDisp);
@@ -77,8 +78,12 @@ public class MoviePageActivity extends AppCompatActivity {
     protected void setMovie(Movie input){ currentMovie = input; }
 
     public void backOnClick(View v){
-        if(fromHistoryActivity){ startActivity(new Intent(MoviePageActivity.this, HistoryActivity.class)); }
-        else{ startActivity(new Intent(MoviePageActivity.this, SearchResultsActivity.class)); }
+        if(fromHistoryActivity){
+            startActivity(new Intent(MoviePageActivity.this, HistoryActivity.class));
+        }
+        else{
+            startActivity(new Intent(MoviePageActivity.this, SearchResultsActivity.class));
+        }
     }
 
     public void suggestionsOnClick(View v){
