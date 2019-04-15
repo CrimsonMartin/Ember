@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +23,13 @@ public class SuggestionsActivity extends AppCompatActivity {
     private List<Movie> movies = new ArrayList<>();
     private AsyncTask<Void, Void, Void> loadSuggestionsTask;
     private List<View> suggestionButtons = new ArrayList<>();
+    private int currentPage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        currentPage = 1;
         title = getIntent().getStringExtra("title");
 
         setContentView(R.layout.activity_suggestions);
@@ -37,6 +40,8 @@ public class SuggestionsActivity extends AppCompatActivity {
         suggestionButtons.add(findViewById(R.id.suggestionD));
         suggestionButtons.add(findViewById(R.id.suggestionE));
         suggestionButtons.add(findViewById(R.id.suggestionF));
+
+        updatePageNumber();
 
         loadSuggestionsTask = new LoadSuggestionsTask();
         loadSuggestionsTask.execute();
@@ -52,46 +57,31 @@ public class SuggestionsActivity extends AppCompatActivity {
         movies.clear();
     }
 
-    private List<Movie> getMovies(int start, int end) throws IndexOutOfBoundsException{
-        List<Movie> ret = new ArrayList<>();
-        for(int i = start; i<end; i++) {
-            ret.add(movies.get(i));
-        }
-        return ret;
-    }
-
     private class LoadSuggestionsTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected void onPreExecute() {
-
             super.onPreExecute();
 
-            for (View v : suggestionButtons){
-                ((Button)v).setText(null);
-            }
+            setAllSuggestionsTo(View.INVISIBLE);
 
             findViewById(R.id.nextButtonSA).setClickable(false);
             findViewById(R.id.previousButtonSA).setClickable(false);
+            findViewById(R.id.suggestionProgressBar).setVisibility(View.VISIBLE);
+
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-
             super.onPostExecute(aVoid);
 
-            List<Movie> moviesToBeDisplayed = getMovies(0,suggestionButtons.size());
+            setAllSuggestionsTo(View.VISIBLE);
 
-            for(View v: suggestionButtons){
-                ((Button)v).setText(
-                        moviesToBeDisplayed.get(
-                                suggestionButtons.indexOf(v))
-                                .getTitle()
-                );
-            }
+            updateMoviesByPageNumber();
 
             findViewById(R.id.nextButtonSA).setClickable(true);
             findViewById(R.id.previousButtonSA).setClickable(true);
+            findViewById(R.id.suggestionProgressBar).setVisibility(View.INVISIBLE);
 
         }
 
@@ -119,7 +109,6 @@ public class SuggestionsActivity extends AppCompatActivity {
 
     }
 
-
     public void suggestionOnClick(View v){
         Intent moviePageIntent = new Intent(SuggestionsActivity.this, MoviePageActivity.class);
         moviePageIntent.putExtra("title", ((Button)v).getText().toString());
@@ -127,12 +116,59 @@ public class SuggestionsActivity extends AppCompatActivity {
         startActivity(moviePageIntent);
     }
 
+    private List<Movie> getMovies(int start, int end) throws IndexOutOfBoundsException{
+        List<Movie> ret = new ArrayList<>();
+        for(int i = start; i<end; i++) {
+            ret.add(movies.get(i));
+        }
+        return ret;
+    }
+
+    private void updatePageNumber(){
+        TextView pageNumber = findViewById(R.id.pageNumberSA);
+        pageNumber.setText(getApplicationContext().getString(R.string.page_number, currentPage));
+    }
+
+    private void setAllSuggestionsTo(int visibility){
+        for (View v : suggestionButtons){
+            v.setVisibility(visibility);
+        }
+    }
+
+    private void setSuggestionButtons(List<Movie> moviesToBeDisplayed){
+        for(View v: suggestionButtons){
+            ((Button)v).setText(
+                    moviesToBeDisplayed.get(
+                            suggestionButtons.indexOf(v))
+                            .getTitle()
+            );
+        }
+    }
+
+    private void updateMoviesByPageNumber(){
+
+        int numMoviesToDisplay = suggestionButtons.size();
+
+        List<Movie> moviesToDisplay = getMovies(
+                currentPage - 1,
+                numMoviesToDisplay * (currentPage));
+
+        setSuggestionButtons(moviesToDisplay);
+
+    }
+
     public void nextOnClick(View v){
-        //TODO
+        if ((currentPage + 1) * suggestionButtons.size() > movies.size()) return;
+        currentPage += 1;
+        updateMoviesByPageNumber();
+        updatePageNumber();
     }
 
     public void previousOnClick(View v){
-        //TODO
+        if (currentPage == 1) return;
+        currentPage -= 1;
+        updateMoviesByPageNumber();
+        updatePageNumber();
     }
 
 
