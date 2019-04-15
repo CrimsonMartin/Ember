@@ -153,15 +153,15 @@ public class Logger {
 
     /**
      * Trims the cache to only contain the List of Strings provided.
-     * @param lastReading is the List to keep.
+     * @param toWrite is the List to keep.
      */
-    protected static void trimCache(List<String> lastReading) {
+    protected static void trimCache(List<String> toWrite) {
         context.deleteFile(getMovieLog().getName());
         setMovieLog(new File(cache, "movies.txt"));
         // If the size of the last reading is greater than the limit, clean up the cache by trimming the list.
-        for (int i = lastReading.size(); i > 0; i--) {
+        for (int i = toWrite.size(); i > 0; i--) {
             // Need to delete it first...
-            saveToHistory(lastReading.get(lastReading.size() - i));
+            saveToHistory(toWrite.get(toWrite.size() - i));
         }
     }
 

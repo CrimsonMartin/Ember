@@ -83,10 +83,8 @@ public class Filter {
                 for (String compare : compareTo) {
 
                     Log.e("Ember", keyword + " " + compare + " " + String.valueOf(compare.toLowerCase().contains(keyword.toLowerCase())));
-//                    if (keyword.toLowerCase().equals(compare.toLowerCase()))
                     if (compare.toLowerCase().contains(keyword.toLowerCase()))
                         return true;
-                        //is = keyword.toLowerCase().equals(compare.toLowerCase());
                 }
             }
         } else {
