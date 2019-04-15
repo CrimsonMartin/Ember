@@ -10,10 +10,11 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -21,7 +22,7 @@ import java.util.concurrent.Future;
 
 class MovieLoader {
 
-    private static int MAXNUMTHREADS =2;
+    private static int MAXNUMTHREADS =4;
     private ExecutorService executor = Executors.newFixedThreadPool(MAXNUMTHREADS);
 
     private class MovieLoaderThread implements Callable<Movie> {
@@ -30,12 +31,12 @@ class MovieLoader {
         private static final String omdbApiKey = "db5b96c2";
         private static final String omdbUrl = "http://www.omdbapi.com/?";
 
-        private String omdbUrlFromTitle (String title)throws MalformedURLException {
+        private String omdbUrlFromTitle (String title) {
             title = title.replaceAll(" ", "+");
             return omdbUrl +"apikey=" + omdbApiKey + "&t=" + title + "&plot=full";
         }
 
-        public MovieLoaderThread(Movie m) {
+        MovieLoaderThread(Movie m) {
             movie = m;
         }
 
@@ -81,6 +82,7 @@ class MovieLoader {
         }
     }
 
+    private Map<Movie, Future<Movie>> movieCache = new HashMap<>();
 
     /**
      *
@@ -88,7 +90,16 @@ class MovieLoader {
      * @return Future<Movie> the Movie complete with all information</Movie>
      */
     Future<Movie> loadMovie(Movie m) {
-        return executor.submit(new MovieLoaderThread(m));
+
+        if (movieCache.containsKey(m)){
+            return movieCache.get(m);
+
+        }else{
+            Future<Movie> futureMovie = executor.submit(new MovieLoaderThread(m));
+            movieCache.put(m, futureMovie);
+            return futureMovie;
+
+        }
     }
 
     /**
@@ -98,7 +109,7 @@ class MovieLoader {
     List<Future<Movie>> loadMovies(List<Movie> movies){
         List<Future<Movie>> ret = new ArrayList<>();
         for(Movie m : movies){
-           ret.add (executor.submit(new MovieLoaderThread(m)));
+           ret.add(loadMovie(m));
         }
         return ret;
     }
@@ -108,7 +119,7 @@ class MovieLoader {
      * @return the movie object if the loading was successful, and null otherwise
      */
     Future<Movie> loadMovieByTitle(String title) {
-        return (executor.submit(new MovieLoaderThread(new Movie(title))));
+        return (loadMovie(new Movie(title)));
     }
 
     /**
@@ -116,11 +127,11 @@ class MovieLoader {
      * @return the list of movies that correspond to the titles
      */
     List<Future<Movie>> loadMoviesByTitle(List<String> titles){
-        List<Future<Movie>> ret = new ArrayList<>();
+        List<Movie> movies = new ArrayList<>();
         for(String t : titles){
-            ret.add (executor.submit(new MovieLoaderThread(new Movie(t))));
+            movies.add(new Movie(t));
         }
-        return ret;
+        return loadMovies(movies);
     }
 
     /**
