@@ -85,7 +85,7 @@ public class HistoryActivity extends AppCompatActivity {
             Intent i = new Intent(HistoryActivity.this, MoviePageActivity.class);
             i.putExtra("title", recentClicks[pagesSkipped][whichButton].getTitle());
             i.putExtra("fromHistoryActivity", true);
-            startActivity(new Intent(HistoryActivity.this, MoviePageActivity.class));
+            startActivity(i);
         }
     }
 
