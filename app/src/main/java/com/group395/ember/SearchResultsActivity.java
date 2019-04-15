@@ -194,7 +194,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     }
     public void backOnClick(View v){
         uiSearch = new UISearch();
-
+        startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class));
     }
 
     protected static String stripBrackets(String input){ return input.substring(1, input.length() - 1); }
