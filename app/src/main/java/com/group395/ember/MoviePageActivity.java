@@ -25,6 +25,7 @@ public class MoviePageActivity extends AppCompatActivity {
         Future<Movie> currentMovieFuture = null;
 
         currentMovie = new Movie(getIntent().getStringExtra("title"));
+        currentMovie.setImdbID(getIntent().getStringExtra("id"));
         fromHistoryActivity = getIntent().getBooleanExtra("fromHistoryActivity", false);
 
         try{

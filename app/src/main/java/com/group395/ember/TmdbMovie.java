@@ -21,4 +21,8 @@ public class TmdbMovie{
         movie.setTmdbID(id);
         return movie;
     }
+
+    public Integer getId(){
+        return id;
+    }
 }
