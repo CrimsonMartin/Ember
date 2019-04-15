@@ -26,9 +26,9 @@ public class MovieSearchTest {
         String query = "Kevin Spacey";
         System.out.println("**By Actor**");
         long start = System.nanoTime();
-        MovieSearch.searchByActor(query);
+        m.searchByActor(query);
         while(results.size() < pageNumMoviesReturned){
-            results.add(MovieSearch.results.take());
+            results.add(m.results.take());
             System.out.println(results.get(results.size()-1));
         }
         long end = System.nanoTime();
@@ -43,9 +43,9 @@ public class MovieSearchTest {
         String query = "star";
         System.out.println("** By Movie **");
         long start = System.nanoTime();
-        MovieSearch.searchFull(query);
+        m.searchFull(query);
         while(results.size() < pageNumMoviesReturned){
-            results.add(MovieSearch.results.take());
+            results.add(m.results.take());
         }
         long end = System.nanoTime();
         System.out.println("First Page: "+ (end-start)/(1000000*1000.0));
@@ -69,10 +69,10 @@ public class MovieSearchTest {
 
     @Ignore
     public void url() throws InterruptedException{
-        MovieSearch.searchFull("Remember the");
+        m.searchFull("Remember the");
         Thread.sleep(2000);
 
-        for (Movie m : MovieSearch.results){
+        for (Movie m : m.results){
             System.out.println(m.toString());
         }
 

@@ -98,6 +98,11 @@ public class SearchResultsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_results);
+        try {
+            Logger.initializeContext(getApplicationContext());
+        } catch (Exception e) {
+            Log.e("Ember", e.getMessage());
+        }
         //TODO: Test boundary cases (large + small movie data sets) once UISearch is up and running
         loadMoviesTask = new LoadMoviesTask();
         loadMoviesTask.execute();
@@ -189,7 +194,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     }
     public void backOnClick(View v){
         uiSearch = new UISearch();
-
+        startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class));
     }
 
     protected static String stripBrackets(String input){ return input.substring(1, input.length() - 1); }
