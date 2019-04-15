@@ -77,23 +77,23 @@ public class Filter {
             default:
                 throw new NullPointerException("This Filter has no filter type set");
         }
-        boolean is = false;
 
         if (getKeywords().size() > 0) {
             for (String keyword : getKeywords()) {
                 for (String compare : compareTo) {
-                    if (!is)
-                        is = keyword.toLowerCase().equals(compare.toLowerCase());
+
+                    Log.e("Ember", keyword + " " + compare + " " + String.valueOf(compare.toLowerCase().contains(keyword.toLowerCase())));
+//                    if (keyword.toLowerCase().equals(compare.toLowerCase()))
+                    if (compare.toLowerCase().contains(keyword.toLowerCase()))
+                        return true;
+                        //is = keyword.toLowerCase().equals(compare.toLowerCase());
                 }
             }
         } else {
-            is = true;
+            return true;
         }
 
-
-//        boolean is = compareTo.containsAll(getKeywords());
-        Log.e("Ember", String.valueOf(is));
-        return is;
+        return false;
 
     }
 
