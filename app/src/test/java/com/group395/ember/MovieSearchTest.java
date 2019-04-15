@@ -1,6 +1,7 @@
 package com.group395.ember;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class MovieSearchTest {
         pageNumMoviesReturned = 6;
     }
 
-    @Test
+    @Ignore
     public void searchByActor() throws InterruptedException{
         ArrayList<Movie> results = new ArrayList<>();
         String query = "Kevin Spacey";
@@ -36,7 +37,7 @@ public class MovieSearchTest {
         System.out.println("Full: "+(end-start)/(1000000*1000.0));
     }
 
-    @Test
+    @Ignore
     public void search()throws InterruptedException{
         List<Movie> results = new ArrayList<>();
         String query = "star";
@@ -66,7 +67,7 @@ public class MovieSearchTest {
         System.out.println("Full: "+(end-start)/(1000000*1000.0));
     }
 
-    @Test
+    @Ignore
     public void url() throws InterruptedException{
         MovieSearch.searchFull("Remember the");
         Thread.sleep(2000);
