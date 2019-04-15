@@ -1,39 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MoviePageActivity">
-
-    <Button
-        android:id="@+id/backButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:onClick="backOnClick"
-        android:text="@string/back"
-        app:layout_constraintBottom_toTopOf="@+id/suggestionsButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/suggestionsButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:onClick="suggestionsOnClick"
-        android:text="@string/view_suggestions"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/titleDisp"
@@ -49,91 +21,88 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/genreDisp"
+        android:id="@+id/actorDisp"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:maxLines="6"
+        android:text="actorDisp"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/directorDisp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/directorDisp"
+        fresco:layout_constraintHorizontal_bias="0.0"
+        fresco:layout_constraintTop_toBottomOf="@+id/titleDisp" />
+
+    <Button
+        android:id="@+id/directorDisp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
-        android:maxLines="3"
-        android:text="genreDisp"
+        android:layout_marginBottom="8dp"
+        android:maxLines="6"
+        android:text="directorDisp"
         android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/writerDisp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/writerDisp"
-        app:layout_constraintTop_toBottomOf="@+id/yearDisp" />
+        app:layout_constraintStart_toStartOf="@+id/imdbRatingDisp"
+        app:layout_constraintTop_toBottomOf="@+id/actorDisp"
+        fresco:layout_constraintEnd_toEndOf="parent" />
 
-    <Button
-        android:id="@+id/yearDisp"
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/imageViewDrawee"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="16dp"
-        android:maxLines="3"
-        android:text="yearDisp"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/genreDisp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/genreDisp"
-        app:layout_constraintTop_toBottomOf="@+id/runtimeDisp" />
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/platformDisp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleDisp"
+        fresco:layout_constraintEnd_toStartOf="@+id/directorDisp" />
 
     <Button
-        android:id="@+id/runtimeDisp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:maxLines="3"
-        android:text="runtimeDisp"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/yearDisp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/yearDisp"
-        app:layout_constraintTop_toBottomOf="@+id/titleDisp" />
-
-    <Button
-        android:id="@+id/actorDisp"
+        android:id="@+id/platformDisp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="16dp"
-        android:maxLines="3"
-        android:text="actorDisp"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/metascoreDisp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="4dp"
+        android:text="platformDisp"
+        app:layout_constraintBottom_toTopOf="@+id/genreDisp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/directorDisp" />
+        fresco:layout_constraintEnd_toStartOf="@+id/writerDisp" />
 
     <Button
         android:id="@+id/writerDisp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
-        android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
         android:maxLines="3"
         android:text="writerDisp"
         android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/actorDisp"
+        app:layout_constraintBottom_toTopOf="@+id/genreDisp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/directorDisp"
-        app:layout_constraintTop_toBottomOf="@+id/genreDisp" />
+        app:layout_constraintStart_toEndOf="@+id/platformDisp"
+        app:layout_constraintTop_toBottomOf="@+id/directorDisp" />
 
     <Button
-        android:id="@+id/directorDisp"
+        android:id="@+id/genreDisp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
-        android:layout_marginEnd="2dp"
+        android:layout_marginEnd="16dp"
         android:maxLines="3"
-        android:text="directorDisp"
+        android:text="genreDisp"
         android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/actorDisp"
-        app:layout_constraintEnd_toStartOf="@+id/writerDisp"
+        app:layout_constraintBottom_toTopOf="@+id/metascoreDisp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/genreDisp" />
+        app:layout_constraintTop_toBottomOf="@+id/writerDisp" />
 
     <Button
         android:id="@+id/metascoreDisp"
@@ -148,7 +117,7 @@
         app:layout_constraintBottom_toTopOf="@+id/plotDisp"
         app:layout_constraintEnd_toStartOf="@+id/imdbRatingDisp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/actorDisp" />
+        app:layout_constraintTop_toBottomOf="@+id/genreDisp" />
 
     <Button
         android:id="@+id/imdbRatingDisp"
@@ -176,20 +145,37 @@
         android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/backButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/metascoreDisp" />
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/imageViewDrawee"
+    <Button
+        android:id="@+id/backButton"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:onClick="backOnClick"
+        android:text="@string/back"
+        app:layout_constraintBottom_toTopOf="@+id/suggestionsButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/plotDisp" />
+
+    <Button
+        android:id="@+id/suggestionsButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/directorDisp"
-        app:layout_constraintEnd_toStartOf="@+id/yearDisp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/runtimeDisp" />
+        android:onClick="suggestionsOnClick"
+        android:text="@string/view_suggestions"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

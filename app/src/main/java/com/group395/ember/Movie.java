@@ -296,7 +296,7 @@ public class Movie {
                 ", Production='" + Production + '\'' +
                 ", Website='" + Website + '\'' +
                 ", Response='" + Response + '\'' +
-                ", platforms=" + Platforms +
+                ", Platforms=" + Platforms +
                 '}';
     }
 
