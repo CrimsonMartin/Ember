@@ -169,7 +169,7 @@ public class SuggestionsActivity extends AppCompatActivity {
         int numMoviesToDisplay = suggestionButtons.size();
 
         List<Movie> moviesToDisplay = getMovies(
-                currentPage - 1,
+                (currentPage - 1)*numMoviesToDisplay,
                 numMoviesToDisplay * (currentPage));
 
         setSuggestionButtons(moviesToDisplay);
