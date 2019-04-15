@@ -312,7 +312,9 @@ public class Movie {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getTitle(), getYear(), getReleased(), getDirector(), getActors(), getProduction());
+        return Objects.hash(
+                getTitle().toLowerCase()
+        );
     }
 
     //full jsonMovie class where it reads in all info on movie

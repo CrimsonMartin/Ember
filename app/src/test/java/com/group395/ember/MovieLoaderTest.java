@@ -2,7 +2,6 @@ package com.group395.ember;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -14,6 +13,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.awaitility.Awaitility.await;
 import static org.awaitility.Awaitility.fieldIn;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -115,7 +115,7 @@ public class MovieLoaderTest {
         assertThat(returned.getYear(), is(equalTo(1996)));
     }
 
-    @Ignore
+    @Test
     public void testOrderofLoading() throws Exception{
         List<Movie> m1 = new ArrayList<Movie>(){{
             add(new Movie("Space Jam"));
@@ -135,6 +135,29 @@ public class MovieLoaderTest {
         assertThat(rmember.getYear(), is(equalTo(2000)));
         assertThat(savingprivate.getYear(), is(equalTo(1998)));
         assertThat(slp.getYear(), is(equalTo(2012)));
+
+    }
+
+    @Test
+    public void testCachingSpeed() throws Exception{
+        Movie spaceJam = new Movie("Space Jam");
+        String savingPrivateRyan = "Saving Private Ryan";
+        List<Future<Movie>> returned = new ArrayList<>();
+
+        long startTime = System.currentTimeMillis();
+
+        for(int i = 0; i < 10000; i++){
+            returned.add(ml.loadMovie(spaceJam));
+            returned.add(ml.loadMovieByTitle(savingPrivateRyan));
+        }
+
+        for(Future f : returned){
+            f.get();
+        }
+        long endTime = System.currentTimeMillis();
+        long duration = (endTime - startTime);
+
+        assertTrue(duration < 1000);
 
     }
 
