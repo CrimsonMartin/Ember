@@ -2,6 +2,7 @@ package com.group395.ember;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -139,7 +140,7 @@ public class MovieLoaderTest {
     }
 
     @Test
-    public void testCachingSpeed() throws Exception{
+    public void testMovieCachingSpeed() throws Exception{
         Movie spaceJam = new Movie("Space Jam");
         String savingPrivateRyan = "Saving Private Ryan";
         List<Future<Movie>> returned = new ArrayList<>();
@@ -158,6 +159,14 @@ public class MovieLoaderTest {
         long duration = (endTime - startTime);
 
         assertTrue(duration < 1000);
+
+    }
+
+    @Ignore
+    public void testPlatformCachingSpeed() throws Exception{
+        ml.loadPlatforms(goalSpaceJam);
+        Thread.sleep(2000);
+        System.out.println(goalSpaceJam.getPlatforms());
 
     }
 
