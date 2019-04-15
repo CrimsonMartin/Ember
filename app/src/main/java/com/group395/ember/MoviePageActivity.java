@@ -43,35 +43,54 @@ public class MoviePageActivity extends AppCompatActivity {
     }
 
     private void displayAll(){
-        Button tempDisp = findViewById(R.id.titleDisp);
-        tempDisp.setText(currentMovie.getTitle());
-        tempDisp = findViewById(R.id.yearDisp);
-        if(currentMovie.getYear() > 0) { tempDisp.setText(currentMovie.getYear().toString()); }
-        else{ tempDisp.setText(R.string.no_year); }
-        tempDisp = findViewById(R.id.genreDisp);
-        if(currentMovie.getGenre().size() > 0){ tempDisp.setText(getApplicationContext().getString(R.string.genre_list, SearchResultsActivity.stripBrackets(currentMovie.getGenre().toString()))); }
-        else{ tempDisp.setText(R.string.no_genres);}
-        tempDisp = findViewById(R.id.runtimeDisp);
-        tempDisp.setText(currentMovie.getRuntime());
-        tempDisp = findViewById(R.id.actorDisp);
-        if(currentMovie.getActors().size() > 0){ tempDisp.setText(getApplicationContext().getString(R.string.actor_list, SearchResultsActivity.stripBrackets(currentMovie.getActors().toString()))); }
-        else{ tempDisp.setText(R.string.no_actors); }
-        tempDisp = findViewById(R.id.writerDisp);
-        if(currentMovie.getWriter().size() > 0){ tempDisp.setText(getApplicationContext().getString(R.string.writer_list, SearchResultsActivity.stripBrackets(currentMovie.getWriter().toString()))); }
-        else{ tempDisp.setText(R.string.no_writers); }
-        tempDisp = findViewById(R.id.directorDisp);
-        if(currentMovie.getDirector() != null){ tempDisp.setText(getApplicationContext().getString(R.string.director_list, (currentMovie.getDirector()))); }
-        else{ tempDisp.setText(R.string.no_director); }
-        tempDisp = findViewById(R.id.metascoreDisp);
-        tempDisp.setText(getApplicationContext().getString(R.string.metascore, currentMovie.getMetascore()));
-        tempDisp = findViewById(R.id.imdbRatingDisp);
-        if(currentMovie.getImdbRating() == null){ tempDisp.setText("No IMDb rating found"); }
-        else{ tempDisp.setText(getApplicationContext().getString(R.string.imdb_rating, currentMovie.getImdbRating().toString())); }
-        tempDisp = findViewById(R.id.plotDisp);
-        tempDisp.setText(currentMovie.getPlot());
-        Uri uri = Uri.parse(currentMovie.getPoster());
-        SimpleDraweeView draweeView = findViewById(R.id.imageViewDrawee);
-        draweeView.setImageURI(uri);
+        if(currentMovie != null) {
+            if ((currentMovie.getYear() != null) && (currentMovie.getYear() > 0)) {
+                ((Button) findViewById(R.id.titleDisp)).setText(getApplicationContext().getString(R.string.title_with_year, currentMovie.getTitle(), currentMovie.getYear().toString()));
+            } else {
+                ((Button) findViewById(R.id.titleDisp)).setText(currentMovie.getTitle());
+            }
+            if ((currentMovie.getGenre() != null) && (currentMovie.getGenre().size() > 0)) {
+                ((Button) findViewById(R.id.genreDisp)).setText(getApplicationContext().getString(R.string.genre_list, SearchResultsActivity.stripBrackets(currentMovie.getGenre().toString())));
+            } else {
+                ((Button) findViewById(R.id.genreDisp)).setText(R.string.no_genres);
+            }
+            if ((currentMovie.getActors() != null) && (currentMovie.getActors().size() > 0)) {
+                ((Button) findViewById(R.id.actorDisp)).setText(getApplicationContext().getString(R.string.actor_list, SearchResultsActivity.stripBrackets(currentMovie.getActors().toString())));
+            } else {
+                ((Button) findViewById(R.id.actorDisp)).setText(R.string.no_actors);
+            }
+            if ((currentMovie.getWriter() != null) && (currentMovie.getWriter().size() > 0)) {
+                ((Button) findViewById(R.id.writerDisp)).setText(getApplicationContext().getString(R.string.writer_list, SearchResultsActivity.stripBrackets(currentMovie.getWriter().toString())));
+            } else {
+                ((Button) findViewById(R.id.writerDisp)).setText(R.string.no_writers);
+            }
+            if (currentMovie.getDirector() != null) {
+                ((Button) findViewById(R.id.directorDisp)).setText(getApplicationContext().getString(R.string.director_list, (currentMovie.getDirector())));
+            } else {
+                ((Button) findViewById(R.id.directorDisp)).setText(R.string.no_director);
+            }
+            ((Button) findViewById(R.id.metascoreDisp)).setText(getApplicationContext().getString(R.string.metascore, currentMovie.getMetascore()));
+            if (currentMovie.getImdbRating() == null) {
+                ((Button) findViewById(R.id.imdbRatingDisp)).setText(R.string.no_imdb);
+            } else {
+                ((Button) findViewById(R.id.imdbRatingDisp)).setText(getApplicationContext().getString(R.string.imdb_rating, currentMovie.getImdbRating().toString()));
+            }
+            if(currentMovie.getPlot() != null) {
+                ((Button) findViewById(R.id.plotDisp)).setText(currentMovie.getPlot());
+            }else{
+                ((Button) findViewById(R.id.plotDisp)).setText(R.string.no_plot);
+            }
+            if((currentMovie.getPlatforms() != null) && (currentMovie.getPlatforms().size() > 0)){
+                ((Button) findViewById(R.id.platformDisp)).setText(getApplicationContext().getString(R.string.platforms, SearchResultsActivity.stripBrackets(currentMovie.getPlatforms().toString())));
+            }else{
+                ((Button) findViewById(R.id.platformDisp)).setText(R.string.no_platform);
+            }
+            if(currentMovie.getPoster() != null) {
+                Uri uri = Uri.parse(currentMovie.getPoster());
+                SimpleDraweeView draweeView = findViewById(R.id.imageViewDrawee);
+                draweeView.setImageURI(uri);
+            }
+        }
     }
 
     protected void setMovie(Movie input){ currentMovie = input; }
