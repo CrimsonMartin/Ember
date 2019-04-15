@@ -77,6 +77,8 @@ public class SuggestionsActivity extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
+            setAllSuggestionsTo(View.VISIBLE);
+
             if (movies.size() > 0){
                 updateMoviesByPageNumber();
             } else {
@@ -182,7 +184,7 @@ public class SuggestionsActivity extends AppCompatActivity {
         int numMoviesToDisplay = suggestionButtons.size();
 
         List<Movie> moviesToDisplay = getMovies(
-                (currentPage - 1)*numMoviesToDisplay,
+                (currentPage - 1 )*numMoviesToDisplay,
                 numMoviesToDisplay * (currentPage));
 
         setSuggestionButtons(moviesToDisplay);
