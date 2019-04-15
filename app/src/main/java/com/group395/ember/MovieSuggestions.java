@@ -132,13 +132,13 @@ public class MovieSuggestions {
         return tmdbUrl + "movie/"+ id +"/" + tmdbSuggestionUrl + tmdbApiKey + tmdbSettings;
     }
 
-    private String getImdbIdFromTmdb(Integer tmdbId){
+    private static String getImdbIdFromTmdb(Integer tmdbId){
         try {
             Gson gson = new Gson();
             URL obj = new URL(tmdbUrl + "movie/" + tmdbId + "/" + tmdbExternalIdsUrl + tmdbApiKey + tmdbSettings);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
             con.setRequestMethod("GET");
-            reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
             ExternalIdResults newResults = gson.fromJson(reader, ExternalIdResults.class);
             return newResults.getImdb_id();
         }catch (Exception e){
