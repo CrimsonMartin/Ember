@@ -172,8 +172,10 @@ public class UISearch {
             this.search(moviesNeeded);
             //this.applyFilters(moviesNeeded);
             output = new Movie[2];
-            output[0] = results.get(pagesSkipped * 2);
-            output[1] = results.get(pagesSkipped * 2 + 1);
+            if (results.size() >= pagesSkipped * 2)
+                output[0] = results.get(pagesSkipped * 2);
+            if (results.size() >= pagesSkipped * 2 + 1 && !results.get(pagesSkipped * 2).equals(results.get(pagesSkipped * 2 + 1)))
+                output[1] = results.get(pagesSkipped * 2 + 1);
         }
         catch (IndexOutOfBoundsException | InterruptedException e){
             output = new Movie[]{null, null};
