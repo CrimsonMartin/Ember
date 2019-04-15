@@ -74,7 +74,7 @@ public class UISearch {
      * @param newSearch is a String containing new search terms
      */
     public void setSearch(String newSearch) {
-        searchTerms = newSearch;
+        searchTerms = newSearch.trim();
     }
 
     /**

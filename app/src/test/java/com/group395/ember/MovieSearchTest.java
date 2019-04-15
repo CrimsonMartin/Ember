@@ -7,6 +7,8 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+
 public class MovieSearchTest {
 
     private Movie m1;
@@ -24,31 +26,23 @@ public class MovieSearchTest {
     public void searchByActor() throws InterruptedException{
         ArrayList<Movie> results = new ArrayList<>();
         String query = "Kevin Spacey";
-        System.out.println("**By Actor**");
-        long start = System.nanoTime();
         m.searchByActor(query);
         while(results.size() < pageNumMoviesReturned){
             results.add(m.results.take());
-            System.out.println(results.get(results.size()-1));
         }
-        long end = System.nanoTime();
-        System.out.println("Number of Results: " + results);
-
-        System.out.println("Full: "+(end-start)/(1000000*1000.0));
+        assertEquals(results.size(), pageNumMoviesReturned);
     }
 
     @Ignore
     public void search()throws InterruptedException{
         List<Movie> results = new ArrayList<>();
         String query = "star";
-        System.out.println("** By Movie **");
         long start = System.nanoTime();
         m.searchFull(query);
         while(results.size() < pageNumMoviesReturned){
             results.add(m.results.take());
         }
         long end = System.nanoTime();
-        System.out.println("First Page: "+ (end-start)/(1000000*1000.0));
     }
 
     @Test
