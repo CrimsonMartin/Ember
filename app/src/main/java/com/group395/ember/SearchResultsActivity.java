@@ -1,7 +1,6 @@
 package com.group395.ember;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -9,7 +8,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 public class SearchResultsActivity extends AppCompatActivity {
@@ -52,26 +50,27 @@ public class SearchResultsActivity extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
+            findViewById(R.id.resultButtonA).setVisibility(View.VISIBLE);
+            findViewById(R.id.resultButtonB).setVisibility(View.VISIBLE);
+
             if(loadedMovies[0] == null){
                 findViewById(R.id.resultButtonA).setClickable(false);
+                findViewById(R.id.resultButtonA).setVisibility(View.INVISIBLE);
             }
+
             if (loadedMovies[1] == null){
                 findViewById(R.id.resultButtonB).setClickable(false);
+                findViewById(R.id.resultButtonB).setVisibility(View.INVISIBLE);
             }
 
             if(loadedMovies[0] == null && loadedMovies[1] == null){
                 createNoMoviesAlertDialog();
             }
 
-            findViewById(R.id.resultButtonA).setVisibility(View.VISIBLE);
-            findViewById(R.id.resultButtonB).setVisibility(View.VISIBLE);
             displayAll();
-
 
             findViewById(R.id.loadingProgressBar1).setVisibility(View.INVISIBLE);
             findViewById(R.id.loadingProgressBar2).setVisibility(View.INVISIBLE);
-
-
         }
 
         @Override

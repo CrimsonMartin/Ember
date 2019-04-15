@@ -1,6 +1,8 @@
 package com.group395.ember;
 
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -74,7 +76,7 @@ public class UISearch {
      * @param newSearch is a String containing new search terms
      */
     public void setSearch(String newSearch) {
-        searchTerms = newSearch;
+        searchTerms = newSearch.trim();
     }
 
     /**
@@ -85,8 +87,10 @@ public class UISearch {
     public List<Movie> search(int MoviesNeeded) throws InterruptedException{
         while(results.size() < MoviesNeeded && currentSearch.totalResults != 0 && !currentSearch.isExhausted()){
             Movie current = currentSearch.results.poll(2, TimeUnit.SECONDS);
-            if(current != null && current.getTitle() != null && fitsFilters(current))
+            if(current != null && current.getTitle() != null && fitsFilters(current) && !current.getTitle().contains("No results found containing: ")) {
                 results.add(current);
+                Log.e("Ember", "Added " + current.getTitle());
+            }
         }
         return results;
     }
@@ -155,9 +159,9 @@ public class UISearch {
         currentSearch = new MovieSearch();
         try {
             if (actorNotTitle) {
-                currentSearch.searchByActor(searchTerms);
+                currentSearch.searchByActor(searchTerms.trim());
             } else {
-                currentSearch.searchFull(searchTerms);
+                currentSearch.searchFull(searchTerms.trim());
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -170,12 +174,14 @@ public class UISearch {
         try{
             int moviesNeeded = pagesSkipped * 2 + 2;
             this.search(moviesNeeded);
-            //this.applyFilters(moviesNeeded);
+
             output = new Movie[2];
-            if (results.size() >= pagesSkipped * 2)
+            Log.e("Ember", "Results has " + results.get(0).getTitle());
+            if (results.size() > pagesSkipped * 2)
                 output[0] = results.get(pagesSkipped * 2);
-            if (results.size() >= pagesSkipped * 2 + 1 && !results.get(pagesSkipped * 2).equals(results.get(pagesSkipped * 2 + 1)))
+            if (results.size() > pagesSkipped * 2 + 1 && !results.get(pagesSkipped * 2).equals(results.get(pagesSkipped * 2 + 1)))
                 output[1] = results.get(pagesSkipped * 2 + 1);
+            Log.e("Ember", "Output has " + output[0].getTitle());
         }
         catch (IndexOutOfBoundsException | InterruptedException e){
             output = new Movie[]{null, null};
