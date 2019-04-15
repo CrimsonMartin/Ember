@@ -89,7 +89,7 @@ public class MovieSuggestions {
             ArrayList<Movie> suggestionResults = new ArrayList<Movie>();
             for(TmdbMovie movie : results){
                 Movie current = movie.toMovie();
-                String imdbId = getImdbIdFromTmdb(current.getTmdbID());
+                String imdbId = getImdbIdFromTmdb(movie.getId());
                 current.setImdbID(imdbId);
                 suggestionResults.add(current);
             }

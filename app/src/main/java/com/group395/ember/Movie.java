@@ -36,10 +36,8 @@ public class Movie {
     private String Production;
     private String Website;
     private String Response;
-
-
-
     private Integer tmdbID;
+
     public Set<String> Platforms = new LinkedHashSet<>();
 
     //Doubles and Ints we end up using need parsed first, because many times the API passes "N/A"
