@@ -26,7 +26,7 @@ class MovieLoader {
     private ExecutorService executor = Executors.newFixedThreadPool(MAXNUMTHREADS);
 
     private Map<Movie, Future<Movie>> movieCache = new HashMap<>();
-    private Map<Movie, String> platformCache = new HashMap<>();
+    private Map<Movie, Future<Movie>> platformCache = new HashMap<>();
 
 
     private class MovieLoaderThread implements Callable<Movie> {
@@ -67,7 +67,7 @@ class MovieLoader {
         }
     }
 
-    private class LoadPlatformsThread implements Runnable{
+    private class LoadPlatformsThread implements Callable<Movie>{
 
         private Movie movie;
 
@@ -81,18 +81,18 @@ class MovieLoader {
         }
 
         @Override
-        public void run() {
+        public Movie call() {
             try {
                 HttpResponse<JsonNode> response = Unirest.get(createUtelliSearchURL(movie.getTitle()))
                         .header("X-RapidAPI-Key", utelliAPIKey)
                         .asJson();
 
-                platformCache.put(movie, response.getBody().toString());
                 movie.addPlatforms(response.getBody().toString());
 
             } catch (UnirestException e) {
                 //System.out.println("loading platform failed, exception " + e.getMessage());
             }
+            return movie;
         }
     }
 
@@ -148,11 +148,13 @@ class MovieLoader {
     /**
      * @param m Movie object to load the available platforms for
      */
-    void loadPlatforms(Movie m) {
+    Future<Movie> loadPlatforms(Movie m) {
         if (platformCache.containsKey(m)){
-             m.addPlatforms(platformCache.get(m));
+            return platformCache.get(m);
         } else{
-            new LoadPlatformsThread(m).run();
+            Future<Movie> futureMovie = executor.submit(new LoadPlatformsThread(m));
+            platformCache.put(m, futureMovie);
+            return futureMovie;
         }
     }
 
