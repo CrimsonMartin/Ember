@@ -144,6 +144,7 @@ public class SearchResultsActivity extends AppCompatActivity {
         Intent nextPage  = new Intent(SearchResultsActivity.this, MoviePageActivity.class);
         HistoryActivity.addClick(currentMovie);
         nextPage.putExtra("title", currentMovie.getTitle());
+        nextPage.putExtra("id", currentMovie.getImdbID());
         nextPage.putExtra("fromHistoryActivity", false);
         Logger.saveToHistory(currentMovie);
         startActivity(nextPage);

@@ -40,6 +40,10 @@ class MovieLoader {
             return omdbUrl +"apikey=" + omdbApiKey + "&t=" + title + "&plot=full";
         }
 
+        private String omdbUrlFromID (String id) {
+            return omdbUrl +"apikey=" + omdbApiKey + "&i=" + id + "&plot=full";
+        }
+
         MovieLoaderThread(Movie m) {
             movie = m;
         }
@@ -47,8 +51,8 @@ class MovieLoader {
         @Override
         public Movie call() throws Exception{
 
-            String movieTitle = movie.getTitle();
-            String url = omdbUrlFromTitle(movieTitle);
+            String movieID = movie.getImdbID();
+            String url = omdbUrlFromID(movieID);
 
             URL obj = new URL(url);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -101,7 +105,6 @@ class MovieLoader {
             Future<Movie> futureMovie = executor.submit(new MovieLoaderThread(m));
             movieCache.put(m, futureMovie);
             return futureMovie;
-
         }
     }
 

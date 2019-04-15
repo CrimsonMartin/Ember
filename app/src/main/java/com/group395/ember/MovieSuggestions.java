@@ -18,6 +18,7 @@ public class MovieSuggestions {
     private static String tmdbUrl = "https://api.themoviedb.org/3/";
     private static String tmdbSearchUrl = "search/movie?api_key=";
     private static String tmdbSuggestionUrl = "recommendations?api_key=";
+    private static String tmdbExternalIdsUrl = "external_ids?api_key=";
     private static String tmdbSettings = "&language=en-US&include_adult=false&page=1";
 
     private MovieLoader loader = new MovieLoader();
@@ -77,7 +78,7 @@ public class MovieSuggestions {
     }
 
     //This is the class Gson parses to return the search results
-    public class SuggestionResults{
+    private class SuggestionResults{
         ArrayList<TmdbMovie> results;
 
         public String toString(){
@@ -87,9 +88,20 @@ public class MovieSuggestions {
         public ArrayList<Movie> getResults(){
             ArrayList<Movie> suggestionResults = new ArrayList<Movie>();
             for(TmdbMovie movie : results){
-                suggestionResults.add(movie.toMovie());
+                Movie current = movie.toMovie();
+                String imdbId = getImdbIdFromTmdb(current.getTmdbID());
+                current.setImdbID(imdbId);
+                suggestionResults.add(current);
             }
             return suggestionResults;
+        }
+    }
+
+    private class ExternalIdResults{
+        String imdb_id;
+
+        public String getImdb_id(){
+            return imdb_id;
         }
     }
 
@@ -119,6 +131,24 @@ public class MovieSuggestions {
     private String tmdbSuggestions(Integer id){
         return tmdbUrl + "movie/"+ id +"/" + tmdbSuggestionUrl + tmdbApiKey + tmdbSettings;
     }
+
+    private String getImdbIdFromTmdb(Integer tmdbId){
+        try {
+            Gson gson = new Gson();
+            URL obj = new URL(tmdbUrl + "movie/" + tmdbId + "/" + tmdbExternalIdsUrl + tmdbApiKey + tmdbSettings);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            con.setRequestMethod("GET");
+            reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            ExternalIdResults newResults = gson.fromJson(reader, ExternalIdResults.class);
+            return newResults.getImdb_id();
+        }catch (Exception e){
+            e.printStackTrace();
+            return ""+0;
+        }
+
+    }
+
+    private
 
     boolean close(){
         try{
