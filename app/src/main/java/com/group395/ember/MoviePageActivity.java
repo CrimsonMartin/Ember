@@ -28,11 +28,12 @@ public class MoviePageActivity extends AppCompatActivity {
         fromHistoryActivity = getIntent().getBooleanExtra("fromHistoryActivity", false);
 
         try{
-            if (currentMovie.isInvalid()){
-                MovieLoader ml = new MovieLoader();
-                currentMovieFuture = ml.loadMovie(currentMovie);
-                currentMovie = currentMovieFuture.get();
-            }
+
+            //TODO this needs to be an async activity that loads the movie and turns on the display when it's loaded
+
+            MovieLoader ml = new MovieLoader();
+            currentMovieFuture = ml.loadMovie(currentMovie);
+            currentMovie = currentMovieFuture.get();
         }catch(InterruptedException | ExecutionException e){
             //pass
         }
@@ -40,8 +41,6 @@ public class MoviePageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_page);
         displayAll();
     }
-
-    //TODO async activity that loads the movie and turns on the display when it's loaded
 
     private void displayAll(){
         Button tempDisp = findViewById(R.id.titleDisp);
