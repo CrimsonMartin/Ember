@@ -307,13 +307,20 @@ public class Movie {
         if (this == o) return true;
         if (!(o instanceof Movie)) return false;
         Movie movie = (Movie) o;
-        return movie.getTitle().toLowerCase().equals(this.getTitle().toLowerCase());
+        boolean titleEqual = movie.getTitle().toLowerCase().equals(this.getTitle().toLowerCase());
+
+        String movieTitle = movie.getImdbID();
+        String thisTitle = this.getImdbID();
+        if (movieTitle == null || thisTitle == null) return titleEqual;
+        else return (titleEqual && movieTitle.equals(thisTitle));
+
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(
-                getTitle().toLowerCase()
+                getTitle().toLowerCase(),
+                getImdbID()
         );
     }
 
