@@ -79,10 +79,11 @@ public class SuggestionsActivity extends AppCompatActivity {
 
             setAllSuggestionsTo(View.VISIBLE);
 
-            try{
+            if (movies.size() > 0){
                 updateMoviesByPageNumber();
-            } catch (IndexOutOfBoundsException e){
+            } else {
                 createNoMoviesAlertDialog();
+                setAllSuggestionsTo(View.INVISIBLE);
             }
 
             findViewById(R.id.nextButtonSA).setClickable(true);
@@ -107,8 +108,6 @@ public class SuggestionsActivity extends AppCompatActivity {
                     return null;
                 }
             }
-
-
 
             return null;
         }
@@ -152,26 +151,40 @@ public class SuggestionsActivity extends AppCompatActivity {
 
     private void setAllSuggestionsTo(int visibility){
         for (View v : suggestionButtons){
+            v.setClickable(true);
             v.setVisibility(visibility);
         }
     }
 
     private void setSuggestionButtons(List<Movie> moviesToBeDisplayed){
         for(View v: suggestionButtons){
-            ((Button)v).setText(
-                    moviesToBeDisplayed.get(
-                            suggestionButtons.indexOf(v))
-                            .getTitle()
-            );
+            try{
+                Movie toBeDisplayed =  moviesToBeDisplayed.get(suggestionButtons.indexOf(v));
+                if (toBeDisplayed == null || toBeDisplayed.isInvalid()){
+                    hideButton(v);
+                }else {
+                    ((Button)v).setText(toBeDisplayed.getTitle());
+                }
+            } catch (IndexOutOfBoundsException e){
+                hideButton(v);
+            }
+
         }
     }
+
+    private void hideButton(View v){
+        v.setVisibility(View.INVISIBLE);
+        v.setClickable(false);
+    }
+
+
 
     private void updateMoviesByPageNumber(){
 
         int numMoviesToDisplay = suggestionButtons.size();
 
         List<Movie> moviesToDisplay = getMovies(
-                (currentPage - 1)*numMoviesToDisplay,
+                (currentPage - 1 )*numMoviesToDisplay,
                 numMoviesToDisplay * (currentPage));
 
         setSuggestionButtons(moviesToDisplay);
