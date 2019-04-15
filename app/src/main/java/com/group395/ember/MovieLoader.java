@@ -25,6 +25,10 @@ class MovieLoader {
     private static int MAXNUMTHREADS =4;
     private ExecutorService executor = Executors.newFixedThreadPool(MAXNUMTHREADS);
 
+    private Map<Movie, Future<Movie>> movieCache = new HashMap<>();
+    private Map<Movie, String> platformCache = new HashMap<>();
+
+
     private class MovieLoaderThread implements Callable<Movie> {
 
         private Movie movie;
@@ -74,15 +78,14 @@ class MovieLoader {
                         .header("X-RapidAPI-Key", utelliAPIKey)
                         .asJson();
 
-                    movie.addPlatforms(response.getBody().toString());
+                platformCache.put(movie, response.getBody().toString());
+                movie.addPlatforms(response.getBody().toString());
 
             } catch (UnirestException e) {
                 //System.out.println("loading platform failed, exception " + e.getMessage());
             }
         }
     }
-
-    private Map<Movie, Future<Movie>> movieCache = new HashMap<>();
 
     /**
      *
@@ -138,8 +141,11 @@ class MovieLoader {
      * @param m Movie object to load the available platforms for
      */
     void loadPlatforms(Movie m) {
-        LoadPlatformsThread lpt = new LoadPlatformsThread(m);
-        lpt.run();
+        if (platformCache.containsKey(m)){
+             m.addPlatforms(platformCache.get(m));
+        } else{
+            new LoadPlatformsThread(m).run();
+        }
     }
 
     /**
