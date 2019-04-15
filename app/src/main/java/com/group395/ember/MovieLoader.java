@@ -51,8 +51,13 @@ class MovieLoader {
         @Override
         public Movie call() throws Exception{
 
+            String url;
             String movieID = movie.getImdbID();
-            String url = omdbUrlFromID(movieID);
+            if (movieID == null){
+                url = omdbUrlFromTitle(movie.getTitle());
+            }else{
+                url = omdbUrlFromID(movieID);
+            }
 
             URL obj = new URL(url);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
