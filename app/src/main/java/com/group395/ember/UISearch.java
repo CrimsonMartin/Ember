@@ -155,9 +155,9 @@ public class UISearch {
         currentSearch = new MovieSearch();
         try {
             if (actorNotTitle) {
-                currentSearch.searchByActor(searchTerms);
+                currentSearch.searchByActor(searchTerms.trim());
             } else {
-                currentSearch.searchFull(searchTerms);
+                currentSearch.searchFull(searchTerms.trim());
             }
         }catch(Exception e){
             e.printStackTrace();
