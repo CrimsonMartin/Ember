@@ -111,10 +111,10 @@ public class HistoryActivity extends AppCompatActivity {
                 Logger.trimCache(movieTitles.subList(movieTitles.size() - 8, movieTitles.size()));
 
         } catch (FileNotFoundException e) {
+
             Log.e("Ember", "File not found in loadhistory while pulling.");
             e.printStackTrace();
-        } //catch (InterruptedException e) {
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
