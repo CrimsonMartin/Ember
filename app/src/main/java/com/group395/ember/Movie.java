@@ -36,9 +36,6 @@ public class Movie {
     private String Production;
     private String Website;
     private String Response;
-
-
-
     private Integer tmdbID;
     public Set<String> Platforms = new LinkedHashSet<>();
 
@@ -298,7 +295,7 @@ public class Movie {
                 ", Production='" + Production + '\'' +
                 ", Website='" + Website + '\'' +
                 ", Response='" + Response + '\'' +
-                ", platforms=" + Platforms +
+                ", Platforms=" + Platforms +
                 '}';
     }
 

@@ -22,6 +22,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_with_year">%1$s (%2$s)</string>
     <string name="starring">Starring: %1$s</string>
+    <string name="platforms">Platforms: %1$s</string>
     <string name="directed_by">Directed by %1$s</string>
     <string name="page_number">Page %1$d</string>
     <string name="next">Next</string>
@@ -48,4 +49,7 @@
     <string name="no_actors">No actors found</string>
     <string name="no_writers">No writers found</string>
     <string name="no_director">No directors found</string>
+    <string name="no_imdb">No IMDb rating found</string>
+    <string name="no_plot">No plot found</string>
+    <string name="no_platform">No platform found</string>
 </resources>
