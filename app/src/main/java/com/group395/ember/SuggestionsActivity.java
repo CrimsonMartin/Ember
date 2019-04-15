@@ -77,12 +77,11 @@ public class SuggestionsActivity extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            setAllSuggestionsTo(View.VISIBLE);
-
             if (movies.size() > 0){
                 updateMoviesByPageNumber();
             } else {
                 createNoMoviesAlertDialog();
+                setAllSuggestionsTo(View.INVISIBLE);
             }
 
             findViewById(R.id.nextButtonSA).setClickable(true);
@@ -157,16 +156,26 @@ public class SuggestionsActivity extends AppCompatActivity {
 
     private void setSuggestionButtons(List<Movie> moviesToBeDisplayed){
         for(View v: suggestionButtons){
-            Movie toBeDisplayed =  moviesToBeDisplayed.get(suggestionButtons.indexOf(v));
-
-            if (toBeDisplayed == null || toBeDisplayed.isInvalid()){
-                v.setVisibility(View.INVISIBLE);
-                v.setClickable(false);
-            }else {
-                ((Button)v).setText(toBeDisplayed.getTitle());
+            try{
+                Movie toBeDisplayed =  moviesToBeDisplayed.get(suggestionButtons.indexOf(v));
+                if (toBeDisplayed == null || toBeDisplayed.isInvalid()){
+                    hideButton(v);
+                }else {
+                    ((Button)v).setText(toBeDisplayed.getTitle());
+                }
+            } catch (IndexOutOfBoundsException e){
+                hideButton(v);
             }
+
         }
     }
+
+    private void hideButton(View v){
+        v.setVisibility(View.INVISIBLE);
+        v.setClickable(false);
+    }
+
+
 
     private void updateMoviesByPageNumber(){
 
