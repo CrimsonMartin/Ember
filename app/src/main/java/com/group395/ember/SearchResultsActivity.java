@@ -1,12 +1,15 @@
 package com.group395.ember;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class SearchResultsActivity extends AppCompatActivity {
@@ -15,6 +18,9 @@ public class SearchResultsActivity extends AppCompatActivity {
     //This field specifies how many sets of 2 Movies have been moved past by the "next" button.
     private static int pagesSkipped = 0;
     public static UISearch uiSearch = new UISearch();
+    private boolean actorNotTitle;
+
+    private LoadMoviesTask loadMoviesTask;
 
 
     public static Movie exampleMovie = Movie.parseFromJson("{\"Title\":\"Space Jam\",\"Year\":\"1996\",\"Rated\":\"PG\",\"Released\":\"15 Nov 1996\",\"Runtime\":\"88 min\",\"Genre\":\"Animation, Adventure, " +
@@ -28,22 +34,16 @@ public class SearchResultsActivity extends AppCompatActivity {
 
     private class LoadMoviesTask extends AsyncTask<Void, Void, Void> {
 
-        private Context context;
-        private boolean actorNotTitle = getIntent().getBooleanExtra("actorNotTitle", false);
+
         private String searchInput = getIntent().getStringExtra("searchInput");
         private boolean newSearch = getIntent().getBooleanExtra("newSearch", false);
-
-        public LoadMoviesTask (Context ctx){
-            context = ctx;
-        }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            actorNotTitle = getIntent().getBooleanExtra("actorNotTitle", false);
             findViewById(R.id.loadingProgressBar1).setVisibility(View.VISIBLE);
-            findViewById(R.id.loadingProgressBar1).bringToFront();
             findViewById(R.id.loadingProgressBar2).setVisibility(View.VISIBLE);
-            findViewById(R.id.loadingProgressBar2).bringToFront();
             findViewById(R.id.resultButtonA).setVisibility(View.INVISIBLE);
             findViewById(R.id.resultButtonB).setVisibility(View.INVISIBLE);
         }
@@ -51,13 +51,27 @@ public class SearchResultsActivity extends AppCompatActivity {
         @Override //Set the visibility back from the loading bars
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+
+            if(loadedMovies[0] == null){
+                findViewById(R.id.resultButtonA).setClickable(false);
+            }
+            if (loadedMovies[1] == null){
+                findViewById(R.id.resultButtonB).setClickable(false);
+            }
+
+            if(loadedMovies[0] == null && loadedMovies[1] == null){
+                createNoMoviesAlertDialog();
+            }
+
+            findViewById(R.id.resultButtonA).setVisibility(View.VISIBLE);
+            findViewById(R.id.resultButtonB).setVisibility(View.VISIBLE);
+            displayAll();
+
+
             findViewById(R.id.loadingProgressBar1).setVisibility(View.INVISIBLE);
             findViewById(R.id.loadingProgressBar2).setVisibility(View.INVISIBLE);
-            findViewById(R.id.resultButtonA).setVisibility(View.VISIBLE);
-            findViewById(R.id.resultButtonA).bringToFront();
-            findViewById(R.id.resultButtonB).setVisibility(View.VISIBLE);
-            findViewById(R.id.resultButtonB).bringToFront();
-            displayAll();
+
+
         }
 
         @Override
@@ -74,6 +88,11 @@ public class SearchResultsActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        loadMoviesTask.cancel(true);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +104,27 @@ public class SearchResultsActivity extends AppCompatActivity {
             Log.e("Ember", e.getMessage());
         }
         //TODO: Test boundary cases (large + small movie data sets) once UISearch is up and running
-        new LoadMoviesTask(this).execute();
+        loadMoviesTask = new LoadMoviesTask();
+        loadMoviesTask.execute();
+    }
+
+
+    private void createNoMoviesAlertDialog() {
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle("Alert");
+        if(actorNotTitle){
+            alertDialog.setMessage("No movies could be found for the given Actor, please search for a different name");
+        } else{
+            alertDialog.setMessage("No movies could be found with the given title, please search for a different title");
+        }
+
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
     }
 
     public void searchAgainOnClick(View v){
@@ -155,7 +194,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     }
     public void backOnClick(View v){
         uiSearch = new UISearch();
-        startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class));
+
     }
 
     protected static String stripBrackets(String input){ return input.substring(1, input.length() - 1); }

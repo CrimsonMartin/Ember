@@ -38,6 +38,7 @@ public class MovieLoaderTest {
         goalSpaceJam.setWriter(Arrays.asList("Leo Benvenuti, Steve Rudnick, Timothy Harris, Herschel Weingrod".split(",")));
         goalSpaceJam.setActors(Arrays.asList("Michael Jordan, Wayne Knight, Theresa Randle, Manner Washington".split(",")));
         goalSpaceJam.setProduction("Warner Home Video");
+        goalSpaceJam.setImdbID("tt0117705");
     }
 
     @Test

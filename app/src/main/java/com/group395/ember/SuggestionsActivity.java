@@ -79,10 +79,11 @@ public class SuggestionsActivity extends AppCompatActivity {
 
             setAllSuggestionsTo(View.VISIBLE);
 
-            try{
+            if (movies.size() > 0){
                 updateMoviesByPageNumber();
-            } catch (IndexOutOfBoundsException e){
+            } else {
                 createNoMoviesAlertDialog();
+                setAllSuggestionsTo(View.INVISIBLE);
             }
 
             findViewById(R.id.nextButtonSA).setClickable(true);
@@ -107,8 +108,6 @@ public class SuggestionsActivity extends AppCompatActivity {
                     return null;
                 }
             }
-
-
 
             return null;
         }
@@ -138,7 +137,9 @@ public class SuggestionsActivity extends AppCompatActivity {
     private List<Movie> getMovies(int start, int end) throws IndexOutOfBoundsException{
         List<Movie> ret = new ArrayList<>();
         for(int i = start; i<end; i++) {
-            ret.add(movies.get(i));
+            Movie current = movies.get(i);
+            if(current != null && current.getTitle() != null )
+                ret.add(current);
         }
         return ret;
     }
@@ -150,18 +151,30 @@ public class SuggestionsActivity extends AppCompatActivity {
 
     private void setAllSuggestionsTo(int visibility){
         for (View v : suggestionButtons){
+            v.setClickable(true);
             v.setVisibility(visibility);
         }
     }
 
     private void setSuggestionButtons(List<Movie> moviesToBeDisplayed){
         for(View v: suggestionButtons){
-            ((Button)v).setText(
-                    moviesToBeDisplayed.get(
-                            suggestionButtons.indexOf(v))
-                            .getTitle()
-            );
+            try{
+                Movie toBeDisplayed =  moviesToBeDisplayed.get(suggestionButtons.indexOf(v));
+                if (toBeDisplayed == null || toBeDisplayed.isInvalid()){
+                    hideButton(v);
+                }else {
+                    ((Button)v).setText(toBeDisplayed.getTitle());
+                }
+            } catch (IndexOutOfBoundsException e){
+                hideButton(v);
+            }
+
         }
+    }
+
+    private void hideButton(View v){
+        v.setVisibility(View.INVISIBLE);
+        v.setClickable(false);
     }
 
     private void updateMoviesByPageNumber(){
@@ -169,7 +182,7 @@ public class SuggestionsActivity extends AppCompatActivity {
         int numMoviesToDisplay = suggestionButtons.size();
 
         List<Movie> moviesToDisplay = getMovies(
-                currentPage - 1,
+                (currentPage - 1 )*numMoviesToDisplay,
                 numMoviesToDisplay * (currentPage));
 
         setSuggestionButtons(moviesToDisplay);
@@ -188,6 +201,17 @@ public class SuggestionsActivity extends AppCompatActivity {
         currentPage -= 1;
         updateMoviesByPageNumber();
         updatePageNumber();
+    }
+
+    public void backOnClick(View v){
+       Intent i = new Intent(SuggestionsActivity.this, MoviePageActivity.class);
+       i.putExtra("title", title);
+       i.putExtra("fromHistoryActivity", false);
+       startActivity(i);
+    }
+
+    public void searchForNewMovieOnClick(View v){
+        startActivity(new Intent(SuggestionsActivity.this, SearchStartActivity.class));
     }
 
 
