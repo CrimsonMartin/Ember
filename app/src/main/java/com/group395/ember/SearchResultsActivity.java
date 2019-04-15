@@ -145,6 +145,7 @@ public class SearchResultsActivity extends AppCompatActivity {
             displayAll();
         }
     }
+
     public void prevOnClick(View v){
         if(pagesSkipped > 0){
             pagesSkipped--;
