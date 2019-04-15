@@ -307,12 +307,22 @@ public class Movie {
         if (this == o) return true;
         if (!(o instanceof Movie)) return false;
         Movie movie = (Movie) o;
+
         boolean titleEqual = movie.getTitle().toLowerCase().equals(this.getTitle().toLowerCase());
 
-        String movieTitle = movie.getImdbID();
-        String thisTitle = this.getImdbID();
-        if (movieTitle == null || thisTitle == null) return titleEqual;
-        else return (titleEqual && movieTitle.equals(thisTitle));
+        String movieID = movie.getImdbID();
+        String thisID = this.getImdbID();
+
+        if (movieID == null && thisID != null) return false;
+        if (movieID != null && thisID == null) return false;
+
+        if(movieID == null && thisID == null){
+            return titleEqual && movie.getYear().equals(this.getYear());
+        }
+
+        return (titleEqual
+                && movieID.equals(thisID)
+                && movie.getYear().equals(this.getYear()));
 
     }
 
