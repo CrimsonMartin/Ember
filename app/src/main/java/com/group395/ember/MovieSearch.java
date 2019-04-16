@@ -36,10 +36,13 @@ public class MovieSearch {
     public int pages = -1;
     public boolean searchComplete = false;
     public boolean searchSuccessful = true;
-
-
     private static BufferedReader reader = null;
 
+
+    /**
+     * This method is void and starts up a search by actor thread for a given search query.
+     * The results can be accessed via calling .poll or .take on the public field "results"
+     */
     public void searchByActor(String actor) {
         executor.submit(new SearchByActorThread(actor));
     }
@@ -89,6 +92,10 @@ public class MovieSearch {
         }
     }
 
+    /**
+     * This method is void and starts up a search by title thread for a given search query.
+     * The results can be accessed via calling .poll or .take on the public field "results"
+     */
     public void searchFull(String title) {
         executor.submit(new SearchFullThread(title));
     }
@@ -158,6 +165,11 @@ public class MovieSearch {
         }
     }
 
+    /**
+     * This method checks whether or not a search has been exhausted, meaning that the searching thread is done
+     * and all of the results have been pulled out of the queue by the calling class
+     * @return
+     */
     public boolean isExhausted(){
         if(searchComplete && results.size() == 0)
             return true;
@@ -165,42 +177,10 @@ public class MovieSearch {
             return false;
     }
 
-    private static List<String> collectTitles(List<Movie> results) {
-        List<String> titles = new ArrayList<>();
-        for (Movie m : results) {
-            titles.add(m.getTitle());
-        }
-        return titles;
-    }
-
-    //This is the class Gson parses to return the search results
-    private class TmdbSearchResults {
-        Integer page;
-        Integer total_results;
-        Integer total_pages;
-        ArrayList<TmdbMovie> results;
-
-        public String toString() {
-            return "Page: " + page + "Total Results: " + total_results + ", Results: " + results.get(0).toString();
-        }
-
-        public Integer getTotal_pages() {
-            return total_pages;
-        }
-
-        public Integer getNumberofResults() {
-            return total_results;
-        }
-
-        public ArrayList<Movie> getResults() {
-            ArrayList<Movie> searchResults = new ArrayList<Movie>();
-            for (TmdbMovie movie : results) {
-                searchResults.add(movie.toMovie());
-            }
-            return searchResults;
-        }
-    }
-
+    /**
+     * This private class allows Gson to parse the json object returned from the omdb search method
+     * to compile the list of movie results that are returned
+     */
     private class OmdbSearchResults {
         Integer total_pages;
         Boolean Response;
@@ -227,6 +207,11 @@ public class MovieSearch {
         public boolean getResponse(){return Response; }
     }
 
+    /**
+     * this private class allows Gson to parse the results from Searching actors on tmdb
+     * Most importantly, it returns the id of the first result, so that the movies that
+     * person is credited with can be returned
+     */
     private class PersonResults {
         Integer total_results;
         public class Actor {
@@ -253,6 +238,10 @@ public class MovieSearch {
         }
     }
 
+    /**
+     * This private class allows Gson to parse the Movies Credits TMDB lists for a given person
+     * It turns the results it gets into a list of movies
+     */
     private class MoviesByPersonResults {
         ArrayList<TmdbMovie> cast;
 
@@ -265,27 +254,34 @@ public class MovieSearch {
         }
     }
 
+    /**
+     * omdbSearch returns the HTTP Request for the omdb search API for a given title and page number
+     * @param title the title of the movie to search for
+     * @param page the page of the results that will be returned
+     * @return a String containing the URL for the omdb search HTTP request
+     */
     private static String omdbSearch(String title, Integer page) {
         title = title.replaceAll(" ", "+");
         return omdbUrl + "apikey=" + omdbApiKey + "&s=" + title + "&page=" + page;
     }
 
-    private static String tmdbSearch(String title, Integer page) {
-        title = title.replaceAll(" ", "+");
-        if (title.length() > 0)
-            return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings + "&page=" + page + "&query=" + title;
-        else
-            return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings + "&page=" + page;
-    }
-
+    /**
+     * tmdbSearchPeople produces a url for TMDb's people search API
+     * @param name the name of the actor to search for
+     * @return the url to call the TMDb people search HTTP request
+     */
     private static String tmdbSearchPeople(String name) {
         name = name.replaceAll(" ", "+");
         return tmdbUrl + tmdbSearchPeopleUrl + tmdbApiKey + tmdbSettings + "&query=" + name;
     }
 
+    /**
+     * tmdbMoviesByPerson produces a url for TMDb's Movie Credits API method based on an actor's id
+     * @param id the TMDb id of the actor you are searching for
+     * @return the url to call the TMDb movie credit method
+     */
     private static String tmdbMoviesByPerson(Integer id) {
         return tmdbMoviesByPersonUrl + id + tmdbMovieCredits + tmdbApiKey + tmdbSettings;
     }
 
 }
-

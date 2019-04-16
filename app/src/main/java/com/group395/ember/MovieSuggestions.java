@@ -24,7 +24,11 @@ public class MovieSuggestions {
     private MovieLoader loader = new MovieLoader();
     private BufferedReader reader = null;
 
-    // Returns a list of movies
+    /**
+     * setSuggestions returns a list of Future Movies that get filled as the fields of the suggestions do
+     * @param title the title of the movie we are trying to get suggestions for
+     * @return Future movies, which get filled as the movies load
+     */
     List<Future<Movie>> setSuggestions(String title){
         List<Future<Movie>> loaded = new ArrayList<>();
         try {
@@ -49,7 +53,10 @@ public class MovieSuggestions {
         return loaded;
     }
 
-    //This is the class Gson parses to return the search results
+    /**
+     * TmdbSearchResults allows Gson to parse the Json object returned by Tmdb's search method
+     * This allows us to get the tmdb id of the movie we're trying to get suggestions for
+     */
     private class TmdbSearchResults {
         Integer page;
         Integer total_results;
@@ -77,7 +84,10 @@ public class MovieSuggestions {
         }
     }
 
-    //This is the class Gson parses to return the search results
+    /**
+     * SuggestionResults allows Gson to parse the Json object returned by TMDb's movie
+     * suggestions function into movies that can get loaded by the movie loader
+     */
     private class SuggestionResults{
         ArrayList<TmdbMovie> results;
 
@@ -97,6 +107,10 @@ public class MovieSuggestions {
         }
     }
 
+    /**
+     * This allows us to get the IMDb Id of a given movie by allowing us to parse the
+     * Json object returned by the TMDb external id API method
+     */
     private class ExternalIdResults{
         String imdb_id;
 
@@ -105,6 +119,12 @@ public class MovieSuggestions {
         }
     }
 
+    /**
+     * getTmdbId makes a call to get the TMDb id of a movie based on its title, so that we can
+     * call the TMDb getSuggestions API method
+     * @param title the title of the movie we want the id of
+     * @return an integer representing the TMDb id
+     */
     private Integer getTmdbId(String title){
         try {
             Gson gson = new Gson();
@@ -120,6 +140,12 @@ public class MovieSuggestions {
         }
     }
 
+    /**
+     * tmdbSearch takes a title and a page number and creates a url to be used to call the TMDb search API
+     * @param title the title of the movie we would like to search for
+     * @param page the page number of the
+     * @return returns a url used to call the TMDb search API
+     */
     private String tmdbSearch(String title, Integer page) {
         title = title.replaceAll(" ", "+");
         if (title.length() > 0)
@@ -128,10 +154,20 @@ public class MovieSuggestions {
             return tmdbUrl + tmdbSearchUrl + tmdbApiKey + tmdbSettings + "&page=" + page;
     }
 
+    /**
+     * tmdbSuggestions takes a title and a page number and creates a url to be used to call the TMDb search API
+     * @param id the tmdb id of the movie we would like to search for
+     * @return returns a url used to call the TMDb suggestion API method
+     */
     private String tmdbSuggestions(Integer id){
         return tmdbUrl + "movie/"+ id +"/" + tmdbSuggestionUrl + tmdbApiKey + tmdbSettings;
     }
 
+    /**
+     * getImdbIdFromTmdb takes a tmdb id and makes the necessary calls to get a movies IMDb id
+     * @param tmdbId the tmdb id of a given movie
+     * @return returns a string representing the IMDb id
+     */
     private static String getImdbIdFromTmdb(Integer tmdbId){
         try {
             Gson gson = new Gson();
