@@ -81,23 +81,14 @@ class MovieLoader {
         public Movie call() {
             try {
                 String url = createUtelliSearchURL(movie.getTitle());
-                /*
-                HttpResponse<JsonNode> response = Unirest.get("https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?term=war+of+the+worlds&country=uk")
-                        .header("X-RapidAPI-Host", "utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com")
-                        .header("X-RapidAPI-Key", "6bff01b396msh0f92aae4b854e96p1277f2jsna247a9a391a8")
-                        .asJson(); */
-
-                URL obj = new URL("https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?term=war+of+the+worlds&country=uk");
+                URL obj = new URL(url);
                 HttpURLConnection con = (HttpURLConnection) obj.openConnection();
                 con.setRequestMethod("GET");
                 con.setRequestProperty("X-RapidAPI-Host", "utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com");
                 con.setRequestProperty("X-RapidAPI-Key", "6bff01b396msh0f92aae4b854e96p1277f2jsna247a9a391a8");
                 BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
                                                             // https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?term=the+war+of+the+worlds
-               /* HttpResponse<JsonNode> response = Unirest.get("https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?term=war+of+the+worlds")
-                        .header("X-RapidAPI-Host", "utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com")
-                        .header("X-RapidAPI-Key", utelliAPIKey)
-                        .asJson();*/
+
 
                 movie.addPlatforms(reader);
 

@@ -70,9 +70,9 @@ public class MoviePageActivity extends AppCompatActivity {
                 ((Button) findViewById(R.id.writerDisp)).setText(R.string.no_writers);
             }
             if (currentMovie.getDirector() != null) {
-                ((Button) findViewById(R.id.directorDisp)).setText(getApplicationContext().getString(R.string.director_list, (currentMovie.getDirector())));
+                ((Button) findViewById(R.id.platformDisp)).setText(getApplicationContext().getString(R.string.director_list, (currentMovie.getDirector())));
             } else {
-                ((Button) findViewById(R.id.directorDisp)).setText(R.string.no_director);
+                ((Button) findViewById(R.id.platformDisp)).setText(R.string.no_director);
             }
             ((Button) findViewById(R.id.metascoreDisp)).setText(getApplicationContext().getString(R.string.metascore, currentMovie.getMetascore()));
             if (currentMovie.getImdbRating() == null) {
@@ -86,9 +86,9 @@ public class MoviePageActivity extends AppCompatActivity {
                 ((Button) findViewById(R.id.plotDisp)).setText(R.string.no_plot);
             }
             if((currentMovie.getPlatforms() != null) && (currentMovie.getPlatforms().size() > 0)){
-                ((Button) findViewById(R.id.platformDisp)).setText(getApplicationContext().getString(R.string.platforms, SearchResultsActivity.stripBrackets(currentMovie.getPlatforms().toString())));
+                ((Button) findViewById(R.id.directorDisp)).setText(getApplicationContext().getString(R.string.platforms, SearchResultsActivity.stripBrackets(currentMovie.getPlatforms().toString())));
             }else{
-                ((Button) findViewById(R.id.platformDisp)).setText(R.string.no_platform);
+                ((Button) findViewById(R.id.directorDisp)).setText(R.string.no_platform);
             }
             if(currentMovie.getPoster() != null) {
                 Uri uri = Uri.parse(currentMovie.getPoster());
