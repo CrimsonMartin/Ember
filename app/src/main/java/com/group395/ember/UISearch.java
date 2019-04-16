@@ -176,12 +176,11 @@ public class UISearch {
             this.search(moviesNeeded);
 
             output = new Movie[2];
-            Log.e("Ember", "Results has " + results.get(0).getTitle());
+//            Log.e("Ember", "Results has " + results.get(0).getTitle());
             if (results.size() > pagesSkipped * 2)
                 output[0] = results.get(pagesSkipped * 2);
             if (results.size() > pagesSkipped * 2 + 1 && !results.get(pagesSkipped * 2).equals(results.get(pagesSkipped * 2 + 1)))
                 output[1] = results.get(pagesSkipped * 2 + 1);
-            Log.e("Ember", "Output has " + output[0].getTitle());
         }
         catch (IndexOutOfBoundsException | InterruptedException e){
             output = new Movie[]{null, null};
