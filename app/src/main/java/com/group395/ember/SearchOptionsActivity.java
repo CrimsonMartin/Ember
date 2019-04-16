@@ -1,8 +1,6 @@
 package com.group395.ember;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -10,10 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-
 import java.util.ArrayList;
-import java.util.Collection;
-
 import static com.group395.ember.FilterType.ACTOR;
 import static com.group395.ember.FilterType.DIRECTOR;
 import static com.group395.ember.FilterType.GENRE;
@@ -34,7 +29,6 @@ public class SearchOptionsActivity extends AppCompatActivity {
 
     /**
      * Linked to 'GENRE' radio button on Filters page.
-     * @param v
      */
     public void genreOnClick(View v){
         EditText editText = findViewById(R.id.filterText);
@@ -43,7 +37,6 @@ public class SearchOptionsActivity extends AppCompatActivity {
     }
     /**
      * Linked to 'ACTOR' radio button on Filters page.
-     * @param v
      */
     public void actorOnClick(View v){
         EditText editText = findViewById(R.id.filterText);
@@ -52,7 +45,6 @@ public class SearchOptionsActivity extends AppCompatActivity {
     }
     /**
      * Linked to 'DIRECTOR' radio button on Filters page.
-     * @param v
      */
     public void directorOnClick(View v){
         EditText editText = findViewById(R.id.filterText);
@@ -66,7 +58,6 @@ public class SearchOptionsActivity extends AppCompatActivity {
 
     /**
      * Linked to 'ADD FILTER' button on Filters page.
-     * @param v
      */
     //TODO: Filters are not added once a filter is deleted.
     public void submitOnClick(View v){
@@ -100,10 +91,9 @@ public class SearchOptionsActivity extends AppCompatActivity {
 
     /**
      * Linked to the "RESET" button on the filters page.
-     * @param v
      */
     public void resetOnClick(View v){
-        myFilters = new Filter[3];
+        myFilters = new Filter[]{ new Filter(GENRE), new Filter(ACTOR), new Filter(DIRECTOR) };
         selected = null;
         ((EditText) findViewById(R.id.filterText)).setHint(R.string.choose_filter);
         ((RadioGroup) findViewById(R.id.radioGroupGAD)).clearCheck();
@@ -115,7 +105,6 @@ public class SearchOptionsActivity extends AppCompatActivity {
 
     /**
      * Linked to the "ACCEPT FILTERS" button on the filters page.
-     * @param v
      */
     public void acceptOnClick(View v){
         String lastSearch = SearchResultsActivity.uiSearch.getSearch();
@@ -145,15 +134,15 @@ public class SearchOptionsActivity extends AppCompatActivity {
             switch (selectedRadio) {
                 case RADIO_A:
                     ((RadioButton) findViewById(R.id.filterDisplayA)).setText(null);
-                    myFilters[0] = null;
+                    myFilters[0] = new Filter(GENRE);
                     break;
                 case RADIO_B:
                     ((RadioButton) findViewById(R.id.filterDisplayB)).setText(null);
-                    myFilters[1] = null;
+                    myFilters[1] = new Filter(ACTOR);
                     break;
                 case RADIO_C:
                     ((RadioButton) findViewById(R.id.filterDisplayC)).setText(null);
-                    myFilters[2] = null;
+                    myFilters[2] = new Filter(DIRECTOR);
                     break;
             }
         }
