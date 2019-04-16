@@ -29,19 +29,25 @@ public class HistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
         Logger.initializeContext(getApplicationContext());
+        try {
+            loadHistoryOnClick();
+        } catch (ExecutionException e) {
+            Log.e("Ember", e.getMessage());
+        }
         if(startUp){
             Fresco.initialize(this);
         }
-        try {
-            if (startUp && false) {
-                load();
-            }
-        } catch(FileNotFoundException e) {
-            Log.e("Ember", e.getMessage());
-            System.out.println("Couldn't load history.");
-        } catch (InterruptedException e) {
-            Log.e("Ember", e.getMessage());
-        }
+
+//        try {
+//            if (startUp && false) {
+//                load();
+//            }
+//        } catch(FileNotFoundException e) {
+//            Log.e("Ember", e.getMessage());
+//            System.out.println("Couldn't load history.");
+//        } catch (InterruptedException e) {
+//            Log.e("Ember", e.getMessage());
+//        }
         displayAll();
         TextView pageNumber = findViewById(R.id.pageNumber);
         pageNumber.setText(getApplicationContext().getString(R.string.page_number, pagesSkipped + 1));
