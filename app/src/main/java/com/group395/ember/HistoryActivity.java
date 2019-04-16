@@ -18,13 +18,10 @@ import java.util.concurrent.ExecutionException;
 public class HistoryActivity extends AppCompatActivity {
 
     //Specifies whether the app has just started
-    private boolean startUp = true;
-    public static final boolean searchWorks = true;
-    public static final boolean loadWorks = false;
+    private static boolean startUp = true;
     private static Movie[][] recentClicks = new Movie[5][8];
     //Specifies how many sets of 8 Movies have been moved past by the "next" button.
     private int pagesSkipped = 0;
-    private static UISearch uiSearch = new UISearch();
    // private Logger logger = new Logger(getApplicationContext());
 
     @Override
@@ -36,7 +33,7 @@ public class HistoryActivity extends AppCompatActivity {
             Fresco.initialize(this);
         }
         try {
-            if (startUp && loadWorks) {
+            if (startUp && false) {
                 load();
             }
         } catch(FileNotFoundException e) {
@@ -89,7 +86,7 @@ public class HistoryActivity extends AppCompatActivity {
         }
     }
 
-    public void loadHistoryOnClick(View v) throws ExecutionException {
+    public void loadHistoryOnClick() throws ExecutionException {
         Logger.initializeContext(getApplicationContext());
 
         try {
