@@ -61,39 +61,46 @@
         android:layout_width="0dp"
         android:layout_height="46dp"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="85dp"
         android:onClick="submitOnClick"
         android:text="@string/submit_filter"
+        app:layout_constraintBottom_toTopOf="@+id/filterText"
         app:layout_constraintEnd_toEndOf="@+id/radioGroupGAD"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/radioGroupGAD"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroupDisplay" />
+        app:layout_constraintTop_toBottomOf="@+id/radioGroupGAD" />
 
     <EditText
         android:id="@+id/filterText"
         android:layout_width="0dp"
         android:layout_height="25dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="24dp"
         android:background="@color/editText"
         android:hint="@string/choose_filter"
         android:importantForAutofill="no"
         android:inputType="text"
-        app:layout_constraintEnd_toEndOf="@+id/radioGroupGAD"
+        app:layout_constraintBottom_toTopOf="@+id/backButtonLower"
+        app:layout_constraintEnd_toEndOf="@+id/radioGroupDisplay"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/radioGroupGAD"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroupGAD" />
+        app:layout_constraintTop_toBottomOf="@+id/sendButton" />
 
     <Button
         android:id="@+id/resetButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:onClick="resetOnClick"
         android:text="@string/reset_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/backButtonLower" />
 
     <RadioGroup
         android:id="@+id/radioGroupDisplay"
@@ -130,33 +137,17 @@
             android:layout_weight="1"
             android:onClick="radioCOnClick" />
 
-        <RadioButton
-            android:id="@+id/filterDisplayD"
-            style="@style/CompactRadioButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="radioDOnClick" />
-
-        <RadioButton
-            android:id="@+id/filterDisplayE"
-            style="@style/CompactRadioButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="radioEOnClick" />
     </RadioGroup>
 
     <Button
         android:id="@+id/deleteButton"
         android:layout_width="0dp"
         android:layout_height="48dp"
-        android:layout_marginTop="16dp"
         android:onClick="deleteOnClick"
         android:text="@string/delete_filter"
+        app:layout_constraintBaseline_toBaselineOf="@+id/sendButton"
         app:layout_constraintEnd_toEndOf="@+id/radioGroupDisplay"
-        app:layout_constraintStart_toStartOf="@+id/radioGroupDisplay"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroupDisplay" />
+        app:layout_constraintStart_toStartOf="@+id/radioGroupDisplay" />
 
     <Button
         android:id="@+id/backButton"
@@ -176,14 +167,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="41dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
         android:onClick="backOnClick"
         android:text="@string/back"
         app:layout_constraintBottom_toTopOf="@+id/resetButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/filterText" />
 
 
 </android.support.constraint.ConstraintLayout>

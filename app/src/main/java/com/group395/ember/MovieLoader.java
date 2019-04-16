@@ -2,11 +2,6 @@ package com.group395.ember;
 
 import android.support.annotation.VisibleForTesting;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -15,18 +10,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 class MovieLoader {
 
-    private static int MAXNUMTHREADS =4;
+    private static int MAXNUMTHREADS = 4;
     private ExecutorService executor = Executors.newFixedThreadPool(MAXNUMTHREADS);
 
     private Map<Movie, Future<Movie>> movieCache = new HashMap<>();
-    private Map<Movie, Future<Movie>> platformCache = new HashMap<>();
+    private Map<Movie, Set<String>> platformCache = new HashMap<>();
 
 
     private class MovieLoaderThread implements Callable<Movie> {
@@ -77,19 +74,23 @@ class MovieLoader {
         private String utelliUrl = "https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?term=";
 
         private String createUtelliSearchURL(String movieTitle) {
-            return utelliUrl + movieTitle.replaceAll(" ", "+").toLowerCase();
+            return utelliUrl + movieTitle.replaceAll(" ", "+").toLowerCase() + "&country=uk";
         }
 
         @Override
         public Movie call() {
             try {
-                HttpResponse<JsonNode> response = Unirest.get(createUtelliSearchURL(movie.getTitle()))
-                        .header("X-RapidAPI-Key", utelliAPIKey)
-                        .asJson();
+                String url = createUtelliSearchURL(movie.getTitle());
+                URL obj = new URL(url);
+                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                con.setRequestMethod("GET");
+                con.setRequestProperty("X-RapidAPI-Host", "utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com");
+                con.setRequestProperty("X-RapidAPI-Key", utelliAPIKey);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
-                movie.addPlatforms(response.getBody().toString());
+                movie.addPlatforms(reader);
 
-            } catch (UnirestException e) {
+            } catch (Exception e) {
                 //System.out.println("loading platform failed, exception " + e.getMessage());
             }
             return movie;
@@ -148,14 +149,18 @@ class MovieLoader {
     /**
      * @param m Movie object to load the available platforms for
      */
-    Future<Movie> loadPlatforms(Movie m) {
-        if (platformCache.containsKey(m)){
-            return platformCache.get(m);
-        } else{
-            Future<Movie> futureMovie = executor.submit(new LoadPlatformsThread(m));
-            platformCache.put(m, futureMovie);
-            return futureMovie;
+    Set<String> loadPlatforms(Movie m) {
+        try{
+            if (platformCache.containsKey(m)){
+                return platformCache.get(m);
+            } else{
+                Future<Movie> futureMovie = executor.submit(new LoadPlatformsThread(m));
+                platformCache.put(m, futureMovie.get().getPlatforms());
+            }
+        } catch(InterruptedException | ExecutionException e){
+            //pass
         }
+        return platformCache.get(m);
     }
 
     /**
