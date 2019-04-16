@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -34,8 +35,8 @@ public class MoviePageActivity extends AppCompatActivity {
             MovieLoader ml = new MovieLoader();
             Future<Movie> currentMovieFuture = ml.loadMovie(currentMovie);
             currentMovie = currentMovieFuture.get();
-            Future<Movie> movieWithPlatforms = ml.loadPlatforms(currentMovie);
-            currentMovie = movieWithPlatforms.get();
+            Set<String> platforms = ml.loadPlatforms(currentMovie);
+            currentMovie.setPlatforms(platforms);
 
         }catch(InterruptedException | ExecutionException e){
             //pass
