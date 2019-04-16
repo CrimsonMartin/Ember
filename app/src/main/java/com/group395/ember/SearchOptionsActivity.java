@@ -145,6 +145,7 @@ public class SearchOptionsActivity extends AppCompatActivity {
 
         // Literally none of uisearch is used in any part of the app except when calling a static method. So this won't work.
         String lastSearch = SearchResultsActivity.uiSearch.getSearch();
+        Boolean actorNotTitle = SearchResultsActivity.uiSearch.getActorNotTitle();
         SearchResultsActivity.uiSearch = new UISearch();
         SearchResultsActivity.uiSearch.setSearch(lastSearch);
 
@@ -156,7 +157,7 @@ public class SearchOptionsActivity extends AppCompatActivity {
 
         Intent intent = new Intent(SearchOptionsActivity.this, SearchResultsActivity.class);
         intent.putExtra("searchInput", lastSearch);
-        intent.putExtra("actorNotTitle", false); //TODO: some way to retain actorNotTitle post-search...
+        intent.putExtra("actorNotTitle", actorNotTitle); //TODO: some way to retain actorNotTitle post-search...
         intent.putExtra("newSearch", false);
         startActivity(intent);
     }
