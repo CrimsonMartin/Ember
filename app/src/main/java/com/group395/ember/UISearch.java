@@ -21,6 +21,7 @@ public class UISearch {
     private Integer pageNumMoviesReturned = 6;
     private MovieSearch currentSearch;
     private Integer FullNumMoviesReturned = 40;
+    private boolean actorNotTitle = false;
 
     /**
      * Default constructor for a UISearch
@@ -61,6 +62,14 @@ public class UISearch {
      */
     public String getSearch() {
         return searchTerms;
+    }
+
+    public Boolean getActorNotTitle(){
+        return actorNotTitle;
+    }
+
+    public void setActorNotTitle(boolean actorNotTitle){
+        this.actorNotTitle = actorNotTitle;
     }
 
     /**
@@ -157,6 +166,7 @@ public class UISearch {
     // Needs to be redone to actually use the filters.
     protected void searchFromButton(String input, boolean actorNotTitle) {
         currentSearch = new MovieSearch();
+        this.actorNotTitle = actorNotTitle;
         try {
             if (actorNotTitle) {
                 currentSearch.searchByActor(searchTerms.trim());
