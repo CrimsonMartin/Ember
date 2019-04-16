@@ -85,10 +85,8 @@ class MovieLoader {
                 HttpURLConnection con = (HttpURLConnection) obj.openConnection();
                 con.setRequestMethod("GET");
                 con.setRequestProperty("X-RapidAPI-Host", "utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com");
-                con.setRequestProperty("X-RapidAPI-Key", "6bff01b396msh0f92aae4b854e96p1277f2jsna247a9a391a8");
+                con.setRequestProperty("X-RapidAPI-Key", utelliAPIKey);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                                                            // https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?term=the+war+of+the+worlds
-
 
                 movie.addPlatforms(reader);
 
