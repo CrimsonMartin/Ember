@@ -146,7 +146,7 @@ public class Logger {
             return output;
         }
         catch (Exception e) {
-            System.out.println("Failed in reading " + inputStream);
+            Log.e("Ember", "Failed in reading " + inputStream);
             return null;
         }
     }
@@ -162,6 +162,7 @@ public class Logger {
         for (int i = toWrite.size(); i > 0; i--) {
             // Need to delete it first...
             saveToHistory(toWrite.get(toWrite.size() - i));
+            Log.e("Ember", "Readded" + toWrite.get(toWrite.size() - i));
         }
     }
 

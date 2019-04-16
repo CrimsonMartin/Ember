@@ -145,7 +145,8 @@ public class SearchResultsActivity extends AppCompatActivity {
         nextPage.putExtra("title", currentMovie.getTitle());
         nextPage.putExtra("id", currentMovie.getImdbID());
         nextPage.putExtra("fromHistoryActivity", false);
-        Logger.saveToHistory(currentMovie);
+        Logger.saveToHistory(currentMovie.getTitle());
+        Log.e("Ember", "LOGGED " + currentMovie.getTitle());
         startActivity(nextPage);
     }
 

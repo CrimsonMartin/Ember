@@ -119,6 +119,7 @@ public class SearchOptionsActivity extends AppCompatActivity {
      */
     public void acceptOnClick(View v){
         String lastSearch = SearchResultsActivity.uiSearch.getSearch();
+        Boolean actorNotTitle = SearchResultsActivity.uiSearch.getActorNotTitle();
         SearchResultsActivity.uiSearch = new UISearch();
         SearchResultsActivity.uiSearch.setSearch(lastSearch);
         // Assuming that it's an array of length 3 (3 unique filters)...
@@ -130,7 +131,7 @@ public class SearchOptionsActivity extends AppCompatActivity {
 
         Intent intent = new Intent(SearchOptionsActivity.this, SearchResultsActivity.class);
         intent.putExtra("searchInput", lastSearch);
-        intent.putExtra("actorNotTitle", false); //TODO: some way to retain actorNotTitle post-search...
+        intent.putExtra("actorNotTitle", actorNotTitle); //TODO: some way to retain actorNotTitle post-search...
         intent.putExtra("newSearch", false);
         startActivity(intent);
     }
