@@ -109,8 +109,8 @@ public class HistoryActivity extends AppCompatActivity {
                 recentClicks[pagesSkipped][i] = loader.loadMovieByTitle(movieTitles.get(i)).get();
             }
             displayAll();
-            if (movieTitles.size() > 7)
-                Logger.trimCache(movieTitles.subList(movieTitles.size() - 8, movieTitles.size()));
+            if (movieTitles.size() > 8)
+                Logger.trimCache(movieTitles.subList(movieTitles.size() - 7, movieTitles.size()));
 
         } catch (FileNotFoundException e) {
 
