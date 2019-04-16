@@ -32,19 +32,23 @@ public class HistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
         Logger.initializeContext(getApplicationContext());
+
         if(startUp){
             Fresco.initialize(this);
         }
         try {
-            if (startUp && loadWorks) {
-                load();
-            }
-        } catch(FileNotFoundException e) {
-            Log.e("Ember", e.getMessage());
-            System.out.println("Couldn't load history.");
-        } catch (InterruptedException e) {
-            Log.e("Ember", e.getMessage());
+            loadHistoryOnClick();
+        } catch (ExecutionException e) {
+            Log.wtf("Ember", e.getMessage());
         }
+//        try {
+//            if (startUp && loadWorks) {
+//                load();
+//            }
+//        } catch(Exception e) {
+//            Log.wtf("Ember", e.getMessage());
+//            System.out.println("Couldn't load history.");
+//        }
         displayAll();
         TextView pageNumber = findViewById(R.id.pageNumber);
         pageNumber.setText(getApplicationContext().getString(R.string.page_number, pagesSkipped + 1));
@@ -89,11 +93,9 @@ public class HistoryActivity extends AppCompatActivity {
         }
     }
 
-    public void loadHistoryOnClick(View v) throws ExecutionException {
+    public void loadHistoryOnClick() throws ExecutionException {
         Logger.initializeContext(getApplicationContext());
-
         try {
-
             // Movie titles only:
             FileInputStream inputStream = getApplicationContext().openFileInput(Logger.getMovieLog().getName());
 
@@ -108,7 +110,7 @@ public class HistoryActivity extends AppCompatActivity {
             }
             displayAll();
             if (movieTitles.size() > 8)
-                Logger.trimCache(movieTitles.subList(movieTitles.size() - 8, movieTitles.size()));
+                Logger.trimCache(movieTitles.subList(movieTitles.size() - 7, movieTitles.size()));
 
         } catch (FileNotFoundException e) {
 

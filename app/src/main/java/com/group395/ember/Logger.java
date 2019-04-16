@@ -146,7 +146,7 @@ public class Logger {
             return output;
         }
         catch (Exception e) {
-            System.out.println("Failed in reading " + inputStream);
+            Log.e("Ember", "Failed in reading " + inputStream);
             return null;
         }
     }
