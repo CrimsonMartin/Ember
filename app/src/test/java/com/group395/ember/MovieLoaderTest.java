@@ -78,13 +78,8 @@ public class MovieLoaderTest {
         ml.loadPlatforms(goalSpaceJam);
 
         LinkedHashSet<String> platforms = new LinkedHashSet<String>() {{
-            add("Rakuten TV");
-            add("TalkTalk TV Store");
-            add("Sky Family HD (United Kingdom)");
-            add("Sky Cinema Family");
             add("iTunes");
             add("Amazon Prime");
-            add("Now TV");
         }};
 
         await().atMost(10, TimeUnit.SECONDS)
@@ -169,7 +164,7 @@ public class MovieLoaderTest {
         goalSpaceJam.clearPlatforms();
         goalSpaceJam.setPlatforms(ml.loadPlatforms(goalSpaceJam));
         assertEquals(goalSpaceJam.getPlatforms().toString(),
-                "[Rakuten TV, TalkTalk TV Store, Sky Family HD (United Kingdom), Sky Cinema Family, iTunes, Amazon Prime, Now TV]");
+                "[iTunes, Amazon Prime]");
 
     }
 

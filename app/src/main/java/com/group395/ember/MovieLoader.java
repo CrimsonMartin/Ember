@@ -74,7 +74,7 @@ class MovieLoader {
         private String utelliUrl = "https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/lookup?term=";
 
         private String createUtelliSearchURL(String movieTitle) {
-            return utelliUrl + movieTitle.replaceAll(" ", "+").toLowerCase() + "&country=uk";
+            return utelliUrl + movieTitle.replaceAll(" ", "+").toLowerCase() + "&country=us";
         }
 
         @Override
