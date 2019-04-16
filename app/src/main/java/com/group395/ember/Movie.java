@@ -152,6 +152,7 @@ public class Movie {
     public void setRating(Double newRating) { rating = newRating; }
 
     public Set<String> getPlatforms() { return Platforms; }
+    public void setPlatforms(Set<String> p){ Platforms = p; }
     public void addPlatforms(List<Location> platforms){
         for (Location l: platforms) {
             addPlatform(l);
@@ -259,6 +260,22 @@ public class Movie {
         clearPlatforms();
         Gson gson = new Gson ();
         jsonPlatformResponse platformResponse = gson.fromJson(jsonPlatforms, jsonPlatformResponse.class);
+
+        List<Location> platforms;
+
+        Result results = platformResponse.results.stream()
+                .findFirst()
+                .orElse(null);
+
+        if (results != null) addPlatforms(results.locations);
+
+    }
+
+    void addPlatforms(BufferedReader reader){
+
+        clearPlatforms();
+        Gson gson = new Gson ();
+        jsonPlatformResponse platformResponse = gson.fromJson(reader, jsonPlatformResponse.class);
 
         List<Location> platforms;
 

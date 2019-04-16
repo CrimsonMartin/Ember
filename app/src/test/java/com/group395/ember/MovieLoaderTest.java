@@ -74,6 +74,7 @@ public class MovieLoaderTest {
     @Test
     public void loadPlatformsfromWeb() {
 
+        goalSpaceJam.clearPlatforms();
         ml.loadPlatforms(goalSpaceJam);
 
         LinkedHashSet<String> platforms = new LinkedHashSet<String>() {{
@@ -165,8 +166,8 @@ public class MovieLoaderTest {
 
     @Test
     public void testPlatformCachingSpeed() throws Exception{
-        Future<Movie> movieWithPlatforms = ml.loadPlatforms(goalSpaceJam);
-        goalSpaceJam = movieWithPlatforms.get();
+        goalSpaceJam.clearPlatforms();
+        goalSpaceJam.setPlatforms(ml.loadPlatforms(goalSpaceJam));
         assertEquals(goalSpaceJam.getPlatforms().toString(),
                 "[Rakuten TV, TalkTalk TV Store, Sky Family HD (United Kingdom), Sky Cinema Family, iTunes, Amazon Prime, Now TV]");
 

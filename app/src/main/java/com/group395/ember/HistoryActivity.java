@@ -18,13 +18,10 @@ import java.util.concurrent.ExecutionException;
 public class HistoryActivity extends AppCompatActivity {
 
     //Specifies whether the app has just started
-    private boolean startUp = true;
-    public static final boolean searchWorks = true;
-    public static final boolean loadWorks = false;
+    private static boolean startUp = true;
     private static Movie[][] recentClicks = new Movie[5][8];
     //Specifies how many sets of 8 Movies have been moved past by the "next" button.
     private int pagesSkipped = 0;
-    private static UISearch uiSearch = new UISearch();
    // private Logger logger = new Logger(getApplicationContext());
 
     @Override
@@ -32,23 +29,19 @@ public class HistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
         Logger.initializeContext(getApplicationContext());
-
         if(startUp){
             Fresco.initialize(this);
         }
         try {
-            loadHistoryOnClick();
-        } catch (ExecutionException e) {
-            Log.wtf("Ember", e.getMessage());
+            if (startUp && false) {
+                load();
+            }
+        } catch(FileNotFoundException e) {
+            Log.e("Ember", e.getMessage());
+            System.out.println("Couldn't load history.");
+        } catch (InterruptedException e) {
+            Log.e("Ember", e.getMessage());
         }
-//        try {
-//            if (startUp && loadWorks) {
-//                load();f
-//            }
-//        } catch(Exception e) {
-//            Log.wtf("Ember", e.getMessage());
-//            System.out.println("Couldn't load history.");
-//        }
         displayAll();
         TextView pageNumber = findViewById(R.id.pageNumber);
         pageNumber.setText(getApplicationContext().getString(R.string.page_number, pagesSkipped + 1));
@@ -95,7 +88,9 @@ public class HistoryActivity extends AppCompatActivity {
 
     public void loadHistoryOnClick() throws ExecutionException {
         Logger.initializeContext(getApplicationContext());
+
         try {
+
             // Movie titles only:
             FileInputStream inputStream = getApplicationContext().openFileInput(Logger.getMovieLog().getName());
 
@@ -112,7 +107,6 @@ public class HistoryActivity extends AppCompatActivity {
                 recentClicks[pagesSkipped][i - 1] = loader.loadMovieByTitle(movieTitles.get(i)).get();
             }
             displayAll();
-
 
         } catch (FileNotFoundException e) {
 
