@@ -43,7 +43,7 @@ public class HistoryActivity extends AppCompatActivity {
         }
 //        try {
 //            if (startUp && loadWorks) {
-//                load();
+//                load();f
 //            }
 //        } catch(Exception e) {
 //            Log.wtf("Ember", e.getMessage());
@@ -105,12 +105,12 @@ public class HistoryActivity extends AppCompatActivity {
             loader.loadMoviesByTitle(movieTitles);
 
             // Loop take to buttons
-            for (int i = 0; i < Math.min(movieTitles.size(), 8); i ++) {
+            for (int i = 1; i < Math.min(movieTitles.size(), 8); i ++) {
                 recentClicks[pagesSkipped][i] = loader.loadMovieByTitle(movieTitles.get(i)).get();
             }
             displayAll();
             if (movieTitles.size() > 8)
-                Logger.trimCache(movieTitles.subList(movieTitles.size() - 7, movieTitles.size()));
+                Logger.trimCache(movieTitles.subList(1, 9));
 
         } catch (FileNotFoundException e) {
 
