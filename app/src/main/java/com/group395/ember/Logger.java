@@ -162,6 +162,7 @@ public class Logger {
         for (int i = toWrite.size(); i > 0; i--) {
             // Need to delete it first...
             saveToHistory(toWrite.get(toWrite.size() - i));
+            Log.e("Ember", "Readded" + toWrite.get(toWrite.size() - i));
         }
     }
 
