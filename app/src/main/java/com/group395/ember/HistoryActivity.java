@@ -38,16 +38,6 @@ public class HistoryActivity extends AppCompatActivity {
             Fresco.initialize(this);
         }
 
-//        try {
-//            if (startUp && false) {
-//                load();
-//            }
-//        } catch(FileNotFoundException e) {
-//            Log.e("Ember", e.getMessage());
-//            System.out.println("Couldn't load history.");
-//        } catch (InterruptedException e) {
-//            Log.e("Ember", e.getMessage());
-//        }
         displayAll();
         TextView pageNumber = findViewById(R.id.pageNumber);
         pageNumber.setText(getApplicationContext().getString(R.string.page_number, pagesSkipped + 1));
@@ -105,13 +95,15 @@ public class HistoryActivity extends AppCompatActivity {
             MovieLoader loader = new MovieLoader();
             loader.loadMoviesByTitle(movieTitles);
 
-            if (movieTitles.size() > 8)
-                Logger.trimCache(movieTitles.subList(1, 9));
+            if (movieTitles.size() > 40)
+                Logger.trimCache(movieTitles.subList(1, 41));
 
             // Loop take to buttons
-            for (int i = 1; i < Math.min(movieTitles.size(), 9); i ++) {
-                recentClicks[pagesSkipped][i - 1] = loader.loadMovieByTitle(movieTitles.get(i)).get();
-            }
+            for (int toSkip = 0; toSkip <= 5; toSkip++)
+                for (int i = 1; i < Math.min(movieTitles.size() - toSkip * 8, 9); i++) {
+                    System.out.println("i = " + (toSkip * 8 + i) + " pages = " + (toSkip) + " \n");
+                    recentClicks[toSkip][i - 1] = loader.loadMovieByTitle(movieTitles.get(toSkip * 8 + i)).get();
+                }
             displayAll();
 
         } catch (FileNotFoundException e) {
