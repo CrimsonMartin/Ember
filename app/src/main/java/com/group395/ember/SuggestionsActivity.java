@@ -26,6 +26,7 @@ public class SuggestionsActivity extends AppCompatActivity {
     private AsyncTask<Void, Void, Void> loadSuggestionsTask;
     private List<View> suggestionButtons = new ArrayList<>();
     private int currentPage;
+    private boolean fromHistoryActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,7 @@ public class SuggestionsActivity extends AppCompatActivity {
 
         currentPage = 1;
         title = getIntent().getStringExtra("title");
+        fromHistoryActivity = getIntent().getBooleanExtra("fromHistoryActivity", false);
 
         setContentView(R.layout.activity_suggestions);
 
@@ -131,6 +133,7 @@ public class SuggestionsActivity extends AppCompatActivity {
         Intent moviePageIntent = new Intent(SuggestionsActivity.this, MoviePageActivity.class);
         moviePageIntent.putExtra("title", ((Button)v).getText().toString());
         moviePageIntent.putExtra("fromHistoryView", false);
+        moviePageIntent.putExtra("fromHistoryActivity", fromHistoryActivity);
         startActivity(moviePageIntent);
     }
 
@@ -206,7 +209,7 @@ public class SuggestionsActivity extends AppCompatActivity {
     public void backOnClick(View v){
        Intent i = new Intent(SuggestionsActivity.this, MoviePageActivity.class);
        i.putExtra("title", title);
-       i.putExtra("fromHistoryActivity", false);
+       i.putExtra("fromHistoryActivity", fromHistoryActivity);
        startActivity(i);
     }
 
