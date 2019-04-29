@@ -112,6 +112,7 @@ public class MoviePageActivity extends AppCompatActivity {
     public void suggestionsOnClick(View v){
         Intent suggestionsIntent = new Intent(MoviePageActivity.this, SuggestionsActivity.class);
         suggestionsIntent.putExtra("title", currentMovie.getTitle());
+        suggestionsIntent.putExtra("fromHistoryActivity", fromHistoryActivity);
         startActivity(suggestionsIntent);
     }
 }
