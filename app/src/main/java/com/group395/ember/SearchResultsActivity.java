@@ -128,6 +128,7 @@ public class SearchResultsActivity extends AppCompatActivity {
 
     public void searchAgainOnClick(View v){
         uiSearch = new UISearch();
+        pagesSkipped = 0;
         startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class));
     }
 
@@ -195,6 +196,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     }
     public void backOnClick(View v){
         uiSearch = new UISearch();
+        pagesSkipped = 0;
         startActivity(new Intent(SearchResultsActivity.this, SearchStartActivity.class));
     }
 
